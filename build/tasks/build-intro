@@ -1,0 +1,10 @@
+// -*- ecoding=utf-8 -*-
+// Name     : @NAME 
+// Version  : @VERSION 
+// Author   : @AUTHOR
+// Date     : @DATE
+
+'use strict'
+
+module.exports = function()
+{

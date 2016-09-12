@@ -1,0 +1,3 @@
+    // 输出对象
+    return @EXPORTS;
+})();
