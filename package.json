@@ -1,7 +1,7 @@
 {
   "name": "x-lib",
-  "version": "0.0.1",
-  "description": "x lib NodeJS",
+  "version": "0.0.2",
+  "description": "x lib based on node.js",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
@@ -10,8 +10,9 @@
     "type": "git",
     "url": "git+https://github.com/yoshow/x-lib.git"
   },
-  "author": "",
+  "author":"ruanyu@live.com",
   "license": "MIT",
+  "homepage": "https://github.com/yoshow/x-lib#readme",
   "bugs": {
     "url": "https://github.com/yoshow/x-lib/issues"
   },
@@ -27,6 +28,5 @@
     "grunt-jsdoc": "~0.4.0",
     "load-grunt-tasks": "0.3.0",
     "requirejs": "2.1.10"
-  },
-  "homepage": "https://github.com/yoshow/x-lib#readme"
+  }
 }

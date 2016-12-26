@@ -1,4 +1,10 @@
 bin
+build
 dist
 doc
 src
+
+.gitignore
+.npmignore
+Gruntfile.js
+travis.yml
