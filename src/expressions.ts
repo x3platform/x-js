@@ -5,7 +5,7 @@
 * @memberof x
 * @description 正则表达式管理
 */
-var expressions = {
+var self = {
     /** 
     * 规则集合
     * @member {object} rules 
@@ -442,3 +442,5 @@ var expressions = {
     }
     /*#endregion*/
 };
+
+export = self;

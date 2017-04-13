@@ -8,7 +8,7 @@ import * as string from "./string";
 * @memberof x
 * @description 编码
 */
-var encoding = {
+var self = {
     /**
     * @namespace html
     * @memberof x.encoding
@@ -44,7 +44,7 @@ var encoding = {
 
             return text.replace(/&(?![\w#]+;)|[<>"']/g, function(s)
             {
-                return encoding.html.dict[s];
+                return self.html.dict[s];
             });
 
             //            var outString = text.replace(/&/g, '&amp;');
@@ -177,4 +177,4 @@ var encoding = {
     }
 };
 
-export default encoding;
+export = self;
