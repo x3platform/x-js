@@ -1,3 +1,5 @@
+.vscode
+
 bin
 build
 dist
@@ -7,4 +9,14 @@ src
 .gitignore
 .npmignore
 Gruntfile.js
+x.js
+x.js.map
+# Travis
 travis.yml
+
+# Batch
+*.cmd
+
+# TypeScript
+tsconfig.json
+*.ts

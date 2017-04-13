@@ -13,7 +13,7 @@
         // 编译生成的 JavaScript 文件是否移除注释。
         "removeComments": true,
         // 编译时是否生成对应的 source map 文件。
-        "sourceMap": true
+        "sourceMap": false
     },
     "include": [
         "x.ts"

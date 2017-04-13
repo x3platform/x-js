@@ -1,4 +1,3 @@
-/// <reference path="../lib/sizzle/sizzle.d.ts" />
 "use strict";
 var x = {
     /*#region 函数:type(object)*/
