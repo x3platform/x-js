@@ -57,17 +57,6 @@ module.exports = function (grunt) {
       }
     },
 
-    // 编译
-    build:
-    {
-      'build-core':
-      {
-        // 输出对象
-        exports: 'x',
-        dest: 'dist/<%= pkg.version %>/<%= pkg.name %>-core.js'
-      }
-    },
-
     // 清理调试信息
     cleanup:
     {
@@ -152,14 +141,14 @@ module.exports = function (grunt) {
   require("load-grunt-tasks")(grunt);
 
   // 加载自定义任务
-  grunt.loadTasks("build/tasks");
+  grunt.loadTasks("build/grunt-typescript/tasks");
 
   // 任务加载
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-typescript');
+  // grunt.loadNpmTasks('grunt-typescript');
   grunt.loadNpmTasks('grunt-jsdoc');
   // grunt.loadNpmTasks('grunt-file-beautify');
 
@@ -170,7 +159,7 @@ module.exports = function (grunt) {
   // 生产环境(默认)
   grunt.registerTask('default', [
     'typescript',
-    'cleanup',
+    // 'cleanup',
     'uglify',
     'copy',
     'mochacli'
