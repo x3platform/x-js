@@ -258,7 +258,7 @@ module.exports = function (grunt) {
   ]);
 
   // 代码格式验证
-  grunt.registerTask('lint', ['jshint']);
+  // grunt.registerTask('lint', ['jshint']);
 
   // 生成文档
   grunt.registerTask('doc', ['jsdoc']);

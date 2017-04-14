@@ -34,6 +34,7 @@ describe('core', function () {
       assert.equal(x.isArray('a'), false);
     });
   });
+
   describe('#x.guid.create()', function () {
     it('should return true when the value is Array', function () {
       assert.equal(x.isArray([2, 4, 6]), true);
@@ -43,6 +44,7 @@ describe('core', function () {
       assert.equal(x.isArray('a'), false);
     });
   });
+
   describe('#x.randomText.create(object)', function () {
     it('should return true when the value is Array', function () {
       assert.equal(x.isArray([2, 4, 6]), true);
