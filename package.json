@@ -4,7 +4,8 @@
   "description": "x lib based on node.js",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "cover": "jscover src test-cov"
   },
   "repository": {
     "type": "git",
@@ -23,11 +24,12 @@
     "grunt-contrib-jshint": "~1.1.0",
     "grunt-contrib-uglify": "~2.3.0",
     "grunt-mocha-cli": "^3.0.0",
+    "grunt-mocha-istanbul": "^5.0.2",
     "grunt-jsdoc": "~2.1.0",
     "grunt-typescript": "~0.8.0",
     "load-grunt-tasks": "3.5.2",
     "typescript": "~2.2.2",
     "bluebird": "~2.9.34",
-    "chokidar": "^1.0.5"
+    "istanbul": "~0.4.5"
   }
 }

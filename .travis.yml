@@ -8,6 +8,6 @@ install:
 script:
   - grunt
   - npm test
-  #- npm run cover
+  - npm run cover
 after_success:
-  #- npm run coveralls
+  - npm run coveralls

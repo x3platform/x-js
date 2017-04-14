@@ -118,6 +118,65 @@ module.exports = function (grunt) {
       all: ['test/*.js']
     },
 
+    mocha_istanbul: {
+      coverage: {
+        src: 'test', // a folder works nicely
+        options: {
+          // mask: '*.spec.js'
+        }
+      },
+      coverageSpecial: {
+        src: ['testSpecial/*/*.js', 'testUnique/*/*.js'], // specifying file patterns works as well
+        options: {
+          coverageFolder: 'coverageSpecial',
+          mask: '*.spec.js',
+          mochaOptions: ['--harmony', '--async-only'], // any extra options
+          istanbulOptions: ['--harmony', '--handle-sigint']
+        }
+      },
+      coveralls: {
+        src: ['test'], // multiple folders also works
+        options: {
+          coverage: true, // this will make the grunt.event.on('coverage') event listener to be triggered
+          check: {
+            lines: 75,
+            statements: 75
+          },
+          root: './lib', // define where the cover task should consider the root of libraries that are covered by tests
+          reportFormats: ['cobertura', 'lcovonly']
+        }
+      }
+    },
+
+    istanbul_check_coverage: {
+      default: {
+        options: {
+          coverageFolder: 'coverage*', // will check both coverage folders and merge the coverage results
+          check: {
+            lines: 80,
+            statements: 80
+          }
+        }
+      }
+    },
+    coveralls: {
+      // Options relevant to all targets
+      options: {
+        // When true, grunt-coveralls will only print a warning rather than
+        // an error, to prevent CI builds from failing unnecessarily (e.g. if
+        // coveralls.io is down). Optional, defaults to false.
+        force: false
+      },
+
+      default: {
+        // LCOV coverage file (can be string, glob or array)
+        src: 'coverage/lcov.info',
+        options: {
+          // Any options for just this target
+        }
+      },
+    },
+
     // 生成文档
     jsdoc:
     {
@@ -152,6 +211,12 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-jsdoc');
   // grunt.loadNpmTasks('grunt-file-beautify');
 
+  // test
+  grunt.loadNpmTasks('grunt-mocha-cli');
+  grunt.loadNpmTasks('grunt-mocha-istanbul');
+  grunt.loadNpmTasks('grunt-coveralls');
+
+
   // 注意看，每一个任务列表格式是：“任务名：启用的任务配置”。通过这样的形式，我们可以指定MultiTasks运行时使用的配置，
   // 否则默认情况下，MultiTasks会依次使用每个配置去执行一遍任务。
   // grunt.registerTask('dist', ['concat:dist', 'uglify:dist']);
@@ -162,7 +227,9 @@ module.exports = function (grunt) {
     // 'cleanup',
     'uglify',
     'copy',
-    'mochacli'
+    'mochacli',
+    'mocha_istanbul',
+    'coveralls'
     //'jsdoc'
   ]);
 
