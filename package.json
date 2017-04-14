@@ -30,6 +30,7 @@
     "load-grunt-tasks": "3.5.2",
     "typescript": "~2.2.2",
     "bluebird": "~2.9.34",
+    "coveralls":"~2.13.0",
     "istanbul": "~0.4.5"
   }
 }
