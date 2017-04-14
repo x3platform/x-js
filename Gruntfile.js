@@ -227,7 +227,7 @@ module.exports = function (grunt) {
     // 'cleanup',
     'uglify',
     'copy',
-    'mochacli',
+    // 'mochacli',
     'mocha_istanbul:coverage'
     // 'coveralls'
     //'jsdoc'
