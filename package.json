@@ -25,12 +25,13 @@
     "grunt-contrib-uglify": "~2.3.0",
     "grunt-mocha-cli": "^3.0.0",
     "grunt-mocha-istanbul": "^5.0.2",
+    "grunt-coveralls": "1.0.1",
     "grunt-jsdoc": "~2.1.0",
     "grunt-typescript": "~0.8.0",
     "load-grunt-tasks": "3.5.2",
     "typescript": "~2.2.2",
     "bluebird": "~2.9.34",
-    "coveralls":"~2.13.0",
+    "coveralls": "~2.13.0",
     "istanbul": "~0.4.5"
   }
 }
