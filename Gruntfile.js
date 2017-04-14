@@ -228,8 +228,8 @@ module.exports = function (grunt) {
     'uglify',
     'copy',
     'mochacli',
-    'mocha_istanbul',
-    'coveralls'
+    'mocha_istanbul:coverage'
+    // 'coveralls'
     //'jsdoc'
   ]);
 
