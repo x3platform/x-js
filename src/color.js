@@ -1,16 +1,5 @@
-// -*- ecoding=utf-8 -*-
 "use strict";
-/**
-* 颜色编码
-* @namespace color
-* @memberof x
-*/
 var self = {
-    // 正则规则
-    // reg: /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/,
-    /**
-    * RGB 颜色转为十六进制格式
-    */
     hex: function (colorRgbCode) {
         if (/^(rgb|RGB)/.test(colorRgbCode)) {
             var colorBuffer = colorRgbCode.replace(/(?:\(|\)|rgb|RGB)*/g, "").split(",");
@@ -44,13 +33,9 @@ var self = {
             return colorRgbCode;
         }
     },
-    /**
-    * 十六进制颜色转为 RGB 格式
-    */
     rgb: function (colorHexCode) {
         var color = colorHexCode.toLowerCase();
         if (color && /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/.test(color)) {
-            // 处理简写的颜色
             if (color.length === 4) {
                 var originalColor = "#";
                 for (var i = 1; i < 4; i += 1) {
@@ -58,7 +43,6 @@ var self = {
                 }
                 color = originalColor;
             }
-            // 处理六位的颜色值
             var colorBuffer = [];
             for (var i = 1; i < 7; i += 2) {
                 colorBuffer.push(parseInt("0x" + color.slice(i, i + 2)));

@@ -1,30 +1,12 @@
-// -*- ecoding=utf-8 -*-
 "use strict";
 var x = require("./core");
 var self = {
-    /**
-     * 当前时间对象
-     * @method now
-     * @memberof x.date
-     */
     now: function () {
         return self.create();
     },
-    /**
-    * 创建时间对象
-    * @method create
-    * @memberof x.date
-    * @param {object} timeValue 符合时间规则的日期, 数组, 字符串
-    */
     create: function (timeValue) {
         return self.newTime(timeValue);
     },
-    /**
-    * 时间间隔简写表
-    * @method shortIntervals
-    * @memberof x.date
-    * @private
-    */
     shortIntervals: {
         'y': 'year',
         'q': 'quarter',
@@ -36,58 +18,22 @@ var self = {
         's': 'second',
         'ms': 'msecond'
     },
-    /**
-    * 格式化时间间隔参数
-    * @method formatInterval
-    * @memberof x.date
-    * @private
-    */
     formatInterval: function (interval) {
         return self.shortIntervals[interval] || interval;
     },
-    /**
-    * 比较两个时间差异
-    * @method diff
-    * @memberof x.date
-    */
     diff: function (begin, end, interval) {
         var timeBegin = self.newTime(begin);
         var timeEnd = self.newTime(end);
         return timeBegin.diff(self.formatInterval(interval), timeEnd);
     },
-    /**
-    * 比较两个时间差异
-    * @method add
-    * @memberof x.date
-    */
     add: function (timeValue, interval, number) {
         var time = self.newTime(timeValue);
         return time.add(self.formatInterval(interval), number);
     },
-    /**
-    * 时间格式化
-    * @method format
-    * @memberof x.date
-    * @param {object} timeValue 符合时间规则的日期, 数组, 字符串
-    * @param {string} formatValue 时间格式
-    * @example
-    * self.format('2000-01-01 00:00:00', 'yyyy/MM/dd hh:mm:ss');
-    */
     format: function (timeValue, formatValue) {
         var time = self.create(timeValue);
         return time.toString(formatValue);
     },
-    /**
-    * 显示某个时间之前的格式
-    * @method format
-    * @memberof x.date
-    * @param {object} timeValue 符合时间规则的日期, 数组, 字符串
-    * @param {object} suffix 后缀配置
-    * @example
-    * self.ago('2000-01-01 00:00:00');
-    * @example
-    * self.ago('2000-01-01 00:00:00',{y});
-    */
     ago: function (timeValue, suffix) {
         suffix = x.ext({
             minute: '分钟前',
@@ -112,25 +58,16 @@ var self = {
             return time.toString("yyyy-MM-dd HH:mm:ss");
         }
     },
-    /**
-    * 时间对象
-    * @class Time 时间对象
-    * @constructor newTime
-    * @memberof x.date
-    * @param {Date} timeValue 符合时间规则的Date对象, 数组对象, 字符串对象
-    */
     newTime: function (timeValue) {
         var date = new Date();
         if (!x.isUndefined(timeValue)) {
             if (x.type(timeValue) === 'date') {
-                // Date 对象
                 date = timeValue;
             }
             else if (x.isNumber(timeValue)) {
                 date = new Date(timeValue);
             }
             else if (x.isArray(timeValue)) {
-                // Array 对象
                 var keys = timeValue;
                 for (var i = 0; i < 6; i++) {
                     keys[i] = isNaN(keys[i]) ? (i < 3 ? 1 : 0) : Number(keys[i]);
@@ -138,11 +75,9 @@ var self = {
                 date = new Date(keys[0], Number(keys[1]) - 1, keys[2], keys[3], keys[4], keys[5]);
             }
             else if (/\/Date\((-?\d+)\)\//.test(timeValue)) {
-                // .NET 日期对象
                 date = new Date(Math.floor(timeValue.replace(/\/Date\((-?\d+)\)\//, '$1')));
             }
             else {
-                // 其他情况
                 var keys = timeValue.replace(/[-|:|\/| |年|月|日]/g, ',').split(',');
                 for (var i = 0; i < 6; i++) {
                     keys[i] = isNaN(keys[i]) ? (i < 3 ? 1 : 0) : Number(keys[i]);
@@ -152,7 +87,6 @@ var self = {
         }
         var time = {
             year: date.getFullYear(),
-            // year2: date.getYear(),
             month: date.getMonth(),
             day: date.getDate(),
             hour: date.getHours(),
@@ -160,13 +94,6 @@ var self = {
             second: date.getSeconds(),
             msecond: date.getMilliseconds(),
             weekDay: date.getDay(),
-            /**
-            * 比较与另一个时间对象的时间差
-            * @method diff
-            * @memberof x.date.newTime#
-            * @param {string} interval 时间间隔
-            * @param {Time} time 时间对象
-            */
             diff: function (interval, time) {
                 var timeBegin = Number(this.toDate());
                 var timeEnd = Number(time.toDate());
@@ -183,16 +110,8 @@ var self = {
                     case 'msecond': return Math.floor((timeEnd - timeBegin));
                 }
             },
-            /**
-            * 时间对象的属性相加
-            * @method add
-            * @memberof x.date.newTime#
-            * @param {string} interval 时间间隔
-            * @param {number} number 数字
-            */
             add: function (interval, number) {
                 var date = Number(this.toDate());
-                // 此毫秒表示的是需要创建的时间 和 GMT时间1970年1月1日 之间相差的毫秒数。
                 var ms = 0;
                 var monthMaxDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
                 interval = self.formatInterval(interval);
@@ -200,7 +119,6 @@ var self = {
                     case 'year':
                         if ((this.year % 4 == 0 && ((this.year % 100 != 0) || (this.year % 400 == 0))) && this.month == 1 && this.day == 29
                             && !((this.year + number) % 4 == 0 && (((this.year + number) % 100 != 0) || ((this.year + number) % 400 == 0)))) {
-                            // 闰年的二月二十九日并且目标年不为闰年
                             ms = Number(new Date(this.year + number, this.month, 28, this.hour, this.minute, this.second));
                         }
                         else {
@@ -210,12 +128,10 @@ var self = {
                     case 'quarter':
                         if ((this.year % 4 == 0 && ((this.year % 100 != 0) || (this.year % 400 == 0))) && this.month == 1 && this.day == 29
                             && !((this.year + Math.floor((this.month + number * 3) / 12)) % 4 == 0 && (((this.year + Math.floor((this.month + number * 3) / 12)) % 100 != 0) || ((this.year + Math.floor((this.month + number * 3) / 12)) % 400 == 0)))) {
-                            // 闰年的二月二十九日并且目标年不为闰年
                             ms = Number(new Date(this.year, (this.month + number * 3), 28, this.hour, this.minute, this.second));
                         }
                         else {
                             if (this.day == monthMaxDays[this.month]) {
-                                // 月份最后一天的处理
                                 ms = Number(new Date(this.year, (this.month + number * 3), monthMaxDays[(this.month + number * 3) % 12], this.hour, this.minute, this.second));
                             }
                             else {
@@ -226,16 +142,13 @@ var self = {
                     case 'month':
                         if ((this.year % 4 == 0 && ((this.year % 100 != 0) || (this.year % 400 == 0))) && this.month == 1 && this.day == 29
                             && !((this.year + Math.floor((this.month + number) / 12)) % 4 == 0 && (((this.year + Math.floor((this.month + number) / 12)) % 100 != 0) || ((this.year + Math.floor((this.month + number) / 12)) % 400 == 0)))) {
-                            // 闰年的二月二十九日并且目标年不为闰年
                             ms = Number(new Date(this.year, (this.month + number), 28, this.hour, this.minute, this.second));
                         }
                         else {
                             if (this.day == monthMaxDays[this.month]) {
-                                // 月份最后一天的处理
                                 ms = Number(new Date(this.year, (this.month + number), monthMaxDays[(this.month + number) % 12], this.hour, this.minute, this.second));
                             }
                             else {
-                                //ms = Number(this.toDate().setMonth(this.month + number));
                                 ms = Number(new Date(this.year, (this.month + number), this.day, this.hour, this.minute, this.second));
                             }
                         }
@@ -261,11 +174,6 @@ var self = {
                 }
                 return self.create(new Date(ms));
             },
-            /*
-            * 取得日期数据信息
-            * 参数 interval 表示数据类型
-            * y 年 M月 d日 w星期 ww周 h时 n分 s秒
-            */
             getDatePart: function (interval) {
                 var weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
                 interval = self.formatInterval(interval);
@@ -293,32 +201,17 @@ var self = {
                         return 'Unkown Interval';
                 }
             },
-            /**
-            * 取得当前日期所在月的最大天数
-            * @method getMaxDayOfMonth
-            * @memberof x.date.newTime#
-            */
             getMaxDayOfMonth: function () {
                 var date1 = self.create(this.toString('yyyy-MM-01'));
                 var date2 = self.create(this.add('month', 1).toString('yyyy-MM-01'));
                 return date1.diff('day', date2);
             },
-            /**
-            * 取得当前日期所在季度是一年中的第几季度
-            * @method getQuarterOfYear
-            * @memberof x.date.newTime#
-            */
             getQuarterOfYear: function () {
                 return Math.ceil(this.month / 3);
             },
-            /*
-            * 取得当前日期是一年中的第几周
-            */
             getWeekOfYear: function () {
                 var week = 0;
                 var day = this.getDayOfYear();
-                // 判断是否为星期日
-                // 如果一年中的第一天不是星期日, 则减去相差的天数以最近的星期日开始计算
                 if (self.create(this.toString('yyyy-01-01')).weekDay > 0) {
                     day = day - (7 - self.create(this.toString('yyyy-01-01')).weekDay);
                 }
@@ -327,58 +220,20 @@ var self = {
                 }
                 return week;
             },
-            /*
-            * 取得当前日期是一年中的第几天
-            */
             getDayOfYear: function () {
                 var date1 = this.toDate();
                 var date2 = new Date(date1.getFullYear(), 0, 1);
                 return Math.ceil(Number(Number(date1) - Number(date2)) / (24 * 60 * 60 * 1000)) + 1;
             },
-            /*
-            * 判断闰年
-            */
             isLeapYear: function () {
-                // 闰年的计算方法：
-                // 公元纪年的年数可以被四整除，即为闰年；
-                // 被100整除而不能被400整除为平年；
-                // 被100整除也可被400整除的为闰年。
-                // 如2000年是闰年，而1900年不是。
                 return (this.year % 4 == 0 && ((this.year % 100 != 0) || (this.year % 400 == 0)));
             },
-            /**
-            * 转换为数组格式
-            * @method toArray
-            * @memberof x.date.newTime#
-            * @returns {Array}
-            */
             toArray: function () {
                 return [this.year, this.month, this.day, this.hour, this.minute, this.second, this.msecond];
             },
-            /**
-            * 转换为内置 Date 对象
-            * @method toDate
-            * @memberof x.date.newTime#
-            * @returns {Date}
-            */
             toDate: function () {
                 return new Date(this.year, this.month, this.day, this.hour, this.minute, this.second);
             },
-            /**
-            * 日期格式化
-            * 格式
-            * yyyy/yy 表示年份
-            * MM 月份
-            * w 星期
-            * dd/d 日期
-            * hh/h 时间
-            * mm/m 分钟
-            * ss/s 秒
-            * @method toString
-            * @memberof x.date.newTime#
-            * @param {string} format 时间格式
-            * @returns {string}
-            */
             toString: function (format) {
                 if (format === void 0) { format = 'yyyy-MM-dd HH:mm:ss'; }
                 var weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
@@ -400,43 +255,26 @@ var self = {
         };
         return time;
     },
-    /**
-    * 时间间隔对象
-    * @class TimeSpan
-    * @constructor newTimeSpan
-    * @memberof x.date
-    * @param {number} timeSpanValue 符合时间规则的值(允许Date对象|数组对象|字符串对象)
-    */
     newTimeSpan: function (timeSpanValue, format) {
         format = typeof (format) === 'undefined' ? 'second' : format;
-        // 小时转化成秒
         if (format == 'day' || format == 'd') {
             timeSpanValue = timeSpanValue * 24 * 60 * 60;
         }
-        // 小时转化成秒
         if (format == 'hour' || format == 'h') {
             timeSpanValue = timeSpanValue * 60 * 60;
         }
-        // 分钟转化成秒
         if (format == 'minute' || format == 'm') {
             timeSpanValue = timeSpanValue * 60;
         }
-        // 秒不需要转化
         if (format == 'second' || format == 's') {
             timeSpanValue = timeSpanValue * 1000;
         }
         var timeSpan = {
-            // 时间间隔(单位:毫秒)
             timeSpanValue: timeSpanValue,
-            // 天
             day: timeSpanValue / (24 * 60 * 60 * 1000),
-            // 小时
             hour: timeSpanValue / (60 * 60 * 1000),
-            // 分钟
             minute: timeSpanValue / (60 * 1000),
-            // 秒
             second: timeSpanValue / 1000,
-            // 毫秒
             millisecond: timeSpanValue % 1000,
             toString: function (format) {
                 var outString = '';

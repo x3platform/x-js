@@ -8,25 +8,24 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yoshow/x-lib.git"
+    "url": "git+https://github.com/x3platform/x-js.git"
   },
-  "author":"ruanyu@live.com",
+  "author": "ruanyu@live.com",
   "license": "MIT",
-  "homepage": "https://github.com/yoshow/x-lib#readme",
+  "homepage": "https://github.com/x3platform/x-js#readme",
   "bugs": {
-    "url": "https://github.com/yoshow/x-lib/issues"
+    "url": "https://github.com/x3platform/x-js/issues"
   },
   "devDependencies": {
-    "grunt": "~0.4.4",
-    "grunt-contrib-jshint": "~0.10.0",
-    "grunt-contrib-nodeunit": "~0.4.0",
+    "grunt": "~1.2.0",
     "grunt-contrib-concat": "~0.4.0",
-    "grunt-contrib-uglify": "~0.5.0",
-    "grunt-contrib-cssmin": "~0.10.0",
-    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-copy": "~1.0.0",
+    "grunt-contrib-jshint": "~0.10.0",
     "grunt-contrib-less": "~0.11.0",
-    "grunt-jsdoc": "~0.4.0",
-    "load-grunt-tasks": "0.3.0",
-    "requirejs": "2.1.10"
+    "grunt-contrib-uglify": "~2.3.0",
+    "grunt-mocha-cli": "^3.0.0",
+    "grunt-jsdoc": "~2.1.0",
+    "grunt-typescript": "~0.8.0",
+    "load-grunt-tasks": "3.5.2"
   }
 }

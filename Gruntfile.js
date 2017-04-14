@@ -1,10 +1,7 @@
 ﻿// 包装函数
-module.exports = function(grunt)
-{
+module.exports = function (grunt) {
   // 任务配置
-  grunt.initConfig(
-  {
-
+  grunt.initConfig({
     // 获取配置信息
     pkg: grunt.file.readJSON('package.json'),
 
@@ -34,25 +31,32 @@ module.exports = function(grunt)
       all: ['src/core/x.js']
     },
 
-    // 合并文件
-    concat:
-    {
-      options:
-      {
-        separator: '' //separates scripts
+    typescript: {
+      commonjs: {
+        src: ['x.ts'],
+        options: {
+          module: 'commonjs', //or commonjs
+          target: 'es5',
+          removeComments: true,
+          sourcemap: false,
+          declaration: false,
+          noEmitOnError: true
+        }
       },
-      dist:
-      {
-        files:
-        {
-          // 基本功能
-          'dist/<%= pkg.version %>/<%= pkg.name %>-core.js': [
-            'src/core/x.js' // 核心工具包
-          ]
+      amd: {
+        src: ['x.ts'],
+        dest: 'dist/x.js',
+        options: {
+          module: 'amd', //or commonjs
+          target: 'es5',
+          removeComments: true,
+          sourcemap: false,
+          declaration: false,
+          noEmitOnError: true
         }
       }
     },
-      
+
     // 编译
     build:
     {
@@ -63,17 +67,17 @@ module.exports = function(grunt)
         dest: 'dist/<%= pkg.version %>/<%= pkg.name %>-core.js'
       }
     },
-      
+
     // 清理调试信息
     cleanup:
     {
-      'cleanup-core':
+      'amd':
       {
         tags: ['#region', '#endregion', 'x.debug.log'],
-        dest: "dist/<%= pkg.version %>/<%= pkg.name %>-core.js"
+        dest: "dist/x.js"
       }
     },
-      
+
     // 压缩文件
     uglify:
     {
@@ -81,50 +85,60 @@ module.exports = function(grunt)
       {
         banner: '// -*- ecoding=utf-8 -*-\n// Name\t\t:<%= pkg.name %> \n// Version\t:<%= pkg.version %> \n// Author\t:<%= pkg.author %> \n// Date\t\t:<%= grunt.template.today("yyyy-mm-dd") %>\n'
       },
-      'dist-core':
+      'dist':
       {
         files:
         {
-          'dist/<%= pkg.version %>/<%= pkg.name %>-core.min.js': ['dist/<%= pkg.version %>/<%= pkg.name %>-core.js']
+          'dist/x.min.js': ['dist/x.js']
         }
       }
     },
-      
+
     // 复制
     copy:
     {
-      // 原版(包括 x.debug.log 语句)
-      original:
+      // 发布到 lib 目录
+      index:
       {
-        files: [
-        {
-          src: 'dist/<%= pkg.version %>/<%= pkg.name %>-core.js',
-          dest: 'index.js'
-        }]
+        src: 'x.js',
+        dest: 'index.js',
+        options: {
+          process: function (content, srcpath) {
+            return content.replace(/\/src\//g, "/lib/");
+          }
+        }
       },
-      // 发布版
-      dist:
+
+      // 发布到 lib 目录
+      lib:
       {
-        files: [
-        {
-          src: 'dist/<%= pkg.version %>/<%= pkg.name %>-core.min.js',
-          dest: 'src/<%= pkg.name %>-core.zh-cn.min.js'
-        }]
+        expand: true,
+        cwd: 'src/',
+        src: '*.js',
+        dest: 'lib/'
       }
     },
-      
+
+    mochacli: {
+      options: {
+        // require: ['should'],
+        // nyan
+        reporter: 'spec',
+        bail: true
+      },
+      all: ['test/*.js']
+    },
+
     // 生成文档
     jsdoc:
     {
       dist:
       {
-        src: ['README.md', 'src/core/*.js',
-          'src/ui/core/*.js'
-        ],
+        src: ['README.md', 'src/*.ts'],
         options:
         {
           // 输出文件夹位置
-          destination: 'doc',
+          destination: 'docs',
           // 模板位置
           template: 'build/jsdoc/templates/default/',
           // 是否在文档中输出私有成员
@@ -145,6 +159,7 @@ module.exports = function(grunt)
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-typescript');
   grunt.loadNpmTasks('grunt-jsdoc');
   // grunt.loadNpmTasks('grunt-file-beautify');
 
@@ -154,15 +169,24 @@ module.exports = function(grunt)
 
   // 生产环境(默认)
   grunt.registerTask('default', [
-    'concat:dist',
-    'build',
+    'typescript',
     'cleanup',
-    'uglify:dist-core',
-    'copy:original'
+    'uglify',
+    'copy',
+    'mochacli'
     //'jsdoc'
   ]);
 
   // 开发环境
+  grunt.registerTask('development', [
+    'typescript',
+    'cleanup',
+    'uglify',
+    'copy',
+    'mochacli'
+  ]);
+
+  // 正式环境
   grunt.registerTask('development', [
     'concat:dist',
     'build',
@@ -182,4 +206,7 @@ module.exports = function(grunt)
 
   // 生成文档
   grunt.registerTask('doc', ['jsdoc']);
+
+  // 测试
+  grunt.registerTask('test', ['mochacli']);
 };
