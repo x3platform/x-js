@@ -228,8 +228,8 @@ module.exports = function (grunt) {
     'uglify',
     'copy',
     // 'mochacli',
-    'mocha_istanbul:coverage'
-    // 'coveralls'
+    'mocha_istanbul:coverage',
+    'coveralls'
     //'jsdoc'
   ]);
 
@@ -264,5 +264,5 @@ module.exports = function (grunt) {
   grunt.registerTask('doc', ['jsdoc']);
 
   // 测试
-  grunt.registerTask('test', ['mochacli']);
+  grunt.registerTask('test', ['mocha_istanbul:coverage']);
 };

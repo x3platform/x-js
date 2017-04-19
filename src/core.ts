@@ -810,6 +810,9 @@ var x = {
     },
     /*#endregion*/
 
+    // 缓存
+    timers:{},
+
     /*#region 类:newTimer(interval, callback)*/
     /**
     * 计时器
@@ -858,9 +861,12 @@ var x = {
             * @memberof x.newTimer#
             */
             start: function () {
-                eval(this.name + ' = this;');
+                // 旧版
+                // eval('x.timers.' + this.name + ' = this;');
+                // this.timerId = setInterval('x.timers.' + this.name + '.run()', this.interval);
 
-                this.timerId = setInterval(this.name + '.run()', this.interval);
+                var that = x.timers[this.name] = this;
+                this.timerId = setInterval(function(){ x.timers[that.name].run() }, this.interval);
             },
             /*#endregion*/
 

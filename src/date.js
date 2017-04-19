@@ -5,7 +5,7 @@ var self = {
         return self.create();
     },
     create: function (timeValue) {
-        return self.newTime(timeValue);
+        return self.newDateTime(timeValue);
     },
     shortIntervals: {
         'y': 'year',
@@ -22,12 +22,12 @@ var self = {
         return self.shortIntervals[interval] || interval;
     },
     diff: function (begin, end, interval) {
-        var timeBegin = self.newTime(begin);
-        var timeEnd = self.newTime(end);
+        var timeBegin = self.newDateTime(begin);
+        var timeEnd = self.newDateTime(end);
         return timeBegin.diff(self.formatInterval(interval), timeEnd);
     },
     add: function (timeValue, interval, number) {
-        var time = self.newTime(timeValue);
+        var time = self.newDateTime(timeValue);
         return time.add(self.formatInterval(interval), number);
     },
     format: function (timeValue, formatValue) {
@@ -58,7 +58,7 @@ var self = {
             return time.toString("yyyy-MM-dd HH:mm:ss");
         }
     },
-    newTime: function (timeValue) {
+    newDateTime: function (timeValue) {
         var date = new Date();
         if (!x.isUndefined(timeValue)) {
             if (x.type(timeValue) === 'date') {
@@ -95,8 +95,8 @@ var self = {
             msecond: date.getMilliseconds(),
             weekDay: date.getDay(),
             diff: function (interval, time) {
-                var timeBegin = Number(this.toDate());
-                var timeEnd = Number(time.toDate());
+                var timeBegin = Number(this.toNativeDate());
+                var timeEnd = Number(time.toNativeDate());
                 interval = self.formatInterval(interval);
                 switch (interval) {
                     case 'year': return time.year - this.year;
@@ -111,7 +111,7 @@ var self = {
                 }
             },
             add: function (interval, number) {
-                var date = Number(this.toDate());
+                var date = Number(this.toNativeDate());
                 var ms = 0;
                 var monthMaxDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
                 interval = self.formatInterval(interval);
@@ -221,7 +221,7 @@ var self = {
                 return week;
             },
             getDayOfYear: function () {
-                var date1 = this.toDate();
+                var date1 = this.toNativeDate();
                 var date2 = new Date(date1.getFullYear(), 0, 1);
                 return Math.ceil(Number(Number(date1) - Number(date2)) / (24 * 60 * 60 * 1000)) + 1;
             },
@@ -231,7 +231,7 @@ var self = {
             toArray: function () {
                 return [this.year, this.month, this.day, this.hour, this.minute, this.second, this.msecond];
             },
-            toDate: function () {
+            toNativeDate: function () {
                 return new Date(this.year, this.month, this.day, this.hour, this.minute, this.second);
             },
             toString: function (format) {
@@ -255,7 +255,7 @@ var self = {
         };
         return time;
     },
-    newTimeSpan: function (timeSpanValue, format) {
+    newDateTimeSpan: function (timeSpanValue, format) {
         format = typeof (format) === 'undefined' ? 'second' : format;
         if (format == 'day' || format == 'd') {
             timeSpanValue = timeSpanValue * 24 * 60 * 60;

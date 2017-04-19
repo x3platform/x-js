@@ -5,7 +5,7 @@ var string = {
     stringify: function (value) {
         var type = x.type(value);
         if (type !== 'string') {
-            if (type === 'number') {
+            if (type === 'number' || type === 'boolean' || type === 'date') {
                 value += '';
             }
             else if (type === 'function') {
@@ -41,7 +41,7 @@ var string = {
             return text.replace(RegExp('(' + trimText.replace(/\\/g, '\\\\') + '$)', 'gi'), '');
         }
     },
-    format: function () {
+    format: function (text) {
         if (arguments.length == 0) {
             return null;
         }
@@ -53,11 +53,12 @@ var string = {
         return text;
     },
     left: function (text, length, hasEllipsis) {
+        if (hasEllipsis === void 0) { hasEllipsis = true; }
         if (text.length === 0) {
             return text;
         }
         if (text.length > length) {
-            return text.substr(0, length) + ((hasEllipsis || true) ? '...' : '');
+            return text.substr(0, length) + ((hasEllipsis) ? '...' : '');
         }
         else {
             return text;

@@ -18,7 +18,7 @@ let self = {
     * @param {object} timeValue 符合时间规则的日期, 数组, 字符串
     */
     create: function (timeValue?) {
-        return self.newTime(timeValue);
+        return self.newDateTime(timeValue);
     },
 
     /**
@@ -56,8 +56,8 @@ let self = {
     * @memberof x.date
     */
     diff: function (begin, end, interval) {
-        var timeBegin = self.newTime(begin);
-        var timeEnd = self.newTime(end);
+        var timeBegin = self.newDateTime(begin);
+        var timeEnd = self.newDateTime(end);
 
         return timeBegin.diff(self.formatInterval(interval), timeEnd);
     },
@@ -68,7 +68,7 @@ let self = {
     * @memberof x.date
     */
     add: function (timeValue, interval, number) {
-        var time = self.newTime(timeValue);
+        var time = self.newDateTime(timeValue);
 
         return time.add(self.formatInterval(interval), number);
     },
@@ -129,11 +129,11 @@ let self = {
     /**
     * 时间对象
     * @class Time 时间对象
-    * @constructor newTime
+    * @constructor newDateTime
     * @memberof x.date
     * @param {Date} timeValue 符合时间规则的Date对象, 数组对象, 字符串对象
     */
-    newTime: function (timeValue) {
+    newDateTime: function (timeValue) {
         let date = new Date();
 
         if (!x.isUndefined(timeValue)) {
@@ -184,13 +184,13 @@ let self = {
             /**
             * 比较与另一个时间对象的时间差
             * @method diff
-            * @memberof x.date.newTime#
+            * @memberof x.date.newDateTime#
             * @param {string} interval 时间间隔
             * @param {Time} time 时间对象
             */
             diff: function (interval, time) {
-                var timeBegin = Number(this.toDate());
-                var timeEnd = Number(time.toDate());
+                var timeBegin = Number(this.toNativeDate());
+                var timeEnd = Number(time.toNativeDate());
 
                 interval = self.formatInterval(interval);
 
@@ -210,12 +210,12 @@ let self = {
             /**
             * 时间对象的属性相加
             * @method add
-            * @memberof x.date.newTime#
+            * @memberof x.date.newDateTime#
             * @param {string} interval 时间间隔
             * @param {number} number 数字
             */
             add: function (interval, number) {
-                var date = Number(this.toDate());
+                var date = Number(this.toNativeDate());
 
                 // 此毫秒表示的是需要创建的时间 和 GMT时间1970年1月1日 之间相差的毫秒数。
                 var ms = 0;
@@ -264,7 +264,7 @@ let self = {
                                 ms = Number(new Date(this.year, (this.month + number), monthMaxDays[(this.month + number) % 12], this.hour, this.minute, this.second));
                             }
                             else {
-                                //ms = Number(this.toDate().setMonth(this.month + number));
+                                //ms = Number(this.toNativeDate().setMonth(this.month + number));
                                 ms = Number(new Date(this.year, (this.month + number), this.day, this.hour, this.minute, this.second));
                             }
                         }
@@ -330,7 +330,7 @@ let self = {
             /**
             * 取得当前日期所在月的最大天数
             * @method getMaxDayOfMonth
-            * @memberof x.date.newTime#
+            * @memberof x.date.newDateTime#
             */
             getMaxDayOfMonth: function () {
                 var date1 = self.create(this.toString('yyyy-MM-01'));
@@ -342,7 +342,7 @@ let self = {
             /**
             * 取得当前日期所在季度是一年中的第几季度
             * @method getQuarterOfYear
-            * @memberof x.date.newTime#
+            * @memberof x.date.newDateTime#
             */
             getQuarterOfYear: function () {
                 return Math.ceil(this.month / 3);
@@ -373,7 +373,7 @@ let self = {
             * 取得当前日期是一年中的第几天
             */
             getDayOfYear: function () {
-                var date1 = this.toDate();
+                var date1 = this.toNativeDate();
                 var date2 = new Date(date1.getFullYear(), 0, 1);
 
                 return Math.ceil(Number(Number(date1) - Number(date2)) / (24 * 60 * 60 * 1000)) + 1;
@@ -394,7 +394,7 @@ let self = {
             /**
             * 转换为数组格式
             * @method toArray
-            * @memberof x.date.newTime#
+            * @memberof x.date.newDateTime#
             * @returns {Array}
             */
             toArray: function () {
@@ -403,11 +403,11 @@ let self = {
 
             /**
             * 转换为内置 Date 对象
-            * @method toDate
-            * @memberof x.date.newTime#
+            * @method toNativeDate
+            * @memberof x.date.newDateTime#
             * @returns {Date}
             */
-            toDate: function () {
+            toNativeDate: function () {
                 return new Date(this.year, this.month, this.day, this.hour, this.minute, this.second);
             },
 
@@ -422,7 +422,7 @@ let self = {
             * mm/m 分钟
             * ss/s 秒
             * @method toString
-            * @memberof x.date.newTime#
+            * @memberof x.date.newDateTime#
             * @param {string} format 时间格式
             * @returns {string}
             */
@@ -459,11 +459,11 @@ let self = {
     /**
     * 时间间隔对象
     * @class TimeSpan
-    * @constructor newTimeSpan
+    * @constructor newDateTimeSpan
     * @memberof x.date
     * @param {number} timeSpanValue 符合时间规则的值(允许Date对象|数组对象|字符串对象)
     */
-    newTimeSpan: function (timeSpanValue, format) {
+    newDateTimeSpan: function (timeSpanValue, format) {
         format = typeof (format) === 'undefined' ? 'second' : format;
 
         // 小时转化成秒

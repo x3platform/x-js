@@ -345,6 +345,7 @@ define("src/core", ["require", "exports"], function (require, exports) {
             };
             return stringBuilder;
         },
+        timers: {},
         newTimer: function (interval, callback) {
             var timer = {
                 name: 'timer$' + Math.ceil(Math.random() * 900000000 + 100000000),
@@ -354,8 +355,8 @@ define("src/core", ["require", "exports"], function (require, exports) {
                     this.callback(this);
                 },
                 start: function () {
-                    eval(this.name + ' = this;');
-                    this.timerId = setInterval(this.name + '.run()', this.interval);
+                    var that = x.timers[this.name] = this;
+                    this.timerId = setInterval(function () { x.timers[that.name].run(); }, this.interval);
                 },
                 stop: function () {
                     clearInterval(this.timerId);
@@ -564,7 +565,7 @@ define("src/string", ["require", "exports", "src/core"], function (require, expo
         stringify: function (value) {
             var type = x.type(value);
             if (type !== 'string') {
-                if (type === 'number') {
+                if (type === 'number' || type === 'boolean' || type === 'date') {
                     value += '';
                 }
                 else if (type === 'function') {
@@ -600,7 +601,7 @@ define("src/string", ["require", "exports", "src/core"], function (require, expo
                 return text.replace(RegExp('(' + trimText.replace(/\\/g, '\\\\') + '$)', 'gi'), '');
             }
         },
-        format: function () {
+        format: function (text) {
             if (arguments.length == 0) {
                 return null;
             }
@@ -612,11 +613,12 @@ define("src/string", ["require", "exports", "src/core"], function (require, expo
             return text;
         },
         left: function (text, length, hasEllipsis) {
+            if (hasEllipsis === void 0) { hasEllipsis = true; }
             if (text.length === 0) {
                 return text;
             }
             if (text.length > length) {
-                return text.substr(0, length) + ((hasEllipsis || true) ? '...' : '');
+                return text.substr(0, length) + ((hasEllipsis) ? '...' : '');
             }
             else {
                 return text;
@@ -704,14 +706,14 @@ define("src/encoding", ["require", "exports", "src/core", "src/string"], functio
     };
     return self;
 });
-define("src/time", ["require", "exports", "src/core"], function (require, exports, x) {
+define("src/date", ["require", "exports", "src/core"], function (require, exports, x) {
     "use strict";
     var self = {
         now: function () {
             return self.create();
         },
         create: function (timeValue) {
-            return self.newTime(timeValue);
+            return self.newDateTime(timeValue);
         },
         shortIntervals: {
             'y': 'year',
@@ -728,12 +730,12 @@ define("src/time", ["require", "exports", "src/core"], function (require, export
             return self.shortIntervals[interval] || interval;
         },
         diff: function (begin, end, interval) {
-            var timeBegin = self.newTime(begin);
-            var timeEnd = self.newTime(end);
+            var timeBegin = self.newDateTime(begin);
+            var timeEnd = self.newDateTime(end);
             return timeBegin.diff(self.formatInterval(interval), timeEnd);
         },
         add: function (timeValue, interval, number) {
-            var time = self.newTime(timeValue);
+            var time = self.newDateTime(timeValue);
             return time.add(self.formatInterval(interval), number);
         },
         format: function (timeValue, formatValue) {
@@ -764,7 +766,7 @@ define("src/time", ["require", "exports", "src/core"], function (require, export
                 return time.toString("yyyy-MM-dd HH:mm:ss");
             }
         },
-        newTime: function (timeValue) {
+        newDateTime: function (timeValue) {
             var date = new Date();
             if (!x.isUndefined(timeValue)) {
                 if (x.type(timeValue) === 'date') {
@@ -801,8 +803,8 @@ define("src/time", ["require", "exports", "src/core"], function (require, export
                 msecond: date.getMilliseconds(),
                 weekDay: date.getDay(),
                 diff: function (interval, time) {
-                    var timeBegin = Number(this.toDate());
-                    var timeEnd = Number(time.toDate());
+                    var timeBegin = Number(this.toNativeDate());
+                    var timeEnd = Number(time.toNativeDate());
                     interval = self.formatInterval(interval);
                     switch (interval) {
                         case 'year': return time.year - this.year;
@@ -817,7 +819,7 @@ define("src/time", ["require", "exports", "src/core"], function (require, export
                     }
                 },
                 add: function (interval, number) {
-                    var date = Number(this.toDate());
+                    var date = Number(this.toNativeDate());
                     var ms = 0;
                     var monthMaxDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
                     interval = self.formatInterval(interval);
@@ -927,7 +929,7 @@ define("src/time", ["require", "exports", "src/core"], function (require, export
                     return week;
                 },
                 getDayOfYear: function () {
-                    var date1 = this.toDate();
+                    var date1 = this.toNativeDate();
                     var date2 = new Date(date1.getFullYear(), 0, 1);
                     return Math.ceil(Number(Number(date1) - Number(date2)) / (24 * 60 * 60 * 1000)) + 1;
                 },
@@ -937,7 +939,7 @@ define("src/time", ["require", "exports", "src/core"], function (require, export
                 toArray: function () {
                     return [this.year, this.month, this.day, this.hour, this.minute, this.second, this.msecond];
                 },
-                toDate: function () {
+                toNativeDate: function () {
                     return new Date(this.year, this.month, this.day, this.hour, this.minute, this.second);
                 },
                 toString: function (format) {
@@ -961,7 +963,7 @@ define("src/time", ["require", "exports", "src/core"], function (require, export
             };
             return time;
         },
-        newTimeSpan: function (timeSpanValue, format) {
+        newDateTimeSpan: function (timeSpanValue, format) {
             format = typeof (format) === 'undefined' ? 'second' : format;
             if (format == 'day' || format == 'd') {
                 timeSpanValue = timeSpanValue * 24 * 60 * 60;
@@ -1003,12 +1005,12 @@ define("src/time", ["require", "exports", "src/core"], function (require, export
     };
     return self;
 });
-define("x", ["require", "exports", "src/core", "src/color", "src/encoding", "src/string", "src/time"], function (require, exports, x, color, encoding, string, time) {
+define("x", ["require", "exports", "src/core", "src/color", "src/encoding", "src/string", "src/date"], function (require, exports, x, color, encoding, string, date) {
     "use strict";
     return x.ext(x, {
         color: color,
         encoding: encoding,
         string: string,
-        time: time
+        date: date
     });
 });

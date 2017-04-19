@@ -344,6 +344,7 @@ var x = {
         };
         return stringBuilder;
     },
+    timers: {},
     newTimer: function (interval, callback) {
         var timer = {
             name: 'timer$' + Math.ceil(Math.random() * 900000000 + 100000000),
@@ -353,8 +354,8 @@ var x = {
                 this.callback(this);
             },
             start: function () {
-                eval(this.name + ' = this;');
-                this.timerId = setInterval(this.name + '.run()', this.interval);
+                var that = x.timers[this.name] = this;
+                this.timerId = setInterval(function () { x.timers[that.name].run(); }, this.interval);
             },
             stop: function () {
                 clearInterval(this.timerId);
