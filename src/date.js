@@ -1,5 +1,6 @@
 "use strict";
 var x = require("./core");
+var weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
 var self = {
     now: function () {
         return self.create();
@@ -55,7 +56,7 @@ var self = {
             return time.diff('d', now) + suffix.day;
         }
         else {
-            return time.toString("yyyy-MM-dd HH:mm:ss");
+            return time.toString();
         }
     },
     newDateTime: function (timeValue) {
@@ -115,6 +116,7 @@ var self = {
                 var ms = 0;
                 var monthMaxDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
                 interval = self.formatInterval(interval);
+                number = Number(number);
                 switch (interval) {
                     case 'year':
                         if ((this.year % 4 == 0 && ((this.year % 100 != 0) || (this.year % 400 == 0))) && this.month == 1 && this.day == 29
@@ -175,7 +177,6 @@ var self = {
                 return self.create(new Date(ms));
             },
             getDatePart: function (interval) {
-                var weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
                 interval = self.formatInterval(interval);
                 switch (interval) {
                     case 'year':
@@ -236,7 +237,6 @@ var self = {
             },
             toString: function (format) {
                 if (format === void 0) { format = 'yyyy-MM-dd HH:mm:ss'; }
-                var weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
                 return format.replace(/yyyy|YYYY/g, this.year)
                     .replace(/yy|YY/g, x.paddingZero((this.year2 % 100), 2))
                     .replace(/MM/g, x.paddingZero((this.month + 1), 2))
@@ -256,7 +256,7 @@ var self = {
         return time;
     },
     newDateTimeSpan: function (timeSpanValue, format) {
-        format = typeof (format) === 'undefined' ? 'second' : format;
+        if (format === void 0) { format = 'second'; }
         if (format == 'day' || format == 'd') {
             timeSpanValue = timeSpanValue * 24 * 60 * 60;
         }

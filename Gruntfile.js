@@ -45,7 +45,7 @@ module.exports = function (grunt) {
       },
       amd: {
         src: ['x.ts'],
-        dest: 'dist/x.js',
+        dest: 'dist/source/x.js',
         options: {
           module: 'amd', //or commonjs
           target: 'es5',
@@ -54,7 +54,18 @@ module.exports = function (grunt) {
           declaration: false,
           noEmitOnError: true
         }
-      }
+      },
+      docs: {
+        src: ['x.ts'],
+        options: {
+          module: 'commonjs', //or commonjs
+          target: 'es5',
+          sourcemap: false,
+          declaration: false,
+          noEmitOnError: true
+        }
+      },
+
     },
 
     // 清理调试信息
@@ -78,7 +89,7 @@ module.exports = function (grunt) {
       {
         files:
         {
-          'dist/x.min.js': ['dist/x.js']
+          'dist/x.js': ['dist/source/x.js']
         }
       }
     },
@@ -105,6 +116,14 @@ module.exports = function (grunt) {
         cwd: 'src/',
         src: '*.js',
         dest: 'lib/'
+      },
+      // 发布到 lib 目录
+      docs:
+      {
+        expand: true,
+        cwd: 'src/',
+        src: '*.js',
+        dest: 'docs/src/'
       }
     },
 
@@ -182,18 +201,23 @@ module.exports = function (grunt) {
     {
       dist:
       {
-        src: ['README.md', 'src/*.ts'],
+        src: ['README.md', 'docs/src/*.js'],
         options:
         {
           // 输出文件夹位置
           destination: 'docs',
           // 模板位置
-          template: 'build/jsdoc/templates/default/',
+          // template: 'build/jsdoc/templates/default/',
+          template: "node_modules/ink-docstrap/template",
+          configure: "docs.conf.json",
           // 是否在文档中输出私有成员
           private: false
         }
       }
-    }
+    },
+    clean: {
+      docs: ['docs/src/']
+    },
   });
 
   // Load grunt tasks from NPM packages
@@ -207,6 +231,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-clean');
   // grunt.loadNpmTasks('grunt-typescript');
   grunt.loadNpmTasks('grunt-jsdoc');
   // grunt.loadNpmTasks('grunt-file-beautify');
@@ -222,8 +247,9 @@ module.exports = function (grunt) {
   // grunt.registerTask('dist', ['concat:dist', 'uglify:dist']);
 
   // 生产环境(默认)
-  grunt.registerTask('default', [
-    'typescript',
+  grunt.registerTask('production', [
+    'typescript:commonjs',
+    'typescript:amd',
     // 'cleanup',
     'uglify',
     'copy',
@@ -235,33 +261,28 @@ module.exports = function (grunt) {
 
   // 开发环境
   grunt.registerTask('development', [
-    'typescript',
-    'cleanup',
+    'typescript:commonjs',
+    // 'typescript:amd',
+    // 'cleanup',
     'uglify',
-    'copy',
-    'mochacli'
+    'copy:index',
+    'copy:lib',
+    'mocha_istanbul:coverage',
   ]);
 
-  // 正式环境
-  grunt.registerTask('development', [
-    'concat:dist',
-    'build',
-    'copy:original',
-    'cleanup',
-    'uglify:dist-core',
-    'uglify:dist-template',
-    'uglify:dist-ui-core',
-    'uglify:dist-workflow',
-    'less',
-    'cssmin',
-    'copy:dist'
-  ]);
+  grunt.registerTask('default', ['development']);
+  grunt.registerTask('publish', ['production']);
 
   // 代码格式验证
   // grunt.registerTask('lint', ['jshint']);
 
   // 生成文档
-  grunt.registerTask('doc', ['jsdoc']);
+  grunt.registerTask('docs', [
+    'typescript:docs',
+    'copy:docs',
+    'jsdoc',
+    'clean:docs'
+  ]);
 
   // 测试
   grunt.registerTask('test', ['mocha_istanbul:coverage']);

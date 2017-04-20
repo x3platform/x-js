@@ -17,7 +17,7 @@ describe('string', function () {
     });
   });
 
-  describe('#x.string.trim()', function () {
+  describe('#x.string.trim(text)', function () {
     it('should return \'x\' when the value is \'x \'', function () {
       // 修剪空格
       var text = x.string.trim(' x ');
@@ -31,7 +31,7 @@ describe('string', function () {
     });
   });
 
-  describe('#x.string.ltrim()', function () {
+  describe('#x.string.ltrim(text)', function () {
     it('should return \'x\' when the value is \'x \'', function () {
       // 修剪空格
       var text = x.string.ltrim(' x ');
@@ -45,7 +45,7 @@ describe('string', function () {
     });
   });
 
-  describe('#x.string.rtrim()', function () {
+  describe('#x.string.rtrim(text)', function () {
     it('should return \'x\' when the value is \'x \'', function () {
       // 修剪空格
       var text = x.string.rtrim(' x ');
@@ -59,7 +59,7 @@ describe('string', function () {
     });
   });
 
-  describe('#x.string.format()', function () {
+  describe('#x.string.format(text)', function () {
     it('should return hello x when the value is x.string.format(\'hello {0}.\', \'x\')', function () {
       var text = x.string.format('hello {0}.', 'x');
       assert.equal(text, 'hello x.');
@@ -69,12 +69,12 @@ describe('string', function () {
     });
   });
 
-  describe('#x.string.left(\'abcdefg\',5)', function () {
-    it('should return hello x when the value is x.string.format(\'hello {0}.\', \'x\')', function () {
-      var text = x.string.left('abcdefg', 5);
+  describe('#x.string.left(text: string, length: number, hasEllipsis: boolean = true)', function () {
+    it('should return abcde... when text=abcdefghijklmn, length=5', function () {
+      var text = x.string.left('abcdefghijklmn', 5);
       assert.equal(text, 'abcde...');
 
-      var text = x.string.left('abcdefg', 5, false);
+      var text = x.string.left('abcdefghijklmn', 5, false);
       assert.equal(text, 'abcde');
 
       var text = x.string.left('abcd', 5);

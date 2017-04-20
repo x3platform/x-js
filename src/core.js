@@ -1,4 +1,8 @@
 "use strict";
+function getGlobal() {
+    return typeof window !== 'undefined' ? window : global;
+}
+;
 var x = {
     type: function (object) {
         try {
@@ -39,7 +43,7 @@ var x = {
     noop: function () { },
     register: function (value) {
         var parts = value.split(".");
-        var root = window;
+        var root = getGlobal();
         for (var i = 0; i < parts.length; i++) {
             if (x.isUndefined(root[parts[i]])) {
                 root[parts[i]] = {};
@@ -156,7 +160,7 @@ var x = {
         var outString = '';
         for (var i = 0; i < text.length; i++) {
             var ch = text.substr(i, 1);
-            if (ch === '"' || ch === '\'' || ch === '\\') {
+            if (ch === '"' || ch === '\'' || ch === '\\' || ch === '\/') {
                 outString += '\\';
                 outString += ch;
             }
@@ -169,11 +173,11 @@ var x = {
             else if (ch === '\n') {
                 outString += '\\n';
             }
-            else if (ch === '\t') {
-                outString += '\\t';
-            }
             else if (ch === '\r') {
                 outString += '\\r';
+            }
+            else if (ch === '\t') {
+                outString += '\\t';
             }
             else {
                 outString += ch;
@@ -424,8 +428,9 @@ var x = {
     },
     guid: {
         create: function (format, isUpperCase) {
+            if (format === void 0) { format = '-'; }
             var text = '';
-            format = (format || '-').toLowerCase();
+            format = format.toLowerCase();
             for (var i = 0; i < 8; i++) {
                 text += (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
                 if (i > 0 && i < 5) {
@@ -440,8 +445,9 @@ var x = {
     },
     randomText: {
         create: function (length, buffer) {
+            if (length === void 0) { length = 8; }
+            if (buffer === void 0) { buffer = "0123456789abcdefghijklmnopqrstuvwyzx"; }
             var result = '';
-            var buffer = x.type(buffer) == 'string' ? buffer : "0123456789abcdefghijklmnopqrstuvwyzx";
             for (var i = 0; i < length; i++) {
                 result += buffer.charAt(Math.ceil(Math.random() * 100000000) % buffer.length);
             }
