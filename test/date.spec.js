@@ -44,7 +44,7 @@ describe('date', function () {
         // 日
         assert.equal(date.day, 1);
         if (i == 3 || i == 4 || i == 6) {
-          assert.equal(date.toString(), '1997-06-01 00:00:00');
+          assert.equal(date.toString(), '1997-06-01 08:00:00');
         }
       }
     });
