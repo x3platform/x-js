@@ -5,6 +5,9 @@ declare var global: any;
  * 获取全局对象
  */
 function getGlobal() {
+  // 处理全局对象
+  // Web  环境 获取 Window 对象
+  // Node 环境 获取 Global 对象
   return typeof window !== 'undefined' ? window : global;
 };
 
