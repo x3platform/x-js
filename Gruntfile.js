@@ -271,8 +271,8 @@ module.exports = function (grunt) {
     'typescript:amd',
     // 'cleanup',
     'uglify',
+    'copy:lib',
     'copy:test',
-    // 'mochacli',
     'mocha_istanbul:coverage',
     'coveralls'
     //'jsdoc'
