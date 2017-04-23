@@ -1,21 +1,26 @@
 declare var window: any;
 declare var global: any;
 
-/**
- * 获取全局对象
- */
-function getGlobal() {
-  // 处理全局对象
-  // Web  环境 获取 Window 对象
-  // Node 环境 获取 Global 对象
-  return typeof window !== 'undefined' ? window : global;
-};
+// 支持的本地化配置
+const locales = { "en-us": "en-us", "zh-cn": "zh-cn" };
+const defaultLocaleName = 'zh-cn';
 
 /**
  * X JavaScript Library
  * @namespace x
  */
 var x = {
+
+  /**
+   * 获取全局对象
+   * @private
+   */
+  global: function () {
+    // 处理全局对象
+    // Web  环境 获取 Window 对象
+    // Node 环境 获取 Global 对象
+    return typeof window !== 'undefined' ? window : global;
+  },
 
   /*#region 函数:type(object)*/
   /**
@@ -132,7 +137,7 @@ var x = {
     var parts = value.split(".");
 
     // var root = window;
-    var root = getGlobal();
+    var root = x.global();
 
     for (var i = 0; i < parts.length; i++) {
       if (x.isUndefined(root[parts[i]])) {
@@ -422,7 +427,7 @@ var x = {
 
   /*#region 函数:camelCase(text)*/
   /**
-  * 将短划线文字转换至驼峰格式
+  * 将短划线文字(name1-name2-name3)转换至驼峰格式(name1Name2Name3)
   * @method camelCase
   * @memberof x
   * @param {string} text 文本信息
@@ -454,27 +459,16 @@ var x = {
   },
   /*#endregion*/
 
-  /*#region 函数:formatNature(text)*/
+  /*#region 函数:formatLocale(text)*/
   /**
   * 将字符串统一转换为本地标识标识
-  * @method formatNature
+  * @method formatLocale
   * @memberof x
   * @param {string} text 文本信息
   */
-  formatNature: function (text) {
-    switch (text.toLowerCase()) {
-      case 'en-us':
-        text = 'en-us';
-        break;
-      case 'zh-cn':
-        text = 'zh-cn';
-        break;
-      default:
-        text = 'zh-cn';
-        break;
-    }
-
-    return text;
+  formatLocale: function (text) {
+    var locale = locales[text.toLowerCase()];
+    return locale ? locale : defaultLocaleName;
   },
   /*#endregion*/
 
@@ -485,305 +479,11 @@ var x = {
   * @memberof x
   * @param {string} name 名称
   * @example
-  * // 将路径中的[$./\:?=]符号替换为[-]符号
+  * // 将路径中的[$./\:?=]符号替换为[_]符号
   * console.log(x.getFriendlyName(location.pathname));
   */
   getFriendlyName: function (name) {
-    return x.camelCase(('x-' + name).replace(/[\#\$\.\/\\\:\?\=]/g, '-').replace(/[-]+/g, '-'));
-  },
-  /*#endregion*/
-
-  /*#region 类:newHashTable()*/
-  /**
-  * 哈希表
-  * @class HashTable 哈希表
-  * @constructor newHashTable
-  * @memberof x
-  * @example
-  * // returns HashTable
-  * var hashtable = x.newHashTable();
-  */
-  newHashTable: function () {
-    var hashTable = {
-
-      // 内部数组对象
-      innerArray: [],
-
-      /*#region 函数:clear()*/
-      /**
-      * 清空哈希表
-      * @method clear
-      * @memberof x.newHashTable#
-      */
-      clear: function () {
-        this.innerArray = [];
-      },
-      /*#endregion*/
-
-      /*#region 函数:exist(key)*/
-      /**
-      * 判断是否已存在相同键的对象
-      * @method exist
-      * @memberof x.newHashTable#
-      * @returns {bool}
-      */
-      exist: function (key) {
-        for (var i = 0; i < this.innerArray.length; i++) {
-          if (this.innerArray[i].name === key) {
-            return true;
-          }
-        }
-
-        return false;
-      },
-      /*#endregion*/
-
-      /*#region 函数:get(index)*/
-      /**
-      * @method get
-      * @memberof x.newHashTable#
-      */
-      get: function (index) {
-        return this.innerArray[index];
-      },
-      /*#endregion*/
-
-      /*#region 函数:add(key, value)*/
-      /**
-      * @method add
-      * @memberof x.newHashTable#
-      */
-      add: function (key, value) {
-        if (arguments.length === 1) {
-          var keyArr = key.split(';');
-
-          for (var i = 0; i < keyArr.length; i++) {
-            var valueArr = keyArr[i].split('#');
-
-            this.innerArray.push({ name: valueArr[0], value: valueArr[1] });
-          }
-        }
-        else {
-          if (this.exist(key)) {
-            throw 'hashtable aleardy exist same key[' + key + ']';
-          }
-          else {
-            this.innerArray.push({ name: key, value: value });
-          }
-        }
-      },
-      /*#endregion*/
-
-      /*#region 函数:find(key)*/
-      /**
-      * @method find
-      * @memberof x.newHashTable#
-      */
-      find: function (key) {
-        for (var i = 0; i < this.innerArray.length; i++) {
-          if (this.innerArray[i].name === key) {
-            return this.innerArray[i].value;
-          }
-        }
-
-        return null;
-      },
-      /*#endregion*/
-
-      /*#region 函数:size()*/
-      /**
-      * 获取哈希表的当前大小
-      * @method size
-      * @memberof x.newHashTable#
-      */
-      size: function () {
-        return this.innerArray.length;
-      }
-      /*#endregion*/
-    };
-
-    return hashTable;
-  },
-  /*#endregion*/
-
-  /*#region 类:newQueue()*/
-  /**
-  * 队列
-  * @description Queue 对象
-  * @class Queue 队列
-  * @constructor newQueue
-  * @memberof x
-  */
-  newQueue: function () {
-    var queue = {
-
-      // 内部数组对象
-      innerArray: [],
-
-      /**
-      * 插入队列顶部元素
-      * @method push
-      * @memberof x.newQueue#
-      */
-      push: function (targetObject) {
-        this.innerArray.push(targetObject);
-      },
-      /*#endregion*/
-
-      /**
-      * 弹出队列顶部元素
-      * @method pop
-      * @memberof x.newQueue#
-      */
-      pop: function () {
-        if (this.innerArray.length === 0) {
-          return null;
-        }
-        else {
-          var targetObject = this.innerArray[0];
-
-          // 将队列元素往前移动一个单位
-          for (var i = 0; i < this.innerArray.length - 1; i++) {
-            this.innerArray[i] = this.innerArray[i + 1];
-          }
-
-          this.innerArray.length = this.innerArray.length - 1;
-
-          return targetObject;
-        }
-      },
-      /*#endregion*/
-
-      /**
-      * 取出队列底部元素(并不删除队列底部元素)
-      */
-      peek: function () {
-        if (this.innerArray.length === 0) {
-          return null;
-        }
-
-        return this.innerArray[0];
-      },
-      /*#endregion*/
-
-      /*#region 函数:clear()*/
-      /**
-      * 清空堆栈
-      * @method clear
-      * @memberof x.newQueue#
-      */
-      clear: function () {
-        this.innerArray.length = 0; //将元素的个数清零即可
-      },
-      /*#endregion*/
-
-      /*#region 函数:size()*/
-      /**
-      * 获得线性队列当前大小
-      * @method size
-      * @memberof x.newQueue#
-      */
-      size: function () {
-        return this.innerArray.length;
-      },
-      /*#endregion*/
-
-      /*#region 函数:isEmpty()*/
-      /*
-      * 判断一个线性队列是否为空
-      * @method isEmpty
-      * @memberof x.newQueue#
-      */
-      isEmpty: function () {
-        return (this.innerArray.length === 0) ? true : false;
-      }
-      /*#endregion*/
-    };
-
-    return queue;
-  },
-  /*#endregion*/
-
-  /*#region 类:newStack()*/
-  /**
-  * 栈
-  * @description 创建 Stack 对象
-  * @class Stack
-  * @constructor newStack
-  * @memberof x
-  */
-  newStack: function () {
-    var stack = {
-
-      // 内部数组对象
-      innerArray: [],
-
-      /*
-      * 插入栈顶元素
-      */
-      push: function (targetObject) {
-        this.innerArray[this.innerArray.length] = targetObject;
-      },
-      /*#endregion*/
-
-      /*
-      * 弹出栈顶元素(并删除栈顶元素)
-      */
-      pop: function () {
-        if (this.innerArray.length === 0) {
-          return null;
-        }
-        else {
-          var targetObject = this.innerArray[this.innerArray.length - 1];
-
-          this.innerArray.length--;
-
-          return targetObject;
-        }
-      },
-      /*#endregion*/
-
-      /*
-      * 取出栈顶元素(并不删除栈顶元素)
-      */
-      peek: function () {
-        if (this.innerArray.length === 0) {
-          return null;
-        }
-
-        return this.innerArray[this.innerArray.length - 1];
-      },
-      /*#endregion*/
-
-      /*
-      * 清空堆栈
-      */
-      clear: function () {
-        this.innerArray.length = 0; //将元素的个数清零即可
-      },
-      /*#endregion*/
-
-      /*#region 函数:size()*/
-      /**
-      * 获得线性堆栈的当前大小
-      * @method size
-      * @memberof x.newStack#
-      */
-      size: function () {
-        return this.innerArray.length;
-      },
-      /*#endregion*/
-
-      /*
-      * 判断一个线性堆栈是否为空
-      */
-      isEmpty: function () {
-        return (this.innerArray.length === 0) ? true : false;
-      }
-      /*#endregion*/
-    };
-
-    return stack;
+    return x.camelCase(('x_' + name).replace(/[\#\$\.\/\\\:\?\=]/g, '_').replace(/[-]+/g, '_'));
   },
   /*#endregion*/
 
@@ -905,161 +605,6 @@ var x = {
     return timer;
   },
   /*#endregion*/
-
-  /**
-  * 事件
-  * @namespace event
-  * @memberof x
-  */
-  event: {
-    /*#region 函数:getEvent(event)*/
-    /**
-    * 获取事件对象
-    * @method getEvent
-    * @memberof x.event
-    * @param {event} event 事件对象
-    */
-    getEvent: function (event) {
-      return window.event ? window.event : event;
-    },
-    /*#endregion*/
-
-    /*#region 函数:getTarget(event)*/
-    /**
-    * 获取事件的目标对象
-    * @method getTarget
-    * @memberof x.event
-    * @param {event} event 事件对象
-    */
-    getTarget: function (event) {
-      return window.event ? window.event.srcElement : (event ? event.target : null);
-    },
-    /*#endregion*/
-
-    /*#region 函数:getPosition(event)*/
-    /**
-    * 获取事件的光标坐标
-    * @method getPosition
-    * @memberof x.event
-    * @param {event} event 事件对象
-    */
-    getPosition: function (event) {
-      var docElement = document.documentElement;
-
-      var body = document.body || { scrollLeft: 0, scrollTop: 0 };
-
-      return {
-        x: event.pageX || (event.clientX + (docElement.scrollLeft || body.scrollLeft) - (docElement.clientLeft || 0)),
-        y: event.pageY || (event.clientY + (docElement.scrollTop || body.scrollTop) - (docElement.clientTop || 0))
-      };
-    },
-    /*#endregion*/
-
-    /*#region 函数:preventDefault(event)*/
-    /**
-    * 取消事件的默认动作
-    * @method preventDefault
-    * @memberof x.event
-    * @param {event} event 事件对象
-    */
-    preventDefault: function (event) {
-      // 如果提供了事件对象，则这是一个非IE浏览器
-      if (event && event.preventDefault) {
-        //阻止默认浏览器动作(W3C)
-        event.preventDefault();
-      }
-      else {
-        //IE中阻止函数器默认动作的方式
-        window.event.returnValue = false;
-      }
-    },
-    /*#endregion*/
-
-    /*#region 函数:stopPropagation(event)*/
-    /**
-    * 停止事件传播
-    * @method stopPropagation
-    * @memberof x.event
-    * @param {event} event 事件对象
-    */
-    stopPropagation: function (event) {
-      // 判定是否支持触摸
-      //            suportsTouch = ("createTouch" in document);
-
-      //            var touch = suportsTouch ? event.touches[0] : event;
-
-      //            if (suportsTouch)
-      //            {
-      //                touch.stopPropagation();
-      //                touch.preventDefault();
-      //            }
-      //            else
-      //            {
-
-      //如果提供了事件对象，则这是一个非IE浏览器
-      if (event && event.stopPropagation) {
-        //因此它支持W3C的stopPropagation()方法
-        event.stopPropagation();
-      }
-      else {
-        //否则，我们需要使用IE的方式来取消事件冒泡
-        window.event.cancelBubble = true;
-      }
-
-      return false;
-    },
-    /*#endregion*/
-
-    /*#region 函数:add(target, type, listener, useCapture)*/
-    /**
-    * 添加事件监听器
-    * @method add
-    * @memberof x.event
-    * @param {string} target 监听对象
-    * @param {string} type 监听事件
-    * @param {string} listener 处理函数
-    * @param {string} [useCapture] 监听顺序方式
-    */
-    add: function (target, type, listener, useCapture) {
-      if (target == null) return;
-
-      if (target.addEventListener) {
-        target.addEventListener(type, listener, useCapture);
-      }
-      else if (target.attachEvent) {
-        target.attachEvent('on' + type, listener);
-      }
-      else {
-        target['on' + type] = listener;
-      }
-    },
-    /*#endregion*/
-
-    /*#region 函数:remove(target, type, listener, useCapture)*/
-    /**
-    * 移除事件监听器
-    * @method remove
-    * @memberof x.event
-    * @param {string} target 监听对象
-    * @param {string} type 监听事件
-    * @param {string} listener 处理函数
-    * @param {string} [useCapture] 监听顺序方式
-    */
-    remove: function (target, type, listener, useCapture) {
-      if (target == null) return;
-
-      if (target.removeEventListener) {
-        target.removeEventListener(type, listener, useCapture);
-      }
-      else if (target.detachEvent) {
-        target.detachEvent('on' + type, listener);
-      }
-      else {
-        target['on' + type] = null;
-      }
-    }
-    /*#endregion*/
-  },
 
   /**
   * Guid 格式文本

@@ -4,6 +4,8 @@ define("src/core", ["require", "exports"], function (require, exports) {
         return typeof window !== 'undefined' ? window : global;
     }
     ;
+    var locales = { "en-us": "en-us", "zh-cn": "zh-cn" };
+    var defaultLocaleName = 'zh-cn';
     var x = {
         type: function (object) {
             try {
@@ -201,19 +203,9 @@ define("src/core", ["require", "exports"], function (require, exports) {
         paddingZero: function (number, length) {
             return (Array(length).join('0') + number).slice(-length);
         },
-        formatNature: function (text) {
-            switch (text.toLowerCase()) {
-                case 'en-us':
-                    text = 'en-us';
-                    break;
-                case 'zh-cn':
-                    text = 'zh-cn';
-                    break;
-                default:
-                    text = 'zh-cn';
-                    break;
-            }
-            return text;
+        formatLocale: function (text) {
+            var locale = locales[text.toLowerCase()];
+            return locale ? locale : defaultLocaleName;
         },
         getFriendlyName: function (name) {
             return x.camelCase(('x-' + name).replace(/[\#\$\.\/\\\:\?\=]/g, '-').replace(/[-]+/g, '-'));
@@ -302,40 +294,6 @@ define("src/core", ["require", "exports"], function (require, exports) {
                 }
             };
             return queue;
-        },
-        newStack: function () {
-            var stack = {
-                innerArray: [],
-                push: function (targetObject) {
-                    this.innerArray[this.innerArray.length] = targetObject;
-                },
-                pop: function () {
-                    if (this.innerArray.length === 0) {
-                        return null;
-                    }
-                    else {
-                        var targetObject = this.innerArray[this.innerArray.length - 1];
-                        this.innerArray.length--;
-                        return targetObject;
-                    }
-                },
-                peek: function () {
-                    if (this.innerArray.length === 0) {
-                        return null;
-                    }
-                    return this.innerArray[this.innerArray.length - 1];
-                },
-                clear: function () {
-                    this.innerArray.length = 0;
-                },
-                size: function () {
-                    return this.innerArray.length;
-                },
-                isEmpty: function () {
-                    return (this.innerArray.length === 0) ? true : false;
-                }
-            };
-            return stack;
         },
         newStringBuilder: function () {
             var stringBuilder = {
@@ -584,6 +542,7 @@ define("src/string", ["require", "exports", "src/core"], function (require, expo
             return value;
         },
         trim: function (text, trimText) {
+            if (trimText === void 0) { trimText = undefined; }
             if (x.isUndefined(trimText)) {
                 return text.replace(trimExpr, '');
             }
@@ -592,6 +551,7 @@ define("src/string", ["require", "exports", "src/core"], function (require, expo
             }
         },
         ltrim: function (text, trimText) {
+            if (trimText === void 0) { trimText = undefined; }
             if (x.isUndefined(trimText)) {
                 return text.replace(/(^[\s\uFEFF\xA0]+)/g, '');
             }
@@ -600,6 +560,7 @@ define("src/string", ["require", "exports", "src/core"], function (require, expo
             }
         },
         rtrim: function (text, trimText) {
+            if (trimText === void 0) { trimText = undefined; }
             if (x.isUndefined(trimText)) {
                 return text.replace(/([\s\uFEFF\xA0]+$)/g, '');
             }
@@ -711,6 +672,137 @@ define("src/encoding", ["require", "exports", "src/core", "src/string"], functio
                 }
                 return outString;
             }
+        }
+    };
+    return self;
+});
+define("src/expressions", ["require", "exports", "src/core", "src/string"], function (require, exports, x, string) {
+    "use strict";
+    var self = {
+        rules: {
+            'trim': /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
+            'date': /((^((1[8-9]\d{2})|([2-9]\d{3}))([-\/\._])(10|12|0?[13578])([-\/\._])(3[01]|[12][0-9]|0?[1-9])$)|(^((1[8-9]\d{2})|([2-9]\d{3}))([-\/\._])(11|0?[469])([-\/\._])(30|[12][0-9]|0?[1-9])$)|(^((1[8-9]\d{2})|([2-9]\d{3}))([-\/\._])(0?2)([-\/\._])(2[0-8]|1[0-9]|0?[1-9])$)|(^([2468][048]00)([-\/\._])(0?2)([-\/\._])(29)$)|(^([3579][26]00)([-\/\._])(0?2)([-\/\._])(29)$)|(^([1][89][0][48])([-\/\._])(0?2)([-\/\._])(29)$)|(^([2-9][0-9][0][48])([-\/\._])(0?2)([-\/\._])(29)$)|(^([1][89][2468][048])([-\/\._])(0?2)([-\/\._])(29)$)|(^([2-9][0-9][2468][048])([-\/\._])(0?2)([-\/\._])(29)$)|(^([1][89][13579][26])([-\/\._])(0?2)([-\/\._])(29)$)|(^([2-9][0-9][13579][26])([-\/\._])(0?2)([-\/\._])(29)$))/g,
+            'url': "^((https|http|ftp|rtsp|mms)?://)?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([0-9a-z_!~*'()-]+\.)*([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\.[a-z]{2,6})(:[0-9]{1,4})?((/?)|(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$",
+            'telephone': /(^\d+$)|((^\d+)([\d|\-]+)((\d+)$))|((^\+)([\d|\-]+)((\d+)$))/g,
+            'non-telephone': /[^\d\-\+]/g,
+            'email': /^\w+((-\w+)|(\_\w+)|(\'\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/g,
+            'qq': /^\w+((-\w+)|(\_\w+)|(\'\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/g,
+            'number': /(^-?\d+$)|(^-?\d+[\.?]\d+$)/g,
+            'non-number': /[^\d\.\-]/g,
+            'integer': /^-?\d+$/g,
+            'positive-integer': /^\d+$/g,
+            'non-integer': /[^\d\-]/g,
+            'safeText': /A-Za-z0-9_\-/g,
+            'non-safeText': /[^A-Za-z0-9_\-]/g,
+            'fileExt': 'jpg,gif,jpeg,png,bmp,psd,sit,tif,tiff,eps,png,ai,qxd,pdf,cdr,zip,rar',
+            'en-us': {
+                'zipcode': /^\d{5}-\d{4}$|^\d{5}$/g
+            },
+            'zh-cn': {
+                'identityCard': /(^\d{15}$)|(^\d{18}$)|(^\d{17}[X|x]$)/g,
+                'zipcode': /^\d{6}$/g
+            }
+        },
+        match: function (options) {
+            var text = String(options.text);
+            var ignoreCase = options.ignoreCase;
+            var regexpName = options.regexpName;
+            var regexp = typeof (options.regexp) === 'undefined' ? undefined : new RegExp(options.regexp);
+            if (ignoreCase === 1) {
+                text = text.toLowerCase();
+            }
+            if (typeof (regexp) === 'undefined' && typeof (regexpName) !== 'undefined') {
+                regexp = self.rules[regexpName];
+            }
+            return text.match(regexp);
+        },
+        exists: function (options) {
+            var text = String(options.text);
+            var ignoreCase = options.ignoreCase;
+            var regexpName = options.regexpName;
+            var regexp = typeof (options.regexp) === 'undefined' ? undefined : new RegExp(options.regexp);
+            if (ignoreCase) {
+                text = text.toLowerCase();
+            }
+            if (typeof (regexp) === 'undefined' && typeof (regexpName) !== 'undefined') {
+                regexp = self.rules[regexpName];
+            }
+            return text.match(regexp) !== null;
+        },
+        isFileExt: function (path, allowFileExt) {
+            var result = false;
+            var ext = path.substr(path.lastIndexOf('.'), path.length - path.lastIndexOf('.'));
+            var extValue = ((allowFileExt) ? allowFileExt : self.rules['fileExt']);
+            ext = ext.replace('.', '');
+            if (extValue.indexOf(',') != -1) {
+                var list = extValue.split(',');
+                for (var i = 0; i < list.length; i++) {
+                    if (ext.toLowerCase() == list[i]) {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+            else {
+                if (ext.toLowerCase() == extValue) {
+                    result = true;
+                }
+            }
+            return result;
+        },
+        isUrl: function (text) {
+            return text.toLowerCase().exists(self.rules['url']);
+        },
+        isEmail: function (text) {
+            return text.toLowerCase().exists(self.rules['email']);
+        },
+        isZipcode: function (text, nature) {
+            nature = x.formatLocale(nature);
+            return text.exists(self.rules[nature]['zipcode']);
+        },
+        isSafeText: function (text) {
+            return text.exists(self.rules['safeText']);
+        },
+        formatTelephone: function (text) {
+            return text.replace(self.rules['non-telephone'], '');
+        },
+        formatInteger: function (value, removePaddingZero) {
+            value = String(value).replace(self.rules['non-integer'], '');
+            if (string.trim(value) === '') {
+                value = '0';
+            }
+            if (removePaddingZero) {
+                value = String(parseInt(value, 10));
+            }
+            return value;
+        },
+        formatNumber: function (value, removePaddingZero) {
+            if (removePaddingZero === void 0) { removePaddingZero = true; }
+            value = String(value).replace(self.rules['non-number'], '');
+            value = (value.trim() === '') ? '0' : value;
+            if (removePaddingZero) {
+                value = String(parseFloat(value));
+            }
+            return value;
+        },
+        formatNumberRound2: function (value, removePaddingZero) {
+            if (removePaddingZero === void 0) { removePaddingZero = true; }
+            var text = '' + Math.round(Number(self.formatNumber(value)) * 100) / 100;
+            var index = text.indexOf('.');
+            if (index < 0) {
+                return text + '.00';
+            }
+            var text = text.substring(0, index + 1) + text.substring(index + 1, index + 3);
+            if (index + 2 == text.length) {
+                text += '0';
+            }
+            if (removePaddingZero) {
+                value = parseFloat(text);
+            }
+            return value;
+        },
+        formatSafeText: function (text) {
+            return text.replace(self.rules['non-safeText'], '');
         }
     };
     return self;
@@ -1014,11 +1106,56 @@ define("src/date", ["require", "exports", "src/core"], function (require, export
     };
     return self;
 });
-define("x", ["require", "exports", "src/core", "src/color", "src/encoding", "src/string", "src/date"], function (require, exports, x, color, encoding, string, date) {
+define("src/stack", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var self = {
+        create: function () {
+            self.newStack();
+        },
+        newStack: function () {
+            var stack = {
+                innerArray: [],
+                push: function (targetObject) {
+                    this.innerArray[this.innerArray.length] = targetObject;
+                },
+                pop: function () {
+                    if (this.innerArray.length === 0) {
+                        return null;
+                    }
+                    else {
+                        var targetObject = this.innerArray[this.innerArray.length - 1];
+                        this.innerArray.length--;
+                        return targetObject;
+                    }
+                },
+                peek: function () {
+                    if (this.innerArray.length === 0) {
+                        return null;
+                    }
+                    return this.innerArray[this.innerArray.length - 1];
+                },
+                clear: function () {
+                    this.innerArray.length = 0;
+                },
+                size: function () {
+                    return this.innerArray.length;
+                },
+                isEmpty: function () {
+                    return (this.innerArray.length === 0) ? true : false;
+                }
+            };
+            return stack;
+        }
+    };
+    return self;
+});
+define("x", ["require", "exports", "src/core", "src/color", "src/encoding", "src/expressions", "src/string", "src/date", "src/stack"], function (require, exports, x, color, encoding, expressions, string, date, stack) {
     "use strict";
     return x.ext(x, {
+        stack: stack,
         color: color,
         encoding: encoding,
+        expressions: expressions,
         string: string,
         date: date
     });

@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>x-js Class: DateTime</title>
+	<title>x-js Namespace: debug</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -72,18 +72,16 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Class: DateTime</h1>
+	<h1 class="page-title">Namespace: debug</h1>
 <section>
 
 <header>
     
         <h2>
-            <span class="ancestors"><a href="x.html">x</a><a href="x.date.html">.date</a>.</span>
+            <span class="ancestors"><a href="x.html">x</a>.</span>
         
-        DateTime
+        debug
         </h2>
-        
-            <div class="class-description"><p>Time 时间对象</p></div>
         
     
 </header>
@@ -93,78 +91,10 @@
     <div class="container-overview">
     
         
-<hr>
-<dt>
-    <h4 class="name" id="DateTime"><span class="type-signature"></span>new DateTime(timeValue)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>时间对象</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
+            <div class="description"><p>基于 Console 对象的调试跟踪函数</p></div>
         
 
         
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>timeValue</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Date</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>符合时间规则的Date对象, 数组对象, 字符串对象</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
 <dl class="details">
     
 
@@ -204,21 +134,7 @@
 </dl>
 
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
+        
     
     </div>
 
@@ -241,7 +157,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="add"><span class="type-signature"></span>add(interval, number)</h4>
+    <h4 class="name" id=".assert"><span class="type-signature">&lt;static> </span>assert(expression)</h4>
     
     
 </dt>
@@ -249,7 +165,7 @@
 
     
     <div class="description">
-        <p>时间对象的属性相加</p>
+        <p>断言</p>
     </div>
     
 
@@ -284,7 +200,7 @@
 
         <tr>
             
-                <td class="name"><code>interval</code></td>
+                <td class="name"><code>expression</code></td>
             
 
             <td class="type">
@@ -301,31 +217,7 @@
 
             
 
-            <td class="description last"><p>时间间隔</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>number</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>数字</p></td>
+            <td class="description last"><p>表达式</p></td>
         </tr>
 
     
@@ -393,7 +285,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="diff"><span class="type-signature"></span>diff(interval, time)</h4>
+    <h4 class="name" id=".error"><span class="type-signature">&lt;static> </span>error(object)</h4>
     
     
 </dt>
@@ -401,7 +293,7 @@
 
     
     <div class="description">
-        <p>比较与另一个时间对象的时间差</p>
+        <p>记录错误的日志消息</p>
     </div>
     
 
@@ -436,13 +328,13 @@
 
         <tr>
             
-                <td class="name"><code>interval</code></td>
+                <td class="name"><code>object</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">object</span>
 
 
 
@@ -453,31 +345,7 @@
 
             
 
-            <td class="description last"><p>时间间隔</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>time</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Time</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>时间对象</p></td>
+            <td class="description last"><p>对象</p></td>
         </tr>
 
     
@@ -545,7 +413,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="getMaxDayOfMonth"><span class="type-signature"></span>getMaxDayOfMonth()</h4>
+    <h4 class="name" id=".log"><span class="type-signature">&lt;static> </span>log(object)</h4>
     
     
 </dt>
@@ -553,359 +421,7 @@
 
     
     <div class="description">
-        <p>取得当前日期所在月的最大天数</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="getQuarterOfYear"><span class="type-signature"></span>getQuarterOfYear()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>取得当前日期所在季度是一年中的第几季度</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="toArray"><span class="type-signature"></span>toArray()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>转换为数组格式</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="toNativeDate"><span class="type-signature"></span>toNativeDate()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>转换为内置 Date 对象</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Date</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="toString"><span class="type-signature"></span>toString(format)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>日期格式化<br>格式<br>yyyy/yy 表示年份<br>MM 月份<br>w 星期<br>dd/d 日期<br>hh/h 时间<br>mm/m 分钟<br>ss/s 秒</p>
+        <p>记录普通的日志消息</p>
     </div>
     
 
@@ -940,13 +456,13 @@
 
         <tr>
             
-                <td class="name"><code>format</code></td>
+                <td class="name"><code>object</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">object</span>
 
 
 
@@ -957,7 +473,7 @@
 
             
 
-            <td class="description last"><p>时间格式</p></td>
+            <td class="description last"><p>对象</p></td>
         </tr>
 
     
@@ -1017,26 +533,468 @@
     
 
     
-    <h5>Returns:</h5>
+
     
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".time"><span class="type-signature">&lt;static> </span>time(name)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>计时器</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
             
 
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
+            <td class="type">
+            
+                
 <span class="param-type">string</span>
 
 
 
-    </dd>
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>计时器名称</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
 </dl>
 
 
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
         
+            
+<hr>
+<dt>
+    <h4 class="name" id=".timeEnd"><span class="type-signature">&lt;static> </span>timeEnd(name)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>停止计时器</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>计时器名称</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".timestamp"><span class="type-signature">&lt;static> </span>timestamp()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>获取当前时间信息</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".warn"><span class="type-signature">&lt;static> </span>warn(object)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>记录警告的日志消息</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>object</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>对象</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 
     
 </dd>

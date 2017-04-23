@@ -8,11 +8,11 @@ import * as x from "./core";
 const trimExpr = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 
 /**
-* @namespace encoding
+* @namespace string
 * @memberof x
-* @description 编码
+* @description 字符串
 */
-var string = {
+let self = {
 
   /*#region 函数:stringify(value)*/
   /**
@@ -29,7 +29,7 @@ var string = {
         value += '';
       }
       else if (type === 'function') {
-        value = string.stringify(value.call(value));
+        value = self.stringify(value.call(value));
       }
       else {
         // undefined or null
@@ -49,12 +49,12 @@ var string = {
   * @param {string} text 文本信息.
   * @param {number} [trimText] 需要去除的文本信息(默认为空白).
   */
-  trim: function (text, trimText) {
+  trim: function (text, trimText: string = undefined) {
     if (x.isUndefined(trimText)) {
       return text.replace(trimExpr, '');
     }
     else {
-      return string.rtrim(string.ltrim(text, trimText), trimText);
+      return self.rtrim(self.ltrim(text, trimText), trimText);
     }
   },
   /*#endregion*/
@@ -67,7 +67,7 @@ var string = {
   * @param {string} text 文本信息.
   * @param {number} [trimText] 需要去除的文本信息(默认为空白).
   */
-  ltrim: function (text, trimText) {
+  ltrim: function (text, trimText: string = undefined) {
     if (x.isUndefined(trimText)) {
       return text.replace(/(^[\s\uFEFF\xA0]+)/g, '');
     }
@@ -85,7 +85,7 @@ var string = {
   * @param {string} text 文本信息.
   * @param {number} [trimText] 需要去除的文本信息(默认为空白).
   */
-  rtrim: function (text, trimText) {
+  rtrim: function (text, trimText: string = undefined) {
     if (x.isUndefined(trimText)) {
       return text.replace(/([\s\uFEFF\xA0]+$)/g, '');
     }
@@ -131,10 +131,10 @@ var string = {
   * @param {bool} [hasEllipsis] 是否显示...
   * @example
   * // 返回 'java...'
-  * x.string.left('javascript', 4);
+  * x.self.left('javascript', 4);
   * @example
   * // 返回 'java'
-  * x.string.left('javascript', 4, false);
+  * x.self.left('javascript', 4, false);
   */
   left: function (text: string, length: number, hasEllipsis: boolean = true) {
     if (text.length === 0) { return text; }
@@ -149,4 +149,4 @@ var string = {
   /*#endregion*/
 };
 
-export = string;
+export = self;

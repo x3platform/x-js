@@ -8,7 +8,7 @@ import * as string from "./string";
 * @memberof x
 * @description 编码
 */
-var self = {
+let self = {
   /**
   * @namespace html
   * @memberof x.encoding

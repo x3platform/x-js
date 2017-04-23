@@ -23,7 +23,7 @@ describe('encoding', function () {
     it('should return text when the value is String', function () {
       // 空值处理
       assert.equal(x.encoding.unicode.encode(''), '');
-      //\u4e2d\u534e
+      // \u4e2d\u534e
       assert.equal(x.encoding.unicode.encode('中华'), '\\u4e2d\\u534e');
       assert.equal(x.encoding.unicode.encode('中华','&#'), '&#20013;&#21326;');
       assert.equal(x.encoding.unicode.encode('中华','&#x'), '&#x4e2d;&#x534e;');

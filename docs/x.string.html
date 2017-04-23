@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>x-js Class: DateTime</title>
+	<title>x-js Namespace: string</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -72,18 +72,16 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Class: DateTime</h1>
+	<h1 class="page-title">Namespace: string</h1>
 <section>
 
 <header>
     
         <h2>
-            <span class="ancestors"><a href="x.html">x</a><a href="x.date.html">.date</a>.</span>
+            <span class="ancestors"><a href="x.html">x</a>.</span>
         
-        DateTime
+        string
         </h2>
-        
-            <div class="class-description"><p>Time 时间对象</p></div>
         
     
 </header>
@@ -93,78 +91,10 @@
     <div class="container-overview">
     
         
-<hr>
-<dt>
-    <h4 class="name" id="DateTime"><span class="type-signature"></span>new DateTime(timeValue)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>时间对象</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
+            <div class="description"><p>字符串</p></div>
         
 
         
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>timeValue</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Date</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>符合时间规则的Date对象, 数组对象, 字符串对象</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
 <dl class="details">
     
 
@@ -204,21 +134,7 @@
 </dl>
 
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
+        
     
     </div>
 
@@ -241,7 +157,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="add"><span class="type-signature"></span>add(interval, number)</h4>
+    <h4 class="name" id=".format"><span class="type-signature">&lt;static> </span>format(text [, args])</h4>
     
     
 </dt>
@@ -249,7 +165,7 @@
 
     
     <div class="description">
-        <p>时间对象的属性相加</p>
+        <p>字符串格式化</p>
     </div>
     
 
@@ -272,6 +188,8 @@
         <th>Type</th>
 
         
+        <th>Argument</th>
+        
 
         
 
@@ -284,7 +202,7 @@
 
         <tr>
             
-                <td class="name"><code>interval</code></td>
+                <td class="name"><code>text</code></td>
             
 
             <td class="type">
@@ -298,17 +216,25 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last"><p>时间间隔</p></td>
+            <td class="description last"><p>文本信息.</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>number</code></td>
+                <td class="name"><code>args</code></td>
             
 
             <td class="type">
@@ -322,10 +248,20 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last"><p>数字</p></td>
+            <td class="description last"><p>参数.</p></td>
         </tr>
 
     
@@ -393,7 +329,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="diff"><span class="type-signature"></span>diff(interval, time)</h4>
+    <h4 class="name" id=".left"><span class="type-signature">&lt;static> </span>left(text, length [, hasEllipsis])</h4>
     
     
 </dt>
@@ -401,7 +337,563 @@
 
     
     <div class="description">
-        <p>比较与另一个时间对象的时间差</p>
+        <p>字符串长度超长时, 截取左侧字符</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Argument</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>text</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>需要处理的字符串</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>length</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>长度范围</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>hasEllipsis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">bool</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>是否显示...</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Examples</h5>
+        
+    <pre class="sunlight-highlight-javascript">// 返回 &#x27;java...&#x27;x.self.left(&#x27;javascript&#x27;, 4);</pre>
+
+    <pre class="sunlight-highlight-javascript">// 返回 &#x27;java&#x27;x.self.left(&#x27;javascript&#x27;, 4, false);</pre>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".ltrim"><span class="type-signature">&lt;static> </span>ltrim(text [, trimText])</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>去除字符串左侧空白</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Argument</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>text</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>文本信息.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>trimText</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>需要去除的文本信息(默认为空白).</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".rtrim"><span class="type-signature">&lt;static> </span>rtrim(text [, trimText])</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>去除字符串右侧空白</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Argument</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>text</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>文本信息.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>trimText</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>需要去除的文本信息(默认为空白).</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".stringify"><span class="type-signature">&lt;static> </span>stringify(value)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>将其他类型的值转换成字符串</p>
     </div>
     
 
@@ -436,13 +928,13 @@
 
         <tr>
             
-                <td class="name"><code>interval</code></td>
+                <td class="name"><code>value</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">anything</span>
 
 
 
@@ -453,31 +945,7 @@
 
             
 
-            <td class="description last"><p>时间间隔</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>time</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Time</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>时间对象</p></td>
+            <td class="description last"><p>值</p></td>
         </tr>
 
     
@@ -545,7 +1013,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="getMaxDayOfMonth"><span class="type-signature"></span>getMaxDayOfMonth()</h4>
+    <h4 class="name" id=".trim"><span class="type-signature">&lt;static> </span>trim(text [, trimText])</h4>
     
     
 </dt>
@@ -553,359 +1021,7 @@
 
     
     <div class="description">
-        <p>取得当前日期所在月的最大天数</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="getQuarterOfYear"><span class="type-signature"></span>getQuarterOfYear()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>取得当前日期所在季度是一年中的第几季度</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="toArray"><span class="type-signature"></span>toArray()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>转换为数组格式</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="toNativeDate"><span class="type-signature"></span>toNativeDate()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>转换为内置 Date 对象</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Date</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="toString"><span class="type-signature"></span>toString(format)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>日期格式化<br>格式<br>yyyy/yy 表示年份<br>MM 月份<br>w 星期<br>dd/d 日期<br>hh/h 时间<br>mm/m 分钟<br>ss/s 秒</p>
+        <p>去除字符串两端空白或其他文本信息</p>
     </div>
     
 
@@ -928,6 +1044,8 @@
         <th>Type</th>
 
         
+        <th>Argument</th>
+        
 
         
 
@@ -940,7 +1058,7 @@
 
         <tr>
             
-                <td class="name"><code>format</code></td>
+                <td class="name"><code>text</code></td>
             
 
             <td class="type">
@@ -954,10 +1072,52 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last"><p>时间格式</p></td>
+            <td class="description last"><p>文本信息.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>trimText</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>需要去除的文本信息(默认为空白).</p></td>
         </tr>
 
     
@@ -1017,26 +1177,6 @@
     
 
     
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">string</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
 
     
 </dd>

@@ -1,5 +1,5 @@
 var assert = require('assert');
-
+var should = require('should');
 var x = require('../index.js');
 
 describe('core', function () {
@@ -86,6 +86,32 @@ describe('core', function () {
     });
   });
 
+  describe('#x.each(data, callback)', function () {
+    it('should return data when the data is Array', function () {
+      var outString = '';
+
+      x.each(['c', 'b', 'a'], function (index, node) {
+        outString += '[' + index + ']=' + node + ' ';
+      });
+
+      outString = x.string.trim(outString, ' ');
+
+      assert.equal('[0]=c [1]=b [2]=a', outString);
+    });
+
+    it('should return text when the data is Object', function () {
+      var outString = '';
+
+      x.each({ '0': 'c', '1': 'b', '2': 'a' }, function (name, value) {
+        outString += '[' + name + ']=' + value + ' ';
+      });
+
+      outString = x.string.trim(outString, ' ');
+
+      assert.equal('[0]=c [1]=b [2]=a', outString);
+    });
+  });
+
   describe('#x.toJSON(text)', function () {
     it('should return json when the json string', function () {
       var results = [
@@ -132,6 +158,12 @@ describe('core', function () {
     });
   });
 
+  describe('#x.camelCase(text)', function () {
+    it('should return "abc" when the text is "Abc"', function () {
+      assert.equal(x.camelCase('abc-def-ghi'), 'abcDefGhi');
+    });
+  });
+
   describe('#x.guid.create(format, isUpperCase)', function () {
     it('should return guid xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', function () {
       assert.equal(x.guid.create().length, 36);
@@ -170,6 +202,8 @@ describe('core', function () {
 
       x.debug.error('\t==> error');
       assert.ok(1);
+
+      // x.debug.assert("a"=="c");
 
       x.debug.time('\tdebug-method');
       x.debug.timeEnd('\tdebug-method');

@@ -4,6 +4,11 @@ import * as x from "./core";
 
 var weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
 
+/**
+ * @namespace date
+ * @memberof x
+ * @description 日期时间
+ */
 let self = {
   /**
    * 当前时间对象
@@ -461,44 +466,44 @@ let self = {
   /**
   * 时间间隔对象
   * @class TimeSpan
-  * @constructor DateTimeSpan
+  * @constructor TimeSpan
   * @memberof x.date
-  * @param {number} timeSpanValue 符合时间规则的值(允许Date对象|数组对象|字符串对象)
+  * @param {number} timespanValue 符合时间规则的值(允许Date对象|数组对象|字符串对象)
   */
-  newDateTimeSpan: function (timeSpanValue, format: string = 'second') {
+  timespan: function (timespanValue, format: string = 'second') {
     // 小时转化成秒
     if (format == 'day' || format == 'd') {
-      timeSpanValue = timeSpanValue * 24 * 60 * 60;
+      timespanValue = timespanValue * 24 * 60 * 60;
     }
 
     // 小时转化成秒
     if (format == 'hour' || format == 'h') {
-      timeSpanValue = timeSpanValue * 60 * 60;
+      timespanValue = timespanValue * 60 * 60;
     }
 
     // 分钟转化成秒
     if (format == 'minute' || format == 'm') {
-      timeSpanValue = timeSpanValue * 60;
+      timespanValue = timespanValue * 60;
     }
 
     // 秒不需要转化
     if (format == 'second' || format == 's') {
-      timeSpanValue = timeSpanValue * 1000;
+      timespanValue = timespanValue * 1000;
     }
 
-    var timeSpan = {
+    var timespan = {
       // 时间间隔(单位:毫秒)
-      timeSpanValue: timeSpanValue,
+      timespanValue: timespanValue,
       // 天
-      day: timeSpanValue / (24 * 60 * 60 * 1000),
+      day: timespanValue / (24 * 60 * 60 * 1000),
       // 小时
-      hour: timeSpanValue / (60 * 60 * 1000),
+      hour: timespanValue / (60 * 60 * 1000),
       // 分钟
-      minute: timeSpanValue / (60 * 1000),
+      minute: timespanValue / (60 * 1000),
       // 秒
-      second: timeSpanValue / 1000,
+      second: timespanValue / 1000,
       // 毫秒
-      millisecond: timeSpanValue % 1000,
+      millisecond: timespanValue % 1000,
 
       toString: function (format) {
         var outString = '';
@@ -519,7 +524,7 @@ let self = {
       }
     };
 
-    return timeSpan;
+    return timespan;
   }
 };
 

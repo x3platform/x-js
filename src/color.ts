@@ -7,7 +7,7 @@ import * as x from "./core";
 * @namespace color
 * @memberof x
 */
-var self = {
+let self = {
 
     // 正则规则
     // reg: /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/,

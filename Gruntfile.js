@@ -45,7 +45,7 @@ module.exports = function (grunt) {
       },
       amd: {
         src: ['x.ts'],
-        dest: 'dist/source/x.js',
+        dest: 'dist/test/x.js',
         options: {
           module: 'amd', //or commonjs
           target: 'es5',
@@ -65,7 +65,18 @@ module.exports = function (grunt) {
           noEmitOnError: true
         }
       },
-
+      // UMD 没什么效果
+      umd: {
+        src: ['x.ts','src/color.ts'],
+        dest: 'dist/umd/x.js',
+        options: {
+          module: 'system', //or commonjs
+          target: 'es3',
+          sourcemap: false,
+          declaration: false,
+          noEmitOnError: true
+        }
+      }
     },
 
     // 清理调试信息
@@ -89,7 +100,7 @@ module.exports = function (grunt) {
       {
         files:
         {
-          'dist/x.js': ['dist/source/x.js']
+          'dist/x.js': ['dist/test/x.js']
         }
       }
     },
@@ -108,7 +119,6 @@ module.exports = function (grunt) {
           }
         }
       },
-
       // 发布到 lib 目录
       lib:
       {
@@ -116,6 +126,23 @@ module.exports = function (grunt) {
         cwd: 'src/',
         src: '*.js',
         dest: 'lib/'
+      },
+      // 发布到 test 目录
+      test:
+      {
+        expand: true,
+        cwd: 'test/',
+        src: '*.js',
+        dest: 'dist/test/spec',
+        options: {
+          process: function (content, srcpath) {
+            return content.replace('var assert = require(\'assert\');', '')
+                    .replace('var should = require(\'should\');', '')
+                    .replace('var x = require(\'../index.js\');', '')
+                    .replace(/\n\n\n\n/g, '')
+                    .replace(/\r\n\r\n\r\n\r\n/g, '');
+          }
+        }
       },
       // 发布到 lib 目录
       docs:
@@ -127,21 +154,14 @@ module.exports = function (grunt) {
       }
     },
 
-    mochacli: {
-      options: {
-        // require: ['should'],
-        // nyan
-        reporter: 'spec',
-        bail: true
-      },
-      all: ['test/*.js']
-    },
-
     mocha_istanbul: {
       coverage: {
-        src: 'test', // a folder works nicely
+        src: ['test/core.spec.js'], // a folder works nicely
         options: {
-          // mask: '*.spec.js'
+          coverageFolder: 'coverage',
+          //  mochaOptions: ['--harmony', '--async-only'], // any extra options
+          // istanbulOptions: ['--harmony', '--handle-sigint']
+          mask: '*.spec.js'
         }
       },
       coverageSpecial: {
@@ -237,7 +257,6 @@ module.exports = function (grunt) {
   // grunt.loadNpmTasks('grunt-file-beautify');
 
   // test
-  grunt.loadNpmTasks('grunt-mocha-cli');
   grunt.loadNpmTasks('grunt-mocha-istanbul');
   grunt.loadNpmTasks('grunt-coveralls');
 
@@ -252,7 +271,7 @@ module.exports = function (grunt) {
     'typescript:amd',
     // 'cleanup',
     'uglify',
-    'copy',
+    'copy:test',
     // 'mochacli',
     'mocha_istanbul:coverage',
     'coveralls'
@@ -261,13 +280,15 @@ module.exports = function (grunt) {
 
   // 开发环境
   grunt.registerTask('development', [
+    // 'typescript:umd',
     'typescript:commonjs',
     // 'typescript:amd',
     // 'cleanup',
     'uglify',
     'copy:index',
     'copy:lib',
-    'mocha_istanbul:coverage',
+    'copy:test',
+    'mocha_istanbul:coverage'
   ]);
 
   grunt.registerTask('default', ['development']);
@@ -285,5 +306,5 @@ module.exports = function (grunt) {
   ]);
 
   // 测试
-  grunt.registerTask('test', ['mocha_istanbul:coverage']);
+  grunt.registerTask('test', ['copy:test','mocha_istanbul:coverage']);
 };
