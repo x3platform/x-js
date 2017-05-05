@@ -567,64 +567,7 @@ define("src/event", ["require", "exports"], function (require, exports) {
     };
     return self;
 });
-define("src/dict", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var self = {
-        create: function () {
-            return self.constructor();
-        },
-        constructor: function () {
-            var dictionary = {
-                innerArray: [],
-                clear: function () {
-                    this.innerArray = [];
-                },
-                exist: function (key) {
-                    for (var i = 0; i < this.innerArray.length; i++) {
-                        if (this.innerArray[i].name === key) {
-                            return true;
-                        }
-                    }
-                    return false;
-                },
-                get: function (index) {
-                    return this.innerArray[index];
-                },
-                add: function (key, value) {
-                    if (arguments.length === 1) {
-                        var keyArr = key.split(';');
-                        for (var i = 0; i < keyArr.length; i++) {
-                            var valueArr = keyArr[i].split('#');
-                            this.innerArray.push({ key: valueArr[0], value: valueArr[1] });
-                        }
-                    }
-                    else {
-                        if (this.exist(key)) {
-                            throw 'hashtable aleardy exist same key[' + key + ']';
-                        }
-                        else {
-                            this.innerArray.push({ key: key, value: value });
-                        }
-                    }
-                },
-                find: function (key) {
-                    for (var i = 0; i < this.innerArray.length; i++) {
-                        if (this.innerArray[i].key === key) {
-                            return this.innerArray[i].value;
-                        }
-                    }
-                    return null;
-                },
-                size: function () {
-                    return this.innerArray.length;
-                }
-            };
-            return dictionary;
-        }
-    };
-    return self;
-});
-define("src/dict2", ["require", "exports", "src/base/declare"], function (require, exports, declare) {
+define("src/Dict", ["require", "exports", "src/base/declare"], function (require, exports, declare) {
     "use strict";
     var self = declare({
         constructor: function () {
@@ -641,8 +584,13 @@ define("src/dict2", ["require", "exports", "src/base/declare"], function (requir
             }
             return false;
         },
-        get: function (index) {
-            return this.innerArray[index];
+        index: function (key) {
+            for (var i = 0; i < this.innerArray.length; i++) {
+                if (this.innerArray[i].key === key) {
+                    return i;
+                }
+            }
+            return -1;
         },
         add: function (key, value) {
             if (arguments.length === 1) {
@@ -654,11 +602,17 @@ define("src/dict2", ["require", "exports", "src/base/declare"], function (requir
             }
             else {
                 if (this.exist(key)) {
-                    throw 'hashtable aleardy exist same key[' + key + ']';
+                    throw 'dict aleardy exist same key[' + key + ']';
                 }
                 else {
                     this.innerArray.push({ key: key, value: value });
                 }
+            }
+        },
+        remove: function (key) {
+            var i = this.index(key);
+            if (i > -1) {
+                this.innerArray.splice(i, 1);
             }
         },
         find: function (key) {
@@ -1430,13 +1384,12 @@ define("src/date", ["require", "exports", "src/core"], function (require, export
     };
     return self;
 });
-define("x", ["require", "exports", "src/core", "src/base/declare", "src/event", "src/dict2", "src/queue", "src/stack", "src/color", "src/encoding", "src/expressions", "src/string", "src/date"], function (require, exports, x, declare, event, dict2, queue, stack, color, encoding, expressions, string, date) {
+define("x", ["require", "exports", "src/core", "src/base/declare", "src/event", "src/Dict", "src/queue", "src/stack", "src/color", "src/encoding", "src/expressions", "src/string", "src/date"], function (require, exports, x, declare, event, Dict, queue, stack, color, encoding, expressions, string, date) {
     "use strict";
     return x.ext(x, {
         declare: declare,
         event: event,
-        dict: dict2,
-        Dict: dict2,
+        Dict: Dict,
         queue: queue,
         stack: stack,
         color: color,

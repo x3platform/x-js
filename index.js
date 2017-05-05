@@ -2,7 +2,7 @@
 var x = require("./lib/core");
 var declare = require("./lib/base/declare");
 var event = require("./lib/event");
-var dict2 = require("./lib/dict2");
+var Dict = require("./lib/Dict");
 var queue = require("./lib/queue");
 var stack = require("./lib/stack");
 var color = require("./lib/color");
@@ -13,8 +13,7 @@ var date = require("./lib/date");
 module.exports = x.ext(x, {
     declare: declare,
     event: event,
-    dict: dict2,
-    Dict: dict2,
+    Dict: Dict,
     queue: queue,
     stack: stack,
     color: color,
