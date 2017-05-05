@@ -1,7 +1,3 @@
-// -*- ecoding=utf-8 -*-
-
-import * as x from "./core";
-
 /**
 * 栈
 * @namespace stack

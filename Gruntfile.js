@@ -41,7 +41,7 @@ module.exports = function (grunt) {
           sourcemap: false,
           declaration: false,
           noEmitOnError: true,
-          alwaysStrict:false
+          alwaysStrict: false
         }
       },
       amd: {
@@ -54,7 +54,7 @@ module.exports = function (grunt) {
           sourcemap: false,
           declaration: false,
           noEmitOnError: true,
-          alwaysStrict:false
+          alwaysStrict: false
         }
       },
       docs: {
@@ -126,7 +126,7 @@ module.exports = function (grunt) {
       {
         expand: true,
         cwd: 'src/',
-        src: ['*.js','base/*.js'],
+        src: ['*.js', 'base/*.js', 'collections/*.js'],
         dest: 'lib/'
       },
       // 发布到 test 目录
@@ -134,12 +134,13 @@ module.exports = function (grunt) {
       {
         expand: true,
         cwd: 'test/',
-        src: '*.js',
+        src: ['base/*.js', 'collections/*.js', '*.js'],
         dest: 'dist/test/spec',
         options: {
           process: function (content, srcpath) {
             return content.replace('var assert = require(\'assert\');', '')
               .replace('var should = require(\'should\');', '')
+              .replace('var x = require(\'../../index.js\');', '')
               .replace('var x = require(\'../index.js\');', '')
               .replace(/\n\n\n\n/g, '')
               .replace(/\r\n\r\n\r\n\r\n/g, '');
@@ -158,12 +159,14 @@ module.exports = function (grunt) {
 
     mocha_istanbul: {
       coverage: {
-        src: ['test/core.spec.js'], // a folder works nicely
+        src: ['test/base/*.js',
+          'test/*.js',
+          'test/*/*.js'], // a folder works nicely
         options: {
           coverageFolder: 'coverage',
           //  mochaOptions: ['--harmony', '--async-only'], // any extra options
           // istanbulOptions: ['--harmony', '--handle-sigint']
-          mask: '*.spec.js'
+          // mask: '*.spec.js'
         }
       },
       coverageSpecial: {

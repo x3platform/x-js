@@ -1,6 +1,6 @@
 var assert = require('assert');
 
-var x = require('../index.js');
+var x = require('../../index.js');
 
 describe('stack', function () {
   describe('#x.stack.create()', function () {

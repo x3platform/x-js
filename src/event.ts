@@ -1,6 +1,6 @@
 // -*- ecoding=utf-8 -*-
 
-import * as x from "./core";
+import * as x from "./base";
 
 /**
 * 事件
@@ -117,7 +117,7 @@ let self = {
     * @param {string} listener 处理函数
     * @param {string} [useCapture] 监听顺序方式
     */
-    add: function (target, type, listener, useCapture) {
+    add: function (target, type, listener, useCapture?) {
       if (target == null) return;
 
       if (target.addEventListener) {
@@ -142,7 +142,7 @@ let self = {
     * @param {string} listener 处理函数
     * @param {string} [useCapture] 监听顺序方式
     */
-    remove: function (target, type, listener, useCapture) {
+    remove: function (target, type, listener, useCapture?) {
       if (target == null) return;
 
       if (target.removeEventListener) {

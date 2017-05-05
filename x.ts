@@ -1,38 +1,61 @@
-import * as x from "./src/core";
+import * as base from "./src/base";
 import * as declare from "./src/base/declare";
 
 import * as event from "./src/event";
 
-import * as Dict from "./src/Dict";
-import * as queue from "./src/queue";
-import * as stack from "./src/stack";
+import * as Hashtable from "./src/collections/Hashtable";
+import * as Queue from "./src/collections/Queue";
+import * as Stack from "./src/collections/Stack";
 // import * as stack from "./src/stack";
 
 import * as color from "./src/color";
 import * as encoding from "./src/encoding";
-import * as expressions from "./src/expressions";
+import * as regexp from "./src/regexp";
 import * as string from "./src/string";
 import * as date from "./src/date";
+import * as net from "./src/net";
 
-export = x.ext(x, {
-  // 声明对象
-  declare: declare,
+var x = base.extend({}, base, {
   // 事件
   event: event,
   // 字典
-  Dict: Dict,
+  // Hashtable: Hashtable,
   // 队列
-  queue: queue,
+  queue: Queue,
   // 栈
-  stack: stack,
+  stack: Stack,
   // 颜色
   color: color,
   // 编码
   encoding: encoding,
   // 正则表达式
-  expressions: expressions,
+  regexp: regexp,
   // 字符串
   string: string,
   // 时间
-  date: date
+  date: date,
+  // 添加事件方法的别名
+  on: event.add,
+  // 网络
+  net: net
 });
+
+// 设置快速方法
+base.extend(x, {
+  // 事件
+  on: event.add,
+  //
+  xhr: net.xhr
+});
+
+// 定义全局对象
+var g = x.global();
+
+if (g.x) {
+  // 如果已存在全局的x变量, 赋值到_x_变量。
+  g._x_ = g.x;
+}
+
+g.x = x;
+
+export = x;

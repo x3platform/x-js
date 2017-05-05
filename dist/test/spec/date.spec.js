@@ -33,7 +33,7 @@ describe('date', function () {
 
       for (var i = 0; i < times.length; i++) {
         var date = x.date.create(times[i]);
-        console.log('\t[' + i + ']' + date.toString());
+        // console.log('\t[' + i + ']' + date.toString());
         // 年
         assert.equal(date.year, 1997);
         // 月 JavaScript 的 month 从 0 开始计算

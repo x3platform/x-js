@@ -1,14 +1,6 @@
-define("src/core", ["require", "exports"], function (require, exports) {
+define("src/base/lang", ["require", "exports"], function (require, exports) {
     "use strict";
-    var locales = { "en-us": "en-us", "zh-cn": "zh-cn" };
-    var defaultLocaleName = 'zh-cn';
-    var x = {
-        global: function () {
-            return typeof window !== 'undefined' ? window : global;
-        },
-        error: function (msg) {
-            throw new Error(msg);
-        },
+    var self = {
         type: function (object) {
             try {
                 if (typeof (object) === 'undefined') {
@@ -26,41 +18,19 @@ define("src/core", ["require", "exports"], function (require, exports) {
                 throw ex;
             }
         },
-        isArray: function (object) {
-            return x.type(object) === 'array';
-        },
-        isFunction: function (object) {
-            return x.type(object) === 'function';
-        },
-        isString: function (object) {
-            return x.type(object) === 'string';
-        },
-        isNumber: function (object) {
-            return x.type(object) === 'number';
-        },
-        isUndefined: function (object) {
-            return x.type(object) === 'undefined';
-        },
-        scriptFragment: '<script[^>]*>([\\S\\s]*?)<\/script>',
-        jsonFilter: /^\/\*-secure-([\s\S]*)\*\/\s*$/,
-        quickExpr: /^[^<]*(<(.|\s)+>)[^>]*$|^#([\w-]+)$/,
-        isSimple: /^.[^:#\[\.,]*$/,
-        noop: function () { },
-        register: function (value) {
-            var parts = value.split(".");
-            var root = x.global();
-            for (var i = 0; i < parts.length; i++) {
-                if (x.isUndefined(root[parts[i]])) {
-                    root[parts[i]] = {};
-                }
-                root = root[parts[i]];
+        isArray: function (object) { },
+        isFunction: function (object) { },
+        isString: function (object) { },
+        isNumber: function (object) { },
+        isUndefined: function (object) { },
+        extend: function (destination) {
+            var source = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                source[_i - 1] = arguments[_i];
             }
-            return root;
-        },
-        ext: function (destination, source) {
             var result = arguments[0] || {};
             if (arguments.length > 1) {
-                for (var i = 1; i < arguments.length; i++) {
+                for (var i = 1, l = arguments.length; i < l; i++) {
                     for (var property in arguments[i]) {
                         result[property] = arguments[i][property];
                     }
@@ -69,20 +39,65 @@ define("src/core", ["require", "exports"], function (require, exports) {
             return result;
         },
         clone: function (object) {
-            return x.ext({}, object);
+            return self.extend({}, object);
+        },
+    };
+    var types = ["Array", "Function", "String", "Number", "Undefined"];
+    var _loop_1 = function (i) {
+        self['is' + types[i]] = function (object) {
+            return self.type(object) === types[i].toLowerCase();
+        };
+    };
+    for (var i = 0; i < types.length; i++) {
+        _loop_1(i);
+    }
+    return self;
+});
+define("src/base/kernel", ["require", "exports", "src/base/lang"], function (require, exports, lang) {
+    "use strict";
+    var locales = { "en-us": "en-us", "zh-cn": "zh-cn" };
+    var defaultLocaleName = 'zh-cn';
+    var self = {
+        global: function () {
+            return typeof window !== 'undefined' ? window : global;
+        },
+        isBrower: function () {
+            return lang.type(self.global()) === 'window';
+        },
+        isNode: function () {
+            return lang.type(self.global()) === 'global';
+        },
+        error: function (msg) {
+            throw new Error(msg);
+        },
+        scriptFragment: '<script[^>]*>([\\S\\s]*?)<\/script>',
+        jsonFilter: /^\/\*-secure-([\s\S]*)\*\/\s*$/,
+        quickExpr: /^[^<]*(<(.|\s)+>)[^>]*$|^#([\w-]+)$/,
+        isSimple: /^.[^:#\[\.,]*$/,
+        noop: function () { },
+        register: function (value) {
+            var parts = value.split(".");
+            var root = self.global();
+            for (var i = 0; i < parts.length; i++) {
+                if (lang.isUndefined(root[parts[i]])) {
+                    root[parts[i]] = {};
+                }
+                root = root[parts[i]];
+            }
+            return root;
         },
         invoke: function (object, fn) {
             var args = Array.prototype.slice.call(arguments).slice(2);
             return fn.apply(object, args);
         },
         call: function (anything) {
-            if (!x.isUndefined(anything)) {
+            if (!lang.isUndefined(anything)) {
                 try {
-                    if (x.isFunction(anything)) {
+                    if (lang.isFunction(anything)) {
                         var args = Array.prototype.slice.call(arguments).slice(1);
                         return anything.apply(this, args);
                     }
-                    else if (x.type(anything) === 'string') {
+                    else if (lang.type(anything) === 'string') {
                         if (anything !== '') {
                             return eval(anything);
                         }
@@ -93,27 +108,41 @@ define("src/core", ["require", "exports"], function (require, exports) {
                 }
             }
         },
-        query: function (selector) {
-            if (x.type(selector).indexOf('html') == 0) {
-                return selector;
-            }
-            else if (x.type(selector) == 'string') {
-                return document.querySelector(selector);
+        guid: {
+            create: function (format, isUpperCase) {
+                if (format === void 0) { format = '-'; }
+                var text = '';
+                format = format.toLowerCase();
+                for (var i = 0; i < 8; i++) {
+                    text += (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+                    if (i > 0 && i < 5) {
+                        if (format === '-') {
+                            text += '-';
+                        }
+                    }
+                }
+                text = isUpperCase ? text.toUpperCase() : text.toLowerCase();
+                return text;
             }
         },
-        queryAll: function (selector) {
-            if (x.type(selector).indexOf('html') == 0) {
-                var results = [];
-                results.push(selector);
-                return results;
+        randomText: {
+            create: function (length, buffer) {
+                if (length === void 0) { length = 8; }
+                if (buffer === void 0) { buffer = "0123456789abcdefghijklmnopqrstuvwyzx"; }
+                var result = '';
+                for (var i = 0; i < length; i++) {
+                    result += buffer.charAt(Math.ceil(Math.random() * 100000000) % buffer.length);
+                }
+                return result;
             }
-            else if (x.type(selector) == 'string') {
-                return document.querySelectorAll(selector);
-            }
+        },
+        nonce: function (length) {
+            if (length === void 0) { length = 6; }
+            return Number(self.randomText.create(1, '123456789') + self.randomText.create(length - 1, '0123456789'));
         },
         serialize: function (data) {
             var buffer = [], length = data.length;
-            if (x.isArray(data)) {
+            if (lang.isArray(data)) {
                 for (var i = 0; i < length; i++) {
                     buffer.push(data[i].name + '=' + encodeURIComponent(data[i].value));
                 }
@@ -127,7 +156,7 @@ define("src/core", ["require", "exports"], function (require, exports) {
         },
         each: function (data, callback) {
             var name, i = 0, length = data.length;
-            if (x.isArray(data)) {
+            if (lang.isArray(data)) {
                 for (var value = data[0]; i < length && callback.call(value, i, value) != false; value = data[++i]) { }
             }
             else {
@@ -140,10 +169,10 @@ define("src/core", ["require", "exports"], function (require, exports) {
             return data;
         },
         toJSON: function (text) {
-            if (x.type(text) === 'object') {
+            if (lang.type(text) === 'object') {
                 return text;
             }
-            if (x.isUndefined(text) || text === '') {
+            if (lang.isUndefined(text) || text === '') {
                 return undefined;
             }
             var hideError = arguments[1];
@@ -156,7 +185,7 @@ define("src/core", ["require", "exports"], function (require, exports) {
                 }
                 catch (ex1) {
                     if (!hideError)
-                        x.debug.error('{"method":"x.toJSON(text)", "arguments":{"text":"' + text + '"}');
+                        self.debug.error('{"method":"x.toJSON(text)", "arguments":{"text":"' + text + '"}');
                     return undefined;
                 }
             }
@@ -210,7 +239,7 @@ define("src/core", ["require", "exports"], function (require, exports) {
             return locale ? locale : defaultLocaleName;
         },
         getFriendlyName: function (name) {
-            return x.camelCase(('x_' + name).replace(/[\#\$\.\/\\\:\?\=]/g, '_').replace(/[-]+/g, '_'));
+            return self.camelCase(('x_' + name).replace(/[\#\$\.\/\\\:\?\=]/g, '_').replace(/[-]+/g, '_'));
         },
         newStringBuilder: function () {
             var stringBuilder = {
@@ -234,8 +263,8 @@ define("src/core", ["require", "exports"], function (require, exports) {
                     this.callback(this);
                 },
                 start: function () {
-                    var that = x.timers[this.name] = this;
-                    this.timerId = setInterval(function () { x.timers[that.name].run(); }, this.interval);
+                    var that = self.timers[this.name] = this;
+                    this.timerId = setInterval(function () { self.timers[that.name].run(); }, this.interval);
                 },
                 stop: function () {
                     clearInterval(this.timerId);
@@ -243,66 +272,34 @@ define("src/core", ["require", "exports"], function (require, exports) {
             };
             return timer;
         },
-        guid: {
-            create: function (format, isUpperCase) {
-                if (format === void 0) { format = '-'; }
-                var text = '';
-                format = format.toLowerCase();
-                for (var i = 0; i < 8; i++) {
-                    text += (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-                    if (i > 0 && i < 5) {
-                        if (format === '-') {
-                            text += '-';
-                        }
-                    }
-                }
-                text = isUpperCase ? text.toUpperCase() : text.toLowerCase();
-                return text;
-            }
-        },
-        randomText: {
-            create: function (length, buffer) {
-                if (length === void 0) { length = 8; }
-                if (buffer === void 0) { buffer = "0123456789abcdefghijklmnopqrstuvwyzx"; }
-                var result = '';
-                for (var i = 0; i < length; i++) {
-                    result += buffer.charAt(Math.ceil(Math.random() * 100000000) % buffer.length);
-                }
-                return result;
-            }
-        },
-        nonce: function (length) {
-            if (length === void 0) { length = 6; }
-            return Number(x.randomText.create(1, '123456789') + x.randomText.create(length - 1, '0123456789'));
-        },
         debug: {
             log: function (object) {
-                if (!x.isUndefined(console)) {
+                if (!lang.isUndefined(console)) {
                     console.log(object);
                 }
             },
             warn: function (object) {
-                if (!x.isUndefined(console)) {
+                if (!lang.isUndefined(console)) {
                     console.warn(object);
                 }
             },
             error: function (object) {
-                if (!x.isUndefined(console)) {
+                if (!lang.isUndefined(console)) {
                     console.error(object);
                 }
             },
             assert: function (expression) {
-                if (!x.isUndefined(console)) {
+                if (!lang.isUndefined(console)) {
                     console.assert(expression);
                 }
             },
             time: function (name) {
-                if (!x.isUndefined(console)) {
+                if (!lang.isUndefined(console)) {
                     console.time(name);
                 }
             },
             timeEnd: function (name) {
-                if (!x.isUndefined(console)) {
+                if (!lang.isUndefined(console)) {
                     console.timeEnd(name);
                 }
             },
@@ -319,13 +316,9 @@ define("src/core", ["require", "exports"], function (require, exports) {
             }
         }
     };
-    var g = x.global();
-    if (!g.x) {
-        g.x = x;
-    }
-    return x;
+    return self;
 });
-define("src/base/declare", ["require", "exports", "src/core"], function (require, exports, x) {
+define("src/base/declare", ["require", "exports", "src/base/lang", "src/base/kernel"], function (require, exports, lang, kernel) {
     "use strict";
     var xtor = function () { };
     var op = Object.prototype, opts = op.toString, cname = "constructor";
@@ -450,12 +443,13 @@ define("src/base/declare", ["require", "exports", "src/core"], function (require
             props = arguments[0] || {};
         }
         else if (arguments.length == 2) {
-            if (x.isString(arguments[0])) {
+            if (lang.isString(arguments[0])) {
                 className = arguments[0] || {};
                 superclass = null;
                 props = arguments[1] || {};
             }
             else {
+                className = null;
                 superclass = arguments[0] || {};
                 props = arguments[1] || {};
             }
@@ -468,17 +462,17 @@ define("src/base/declare", ["require", "exports", "src/core"], function (require
         var proto, t, ctor;
         ctor = function () { };
         proto = {};
-        if (x.isArray(superclass)) {
+        if (lang.isArray(superclass)) {
             for (var i = 0; i < superclass.length; i++) {
-                x.ext(proto, superclass[i]);
+                lang.extend(proto, superclass[i]);
             }
         }
         else if (superclass != null) {
-            x.ext(proto, superclass);
+            lang.extend(proto, superclass);
         }
         for (var property in props) {
             ctor.prototype[property] = props[property];
-            x.ext(proto, props);
+            lang.extend(proto, props);
         }
         t = props.constructor;
         if (t !== op.constructor) {
@@ -497,12 +491,202 @@ define("src/base/declare", ["require", "exports", "src/core"], function (require
             ctor.prototype.declaredClass = className;
             var parts = className.split(".");
             var name_1 = parts.pop();
-            var context = parts.length == 0 ? x.global() : x.register(parts.join('.'));
+            var context = parts.length == 0 ? kernel.global() : kernel.register(parts.join('.'));
             context[name_1] = ctor;
         }
         return ctor;
     };
     return declare;
+});
+define("src/collections/Hashtable", ["require", "exports", "src/base/declare"], function (require, exports, declare) {
+    "use strict";
+    var self = declare({
+        constructor: function () {
+            this.innerArray = [];
+        },
+        clear: function () {
+            this.innerArray = [];
+        },
+        exist: function (key) {
+            for (var i = 0; i < this.innerArray.length; i++) {
+                if (this.innerArray[i].key === key) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        index: function (key) {
+            for (var i = 0; i < this.innerArray.length; i++) {
+                if (this.innerArray[i].key === key) {
+                    return i;
+                }
+            }
+            return -1;
+        },
+        add: function (key, value) {
+            if (arguments.length === 1) {
+                var list = key.split('&');
+                for (var i = 0; i < list.length; i++) {
+                    var values = list[i].split('=');
+                    this.innerArray.push({ key: values[0], value: values[1] });
+                }
+            }
+            else {
+                if (this.exist(key)) {
+                    throw 'aleardy exist same key[' + key + ']';
+                }
+                else {
+                    this.innerArray.push({ key: key, value: value });
+                }
+            }
+        },
+        remove: function (key) {
+            var i = this.index(key);
+            if (i > -1) {
+                this.innerArray.splice(i, 1);
+            }
+        },
+        get: function (key) {
+            for (var i = 0; i < this.innerArray.length; i++) {
+                if (this.innerArray[i].key === key) {
+                    return this.innerArray[i].value;
+                }
+            }
+            return null;
+        },
+        set: function (key, value) {
+            for (var i = 0; i < this.innerArray.length; i++) {
+                if (this.innerArray[i].key === key) {
+                    this.innerArray[i].value = value;
+                }
+            }
+        },
+        size: function () {
+            return this.innerArray.length;
+        }
+    });
+    return self;
+});
+define("src/collections/Queue", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var self = {
+        create: function () {
+            return self.constructor();
+        },
+        constructor: function () {
+            var queue = {
+                innerArray: [],
+                push: function (targetObject) {
+                    this.innerArray.push(targetObject);
+                },
+                pop: function () {
+                    if (this.innerArray.length === 0) {
+                        return null;
+                    }
+                    else {
+                        var targetObject = this.innerArray[0];
+                        for (var i = 0; i < this.innerArray.length - 1; i++) {
+                            this.innerArray[i] = this.innerArray[i + 1];
+                        }
+                        this.innerArray.length = this.innerArray.length - 1;
+                        return targetObject;
+                    }
+                },
+                peek: function () {
+                    if (this.innerArray.length === 0) {
+                        return null;
+                    }
+                    return this.innerArray[0];
+                },
+                clear: function () {
+                    this.innerArray.length = 0;
+                },
+                size: function () {
+                    return this.innerArray.length;
+                },
+                isEmpty: function () {
+                    return (this.innerArray.length === 0) ? true : false;
+                }
+            };
+            return queue;
+        }
+    };
+    return self;
+});
+define("src/collections/Stack", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var self = {
+        create: function () {
+            return self.constructor();
+        },
+        constructor: function () {
+            var stack = {
+                innerArray: [],
+                push: function (targetObject) {
+                    this.innerArray[this.innerArray.length] = targetObject;
+                },
+                pop: function () {
+                    if (this.innerArray.length === 0) {
+                        return null;
+                    }
+                    else {
+                        var targetObject = this.innerArray[this.innerArray.length - 1];
+                        this.innerArray.length--;
+                        return targetObject;
+                    }
+                },
+                peek: function () {
+                    if (this.innerArray.length === 0) {
+                        return null;
+                    }
+                    return this.innerArray[this.innerArray.length - 1];
+                },
+                clear: function () {
+                    this.innerArray.length = 0;
+                },
+                size: function () {
+                    return this.innerArray.length;
+                },
+                isEmpty: function () {
+                    return (this.innerArray.length === 0) ? true : false;
+                }
+            };
+            return stack;
+        }
+    };
+    return self;
+});
+define("src/base", ["require", "exports", "src/base/lang", "src/base/kernel", "src/base/declare", "src/collections/Hashtable", "src/collections/Queue", "src/collections/Stack"], function (require, exports, lang, kernel, declare, Hashtable, Queue, Stack) {
+    "use strict";
+    var self = lang.extend({}, lang, kernel, {
+        declare: declare,
+        query: function (selector) {
+            if (lang.type(selector).indexOf('html') == 0) {
+                return selector;
+            }
+            else if (lang.type(selector) == 'string') {
+                return document.querySelector(selector);
+            }
+        },
+        queryAll: function (selector) {
+            if (lang.type(selector).indexOf('html') == 0) {
+                var results = [];
+                results.push(selector);
+                return results;
+            }
+            else if (lang.type(selector) == 'string') {
+                return document.querySelectorAll(selector);
+            }
+        },
+        collections: {},
+    });
+    var collections = {
+        Hashtable: Hashtable,
+        Queue: Queue,
+        Stack: Stack,
+    };
+    lang.extend(self.collections, collections);
+    return self;
 });
 define("src/event", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -567,203 +751,6 @@ define("src/event", ["require", "exports"], function (require, exports) {
     };
     return self;
 });
-define("src/dict", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var self = {
-        create: function () {
-            return self.constructor();
-        },
-        constructor: function () {
-            var dictionary = {
-                innerArray: [],
-                clear: function () {
-                    this.innerArray = [];
-                },
-                exist: function (key) {
-                    for (var i = 0; i < this.innerArray.length; i++) {
-                        if (this.innerArray[i].name === key) {
-                            return true;
-                        }
-                    }
-                    return false;
-                },
-                get: function (index) {
-                    return this.innerArray[index];
-                },
-                add: function (key, value) {
-                    if (arguments.length === 1) {
-                        var keyArr = key.split(';');
-                        for (var i = 0; i < keyArr.length; i++) {
-                            var valueArr = keyArr[i].split('#');
-                            this.innerArray.push({ key: valueArr[0], value: valueArr[1] });
-                        }
-                    }
-                    else {
-                        if (this.exist(key)) {
-                            throw 'hashtable aleardy exist same key[' + key + ']';
-                        }
-                        else {
-                            this.innerArray.push({ key: key, value: value });
-                        }
-                    }
-                },
-                find: function (key) {
-                    for (var i = 0; i < this.innerArray.length; i++) {
-                        if (this.innerArray[i].key === key) {
-                            return this.innerArray[i].value;
-                        }
-                    }
-                    return null;
-                },
-                size: function () {
-                    return this.innerArray.length;
-                }
-            };
-            return dictionary;
-        }
-    };
-    return self;
-});
-define("src/dict2", ["require", "exports", "src/base/declare"], function (require, exports, declare) {
-    "use strict";
-    var self = declare({
-        constructor: function () {
-            this.innerArray = [];
-        },
-        clear: function () {
-            this.innerArray = [];
-        },
-        exist: function (key) {
-            for (var i = 0; i < this.innerArray.length; i++) {
-                if (this.innerArray[i].name === key) {
-                    return true;
-                }
-            }
-            return false;
-        },
-        get: function (index) {
-            return this.innerArray[index];
-        },
-        add: function (key, value) {
-            if (arguments.length === 1) {
-                var keyArr = key.split(';');
-                for (var i = 0; i < keyArr.length; i++) {
-                    var valueArr = keyArr[i].split('#');
-                    this.innerArray.push({ key: valueArr[0], value: valueArr[1] });
-                }
-            }
-            else {
-                if (this.exist(key)) {
-                    throw 'hashtable aleardy exist same key[' + key + ']';
-                }
-                else {
-                    this.innerArray.push({ key: key, value: value });
-                }
-            }
-        },
-        find: function (key) {
-            for (var i = 0; i < this.innerArray.length; i++) {
-                if (this.innerArray[i].key === key) {
-                    return this.innerArray[i].value;
-                }
-            }
-            return null;
-        },
-        size: function () {
-            return this.innerArray.length;
-        }
-    });
-    return self;
-});
-define("src/queue", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var self = {
-        create: function () {
-            return self.constructor();
-        },
-        constructor: function () {
-            var queue = {
-                innerArray: [],
-                push: function (targetObject) {
-                    this.innerArray.push(targetObject);
-                },
-                pop: function () {
-                    if (this.innerArray.length === 0) {
-                        return null;
-                    }
-                    else {
-                        var targetObject = this.innerArray[0];
-                        for (var i = 0; i < this.innerArray.length - 1; i++) {
-                            this.innerArray[i] = this.innerArray[i + 1];
-                        }
-                        this.innerArray.length = this.innerArray.length - 1;
-                        return targetObject;
-                    }
-                },
-                peek: function () {
-                    if (this.innerArray.length === 0) {
-                        return null;
-                    }
-                    return this.innerArray[0];
-                },
-                clear: function () {
-                    this.innerArray.length = 0;
-                },
-                size: function () {
-                    return this.innerArray.length;
-                },
-                isEmpty: function () {
-                    return (this.innerArray.length === 0) ? true : false;
-                }
-            };
-            return queue;
-        }
-    };
-    return self;
-});
-define("src/stack", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var self = {
-        create: function () {
-            return self.constructor();
-        },
-        constructor: function () {
-            var stack = {
-                innerArray: [],
-                push: function (targetObject) {
-                    this.innerArray[this.innerArray.length] = targetObject;
-                },
-                pop: function () {
-                    if (this.innerArray.length === 0) {
-                        return null;
-                    }
-                    else {
-                        var targetObject = this.innerArray[this.innerArray.length - 1];
-                        this.innerArray.length--;
-                        return targetObject;
-                    }
-                },
-                peek: function () {
-                    if (this.innerArray.length === 0) {
-                        return null;
-                    }
-                    return this.innerArray[this.innerArray.length - 1];
-                },
-                clear: function () {
-                    this.innerArray.length = 0;
-                },
-                size: function () {
-                    return this.innerArray.length;
-                },
-                isEmpty: function () {
-                    return (this.innerArray.length === 0) ? true : false;
-                }
-            };
-            return stack;
-        }
-    };
-    return self;
-});
 define("src/color", ["require", "exports"], function (require, exports) {
     "use strict";
     var self = {
@@ -823,7 +810,7 @@ define("src/color", ["require", "exports"], function (require, exports) {
     };
     return self;
 });
-define("src/string", ["require", "exports", "src/core"], function (require, exports, x) {
+define("src/string", ["require", "exports", "src/base"], function (require, exports, x) {
     "use strict";
     var trimExpr = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
     var self = {
@@ -895,7 +882,7 @@ define("src/string", ["require", "exports", "src/core"], function (require, expo
     };
     return self;
 });
-define("src/encoding", ["require", "exports", "src/core", "src/string"], function (require, exports, x, string) {
+define("src/encoding", ["require", "exports", "src/base", "src/string"], function (require, exports, x, string) {
     "use strict";
     var self = {
         html: {
@@ -977,7 +964,7 @@ define("src/encoding", ["require", "exports", "src/core", "src/string"], functio
     };
     return self;
 });
-define("src/expressions", ["require", "exports", "src/core", "src/string"], function (require, exports, x, string) {
+define("src/regexp", ["require", "exports", "src/base", "src/string"], function (require, exports, x, string) {
     "use strict";
     var self = {
         rules: {
@@ -1131,7 +1118,7 @@ define("src/expressions", ["require", "exports", "src/core", "src/string"], func
     };
     return self;
 });
-define("src/date", ["require", "exports", "src/core"], function (require, exports, x) {
+define("src/date", ["require", "exports", "src/base"], function (require, exports, x) {
     "use strict";
     var weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
     var self = {
@@ -1212,7 +1199,7 @@ define("src/date", ["require", "exports", "src/core"], function (require, export
                     date = new Date(Math.floor(timeValue.replace(/\/Date\((-?\d+)\)\//, '$1')));
                 }
                 else {
-                    var keys = timeValue.replace(/[-|:|\/| |年|月|日]/g, ',').split(',');
+                    var keys = timeValue.replace(/[-|:|\/| |年|月|日]/g, ',').replace(/,,/g, ',').split(',');
                     for (var i = 0; i < 6; i++) {
                         keys[i] = isNaN(keys[i]) ? (i < 3 ? 1 : 0) : Number(keys[i]);
                     }
@@ -1430,19 +1417,535 @@ define("src/date", ["require", "exports", "src/core"], function (require, export
     };
     return self;
 });
-define("x", ["require", "exports", "src/core", "src/base/declare", "src/event", "src/dict2", "src/queue", "src/stack", "src/color", "src/encoding", "src/expressions", "src/string", "src/date"], function (require, exports, x, declare, event, dict2, queue, stack, color, encoding, expressions, string, date) {
+define("src/net", ["require", "exports", "src/base", "src/event"], function (require, exports, x, event) {
     "use strict";
-    return x.ext(x, {
-        declare: declare,
+    var defaults = {
+        returnType: 'json',
+        xhrDataKey: 'xhr-xml',
+        getAccessToken: function () {
+        },
+        getClientId: function () {
+        },
+        getClientSignature: function () {
+        },
+        getTimestamp: function () {
+        },
+        getNonce: function () {
+        },
+        getWaitingWindow: function (options) {
+            options = x.extend({
+                type: 'default',
+                text: i18n.net.waiting.commitTipText
+            }, options || {});
+            if (x.isUndefined(options.name)) {
+                options.name = x.getFriendlyName(location.pathname + '$' + options.type + '$waiting$window');
+            }
+            var name = options.name;
+            if (x.isUndefined(window[name])) {
+                if (options.type == 'mini') {
+                    window[name] = {
+                        name: name,
+                        options: options,
+                        container: null,
+                        message: null,
+                        create: function (text) {
+                            if (document.getElementById(this.name + '-text') == null) {
+                                $(document.body).append('<div id="' + this.name + '-container" class="x-ui-dialog-waiting-mini-window-container" ><div id="' + this.name + '-text" class="x-ui-dialog-waiting-mini-window-text" >' + text + '</div></div>');
+                            }
+                            else {
+                                x.query('[id="' + this.name + '-text"]').innerHTML = text;
+                            }
+                            if (this.container === null) {
+                                this.container = document.getElementById(this.name + '-container');
+                            }
+                        },
+                        show: function () {
+                            if (!x.isUndefined(arguments[0])) {
+                                this.options.text = arguments[0];
+                            }
+                            this.create(this.options.text);
+                            x.css.style(this.container, {
+                                display: '',
+                                position: 'fixed',
+                                left: '4px',
+                                bottom: '4px'
+                            });
+                        },
+                        hide: function () {
+                            if (this.container != null) {
+                                x.css.style(this.container, { display: 'none' });
+                            }
+                        }
+                    };
+                }
+                else if (options.type == 'plus') {
+                    window[name] = {
+                        name: name,
+                        options: options,
+                        container: null,
+                        create: function (text) {
+                            this.options.text = text;
+                        },
+                        show: function () {
+                            if (!x.isUndefined(arguments[0])) {
+                                this.options.text = arguments[0];
+                            }
+                            this.create(this.options.text);
+                            this.container = plus.nativeUI.showWaiting(this.options.text);
+                        },
+                        hide: function () {
+                            if (this.container != null) {
+                                this.container.close();
+                            }
+                        }
+                    };
+                }
+                else {
+                    window[name] = {
+                        name: name,
+                        options: options,
+                        maskWrapper: null,
+                        container: null,
+                        message: null,
+                        lock: 0,
+                        maxOpacity: options.maxOpacity ? options.maxOpacity : 0.4,
+                        maxDuration: options.maxDuration ? options.maxDuration : 0.2,
+                        height: options.height ? options.height : 50,
+                        width: options.width ? options.width : 200,
+                        setPosition: function () {
+                            var range = x.page.getRange();
+                            var pointX = (range.width - this.width) / 2;
+                            var pointY = (range.height - this.height) / 3;
+                            x.dom.fixed(this.container, pointX, pointY);
+                        },
+                        createMaskWrapper: function () {
+                            var wrapper = document.getElementById(this.name + '-maskWrapper');
+                            if (wrapper === null) {
+                                $(document.body).append('<div id="' + this.name + '-maskWrapper" style="display:none;" ></div>');
+                                wrapper = document.getElementById(this.name + '-maskWrapper');
+                            }
+                            wrapper.className = 'x-ui-dialog-mask-wrapper';
+                            wrapper.style.height = x.page.getRange().height + 'px';
+                            wrapper.style.width = x.page.getRange().width + 'px';
+                            if (wrapper.style.display === 'none') {
+                                $('#' + this.name + '-maskWrapper').css({ display: '', opacity: 0.1 });
+                                $('#' + this.name + '-maskWrapper').fadeTo((this.maxDuration * 1000), this.maxOpacity, function () {
+                                });
+                            }
+                        },
+                        create: function (text) {
+                            if (document.getElementById(this.name + '-text') == null) {
+                                $(document.body).append('<div id="' + this.name + '-container" class="x-ui-dialog-waiting-window-container" ><div id="' + this.name + '-text" class="x-ui-dialog-waiting-window-text" >' + text + '</div></div>');
+                                this.createMaskWrapper();
+                            }
+                            else {
+                                document.getElementById(this.name + '-text').innerHTML = text;
+                            }
+                            if (this.container === null) {
+                                this.container = document.getElementById(this.name + '-container');
+                                this.maskWrapper = document.getElementById(this.name + '-maskWrapper');
+                            }
+                        },
+                        show: function (text) {
+                            this.lock++;
+                            var that = this;
+                            if (that.lock > 0) {
+                                if (that.maskWrapper === null) {
+                                    that.maskWrapper = x.ui.mask.newMaskWrapper(that.name + '-maskWrapper');
+                                }
+                                if (typeof (text) !== 'undefined') {
+                                    that.options.text = text;
+                                }
+                                that.create(that.options.text);
+                                var range = x.page.getRange();
+                                var pointX = (range.width - that.width) / 2;
+                                var pointY = 120;
+                                x.dom.fixed(that.container, pointX, pointY);
+                                that.container.style.display = '';
+                                that.maskWrapper.style.display = '';
+                            }
+                        },
+                        hide: function () {
+                            this.lock--;
+                            if (this.lock === 0) {
+                                if (this.container != null) {
+                                    this.container.style.display = 'none';
+                                }
+                                if (this.maskWrapper != null && x.dom('#' + this.name + '-maskWrapper').css('display') !== 'none') {
+                                    var that = this;
+                                    x.dom('#' + that.name + '-maskWrapper').css({ display: 'none' });
+                                }
+                            }
+                        }
+                    };
+                }
+            }
+            else {
+                window[name].options = options;
+            }
+            return window[name];
+        },
+        catchException: function (response, outputType) {
+            try {
+                var result = x.toJSON(response);
+                if (!x.isUndefined(result) && !x.isUndefined(result.success) && result.success == 0) {
+                    if (outputType == 'console') {
+                        x.debug.error(result.msg);
+                    }
+                    else {
+                        x.msg(result.msg);
+                    }
+                }
+            }
+            catch (ex) {
+                x.debug.error(ex);
+            }
+        }
+    };
+    var keys = ["access-token", "client-id", "client-signature", "timestamp", "nonce"];
+    for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        var camelName = x.camelCase(key);
+        camelName = camelName[0].toUpperCase() + camelName.substr(1);
+        defaults['get' + camelName] = function () {
+            return localStorage['session-' + key] || (x.query('session-' + key) == null ? null : x.query('session-' + key).value) || '';
+        };
+    }
+    var self = {
+        getWaitingWindow: function (options) {
+            return defaults.getWaitingWindow(options);
+        },
+        xhr: function () {
+            var url, xhrDataValue, options;
+            if (arguments.length == 2 && x.type(arguments[1]) === 'object') {
+                url = arguments[0];
+                options = arguments[1];
+                xhrDataValue = '';
+            }
+            else if (arguments.length == 2 && x.type(arguments[1]) === 'string') {
+                url = arguments[0];
+                options = {};
+                xhrDataValue = arguments[1];
+            }
+            else if (arguments.length == 3 && x.type(arguments[1]) === 'string' && x.isFunction(arguments[2])) {
+                url = arguments[0];
+                options = { callback: arguments[2] };
+                xhrDataValue = arguments[1];
+            }
+            else {
+                url = arguments[0];
+                xhrDataValue = arguments[1];
+                options = arguments[2];
+            }
+            options = x.extend({}, defaults, options);
+            var enableWaitingWindow = x.isFunction(options.getWaitingWindow)
+                && !x.isUndefined(options.waitingMessage)
+                && options.waitingMessage !== '';
+            if (enableWaitingWindow) {
+                options.getWaitingWindow({ text: options.waitingMessage, type: x.isUndefined(options.waitingType, 'default') }).show();
+            }
+            var type = options.type || 'POST';
+            var contentType = options.contentType || 'text/html';
+            var async = options.async || true;
+            var data = x.extend({}, options.data || {});
+            if (x.type(xhrDataValue) === 'object') {
+                data = x.extend(data, xhrDataValue);
+            }
+            else {
+                var xml = x.toXML(xhrDataValue, 1);
+                if (xhrDataValue != '' && xml) {
+                    data[options.xhrDataKey] = xhrDataValue;
+                }
+                else if (!xml && xhrDataValue.indexOf('=') > 0) {
+                    var list = xhrDataValue.split('&');
+                    x.each(list, function (index, node) {
+                        var items = node.split('=');
+                        if (items.length == 2) {
+                            data[items[0]] = decodeURIComponent(items[1]);
+                        }
+                    });
+                }
+            }
+            if (x.isFunction(options.getAccessToken) && options.getAccessToken() != '') {
+                data.accessToken = options.getAccessToken();
+            }
+            else if (x.isFunction(options.getClientId) && options.getClientId() != '') {
+                data.clientId = options.getClientId();
+                if (x.isFunction(options.getClientId) && options.getClientSignature() != '') {
+                    data.clientSignature = options.getClientSignature();
+                    data.timestamp = options.getTimestamp();
+                    data.nonce = options.getNonce();
+                }
+            }
+            self.ajax({
+                type: type,
+                url: url,
+                contentType: contentType,
+                data: data,
+                async: async,
+                success: function (response) {
+                    if (enableWaitingWindow) {
+                        options.getWaitingWindow({ type: x.isUndefined(options.waitingType, 'default') }).hide();
+                    }
+                    if (options.returnType == 'json') {
+                        options.catchException(response, options.outputException);
+                        var result = x.toJSON(response);
+                        if (x.isUndefined(result) || x.isUndefined(result.message)) {
+                            x.call(options.callback, x.toJSON(response));
+                        }
+                        else {
+                            var message = result.message;
+                            switch (Number(message.returnCode)) {
+                                case -1:
+                                    x.msg(message.value);
+                                    break;
+                                case 0:
+                                    if (!!options.popCorrectValue) {
+                                        x.msg(message.value);
+                                    }
+                                    x.call(options.callback, x.toJSON(response));
+                                    break;
+                                default:
+                                    if (!!options.popIncorrectValue) {
+                                        x.msg(message.value);
+                                    }
+                                    x.call(options.callback, x.toJSON(response));
+                                    break;
+                            }
+                        }
+                    }
+                    else {
+                        x.call(options.callback, response);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    x.debug.log(XMLHttpRequest.responseText);
+                    if (x.isFunction(options.error)) {
+                        options.error(XMLHttpRequest, textStatus, errorThrown);
+                    }
+                    else {
+                        if (XMLHttpRequest.status == 401) {
+                            x.msg(i18n.net.errors['401']);
+                        }
+                        else if (XMLHttpRequest.status == 404) {
+                            x.msg(i18n.net.errors['404']);
+                        }
+                        else if (XMLHttpRequest.status == 500) {
+                            x.msg(i18n.net.errors['500']);
+                        }
+                        else if (XMLHttpRequest.status != 0) {
+                            x.debug.error(i18n.net.errors['unkown'].format(XMLHttpRequest.status + (XMLHttpRequest.statusText != '' ? (' ' + XMLHttpRequest.statusText) : '')));
+                        }
+                    }
+                }
+            });
+        },
+        requireLoaded: {},
+        require: function (options) {
+            options = x.extend({
+                fileType: 'script',
+                id: '',
+                path: '',
+                type: 'GET',
+                async: true
+            }, options || {});
+            if (options.id != '' && self.requireLoaded[options.id]) {
+                x.debug.log(x.string.format('require file {"id":"{0}", path:"{1}"} exist. [ajax]', options.id, options.path));
+                x.call(options.callback);
+                return true;
+            }
+            x.debug.log(x.string.format('require file {"id":"{0}", path:"{1}"} loading. [ajax]', options.id, options.path));
+            self.ajax({
+                type: options.type,
+                url: options.path,
+                async: options.async,
+                success: function (responseText) {
+                    x.debug.log(x.string.format('require file {"id":"{0}", path:"{1}"} finished. [ajax]', options.id, options.path));
+                    var node;
+                    var head = document.getElementsByTagName("HEAD").item(0);
+                    if (options.fileType == 'template') {
+                        node = document.createElement("script");
+                        node.type = "text/template";
+                        node.src = options.path;
+                    }
+                    else if (options.fileType == 'css') {
+                        node = document.createElement("style");
+                        node.type = "text/css";
+                        node.href = options.path;
+                    }
+                    else {
+                        node = document.createElement("script");
+                        node.language = "javascript";
+                        node.type = "text/javascript";
+                        node.src = options.path;
+                    }
+                    try {
+                        node.appendChild(document.createTextNode(responseText));
+                    }
+                    catch (ex) {
+                        node.text = responseText;
+                    }
+                    if (options.id != '') {
+                        node.id = options.id;
+                        self.requireLoaded[options.id] = true;
+                    }
+                    head.appendChild(node);
+                    x.call(options.callback);
+                }
+            });
+        },
+        ajax: function (options) {
+            var request = self.newHttpRequest(options);
+            request.send();
+        },
+        newHttpRequest: function (options) {
+            var request = {
+                xhr: null,
+                data: null,
+                timeout: 90,
+                done: false,
+                send: function () {
+                    if (this.xhr == null) {
+                        this.xhr = self.newXmlHttpRequest();
+                        if (!this.xhr) {
+                            x.debug.error('create xhr failed');
+                            return false;
+                        }
+                    }
+                    this.xhr.open(this.type, this.url, this.async);
+                    var me = this;
+                    event.add(this.xhr, "readystatechange", function () {
+                        var xhr = me.xhr;
+                        if (xhr.readyState == 4 && !me.done) {
+                            if (xhr.status == 0 || (xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+                                x.call(me.success, xhr.responseText);
+                            }
+                            else {
+                                x.call(me.error, xhr, xhr.status);
+                            }
+                            xhr = null;
+                        }
+                    });
+                    setTimeout(function () { me.done = true; }, me.timeout * 1000);
+                    if (this.type == 'POST') {
+                        this.xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                        this.xhr.send(x.serialize(this.data));
+                    }
+                    else {
+                        this.xhr.send(null);
+                    }
+                },
+                create: function (options) {
+                    options = x.extend({
+                        type: 'GET',
+                        url: '',
+                        data: {},
+                        async: true,
+                        timeout: 90
+                    }, options || {});
+                    this.type = options.type.toUpperCase();
+                    this.url = options.url;
+                    this.data = options.data;
+                    this.async = options.async;
+                    this.timeout = options.timeout;
+                    this.success = options.success;
+                    this.error = options.error;
+                }
+            };
+            request.create(options);
+            return request;
+        },
+        newXmlHttpRequest: function () {
+            var xhr = null;
+            var global = x.global();
+            if (global["ActiveXObject"]) {
+                try {
+                    xhr = new ActiveXObject("Msxml2.XMLHTTP");
+                }
+                catch (ex) {
+                    xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+            }
+            else if (global["XMLHttpRequest"]) {
+                xhr = new XMLHttpRequest();
+            }
+            return xhr;
+        },
+        request: {
+            find: function (key) {
+                var resultValue = '';
+                var list = location.search.substr(1).split('&');
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].indexOf(key) === 0) {
+                        resultValue = decodeURIComponent(list[i].replace(key + '=', ''));
+                        break;
+                    }
+                }
+                return resultValue;
+            },
+            findAll: function () {
+                var outString = '';
+                var list = location.search.substr(1).split('&');
+                if (list.length = 0) {
+                    return {};
+                }
+                var temp;
+                outString = '{';
+                for (var i = 0; i < list.length; i++) {
+                    temp = list[i].split('=');
+                    outString += '"' + temp[0] + '":"' + decodeURIComponent(temp[1]) + '"';
+                    if (i < list.length - 1)
+                        outString += ',';
+                }
+                outString += '}';
+                return x.evalJSON(outString);
+            },
+            getRawUrl: function () {
+                return location.href.replace(location.origin, '');
+            },
+            hash: function (key) {
+                return location.hash === ('#' + key) ? true : false;
+            }
+        }
+    };
+    var request_callback = function (response) {
+        var result = x.toJSON(response).message;
+        switch (Number(result.returnCode)) {
+            case 0:
+                break;
+            case -1:
+            case 1:
+                x.msg(result.value);
+                break;
+            default:
+                x.msg(result.value);
+                break;
+        }
+    };
+    return self;
+});
+define("x", ["require", "exports", "src/base", "src/event", "src/collections/Queue", "src/collections/Stack", "src/color", "src/encoding", "src/regexp", "src/string", "src/date", "src/net"], function (require, exports, base, event, Queue, Stack, color, encoding, regexp, string, date, net) {
+    "use strict";
+    var x = base.extend({}, base, {
         event: event,
-        dict: dict2,
-        Dict: dict2,
-        queue: queue,
-        stack: stack,
+        queue: Queue,
+        stack: Stack,
         color: color,
         encoding: encoding,
-        expressions: expressions,
+        regexp: regexp,
         string: string,
-        date: date
+        date: date,
+        on: event.add,
+        net: net
     });
+    base.extend(x, {
+        on: event.add,
+        xhr: net.xhr
+    });
+    var g = x.global();
+    if (g.x) {
+        g._x_ = g.x;
+    }
+    g.x = x;
+    return x;
 });

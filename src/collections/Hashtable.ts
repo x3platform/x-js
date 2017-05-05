@@ -1,17 +1,17 @@
 // -*- ecoding=utf-8 -*-
 
 // import * as x from "./core";
-import * as declare from "./base/declare";
+import * as declare from "../base/declare";
 
 /*#region 类:Dict()*/
 /**
 * 字典
-* @class Dict 字典
-* @constructor Dict
-* @memberof x
+* @class Hashtable 字典
+* @constructor Hashtable
+* @memberof x.collections
 * @example
 * // returns Dict
-* var dict = x.Dict();
+* var dict = x.collections.Hashtable();
 */
 let self = declare({
 
@@ -40,7 +40,7 @@ let self = declare({
   */
   exist: function (key) {
     for (var i = 0; i < this.innerArray.length; i++) {
-      if (this.innerArray[i].name === key) {
+      if (this.innerArray[i].key === key) {
         return true;
       }
     }
@@ -71,16 +71,15 @@ let self = declare({
   */
   add: function (key, value) {
     if (arguments.length === 1) {
-      var keyArr = key.split(';');
-
-      for (var i = 0; i < keyArr.length; i++) {
-        var valueArr = keyArr[i].split('#');
-        this.innerArray.push({ key: valueArr[0], value: valueArr[1] });
+      var list = key.split('&');
+      for (var i = 0; i < list.length; i++) {
+        var values = list[i].split('=');
+        this.innerArray.push({ key: values[0], value: values[1] });
       }
     }
     else {
       if (this.exist(key)) {
-        throw 'dict aleardy exist same key[' + key + ']';
+        throw 'aleardy exist same key[' + key + ']';
       }
       else {
         this.innerArray.push({ key: key, value: value });
@@ -104,12 +103,13 @@ let self = declare({
   // remove
   // ke
 
-  /*#region 函数:find(key)*/
+  /*#region 函数:get(key)*/
   /**
-  * @method find
+   * 获取值
+  * @method get
   * @memberof x.Dict#
   */
-  find: function (key) {
+  get: function (key) {
     for (var i = 0; i < this.innerArray.length; i++) {
       if (this.innerArray[i].key === key) {
         return this.innerArray[i].value;
@@ -117,6 +117,21 @@ let self = declare({
     }
 
     return null;
+  },
+  /*#endregion*/
+
+  /*#region 函数:get(key)*/
+  /**
+   * 设置值
+  * @method set
+  * @memberof x.Dict#
+  */
+  set: function (key, value) {
+    for (var i = 0; i < this.innerArray.length; i++) {
+      if (this.innerArray[i].key === key) {
+        this.innerArray[i].value = value;
+      }
+    }
   },
   /*#endregion*/
 

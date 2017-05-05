@@ -1,6 +1,6 @@
 // -*- ecoding=utf-8 -*-
 
-import * as x from "./core";
+import * as x from "./base";
 
 // 字符两侧空格
 // \uFEFF 表示 BOM(Byte Order Mark) 即字节序标记 相关链接:http://zh.wikipedia.org/wiki/字节顺序记号

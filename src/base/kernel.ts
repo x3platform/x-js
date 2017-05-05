@@ -1,3 +1,5 @@
+import * as lang from "./lang";
+
 declare var window: any;
 declare var global: any;
 
@@ -5,11 +7,7 @@ declare var global: any;
 const locales = { "en-us": "en-us", "zh-cn": "zh-cn" };
 const defaultLocaleName = 'zh-cn';
 
-/**
- * X JavaScript Library
- * @namespace x
- */
-var x = {
+var self = {
 
   /**
    * 获取全局对象
@@ -21,6 +19,13 @@ var x = {
     // Node 环境 获取 Global 对象
     return typeof window !== 'undefined' ? window : global;
   },
+  isBrower: function () {
+    return lang.type(self.global()) === 'window';
+  },
+
+  isNode: function () {
+    return lang.type(self.global()) === 'global';
+  },
 
   /**
    * 抛出错误信息
@@ -29,92 +34,6 @@ var x = {
   error: function (msg) {
     throw new Error(msg);
   },
-
-  /*#region 函数:type(object)*/
-  /**
-  * 检查对象类型
-  * @method type
-  * @memberof x
-  */
-  type: function (object) {
-    try {
-      // 处理 Undefined 类型
-      if (typeof (object) === 'undefined') { return 'undefined'; }
-      // 处理 Null 类型;
-      if (object === null) { return 'null'; }
-      // 通用类型处理
-      return /\[object ([A-Za-z]+)\]/.exec(Object.prototype.toString.call(object))[1].toLowerCase();
-    }
-    catch (ex) {
-      if (ex instanceof RangeError) { return '...'; }
-
-      throw ex;
-    }
-  },
-  /*#endregion*/
-
-  /*#region 函数:isArray(object)*/
-  /**
-  * 判断对象是否是 Array 类型
-  * @method isArray
-  * @memberof x
-  */
-  isArray: function (object) {
-    return x.type(object) === 'array';
-  },
-  /*#endregion*/
-
-  /*#region 函数:isFunction(object)*/
-  /**
-  * 判断对象是否是 Function 类型
-  * @method isFunction
-  * @memberof x
-  */
-  isFunction: function (object) {
-    return x.type(object) === 'function';
-  },
-  /*#endregion*/
-
-  /*#region 函数:isString(object)*/
-  /**
-  * 判断对象是否是 String 类型
-  * @method isString
-  * @memberof x
-  */
-  isString: function (object) {
-    return x.type(object) === 'string';
-  },
-  /*#endregion*/
-
-  /*#region 函数:isNumber(object)*/
-  /**
-  * 判断对象是否是 Number 类型
-  * @method inspect
-  * @memberof Object
-  */
-  isNumber: function (object) {
-    return x.type(object) === 'number';
-  },
-  /*#endregion*/
-
-  /*#region 函数:isUndefined(value, replacementValue)*/
-  /**
-  * 判断是否是 undefined 类型, 如果设置了替换的值, 则当第一个参数为 undefined, 则使用替换的值
-  * @method isUndefined
-  * @memberof x
-  * @param {object} value 值
-  * @param {string} [replacementValue] 替换的值
-  * @example
-  * // return true
-  * x.isUndefined(undefinedValue);
-  * @example
-  * // return ''
-  * x.isUndefined(undefinedValue, '');
-  */
-  isUndefined: function (object) {
-    return x.type(object) === 'undefined';
-  },
-  /*#endregion*/
 
   // 脚本代码片段
   scriptFragment: '<script[^>]*>([\\S\\s]*?)<\/script>',
@@ -139,16 +58,16 @@ var x = {
   /**
   * 注册对象信息
   * @method register
-  * @memberof x3platform
+  * @memberof x
   */
   register: function (value) {
     var parts = value.split(".");
 
     // var root = window;
-    var root = x.global();
+    var root = self.global();
 
     for (var i = 0; i < parts.length; i++) {
-      if (x.isUndefined(root[parts[i]])) {
+      if (lang.isUndefined(root[parts[i]])) {
         root[parts[i]] = {};
       }
 
@@ -156,50 +75,6 @@ var x = {
     }
 
     return root;
-  },
-  /*#endregion*/
-
-  /*#region 函数:ext(destination, source)*/
-  /**
-  * 将原始对象的属性和方法扩展至目标对象
-  * @method ext
-  * @memberof x
-  * @param destination 目标对象
-  * @param source 原始对象
-  */
-  ext: function (destination, source) {
-    /*
-    for (var property in source)
-    {
-    destination[property] = source[property];
-    }
-
-    return destination;
-    */
-
-    var result = arguments[0] || {};
-
-    if (arguments.length > 1) {
-      for (var i = 1; i < arguments.length; i++) {
-        for (var property in arguments[i]) {
-          result[property] = arguments[i][property];
-        }
-      }
-    }
-
-    return result;
-  },
-  /*#endregion*/
-
-  /*#region 函数:clone(object)*/
-  /**
-  * 克隆对象
-  * @method clone
-  * @memberof x
-  * @returns {object} 克隆的对象
-  */
-  clone: function (object) {
-    return x.ext({}, object);
   },
   /*#endregion*/
 
@@ -224,14 +99,14 @@ var x = {
   * @memberof x
   */
   call: function (anything) {
-    if (!x.isUndefined(anything)) {
+    if (!lang.isUndefined(anything)) {
       try {
-        if (x.isFunction(anything)) {
+        if (lang.isFunction(anything)) {
           var args = Array.prototype.slice.call(arguments).slice(1);
 
           return anything.apply(this, args);
         }
-        else if (x.type(anything) === 'string') {
+        else if (lang.type(anything) === 'string') {
           if (anything !== '') { return eval(anything); }
         }
       }
@@ -243,45 +118,89 @@ var x = {
   },
   /*#endregion*/
 
-  /*#region 函数:query(selector)*/
   /**
-  * 精确查询单个表单元素。
-  * @method query
+  * Guid 格式文本
+  * @namespace guid
   * @memberof x
-  * @param {string} selector 选择表达式
   */
-  query: function (selector) {
-    if (x.type(selector).indexOf('html') == 0) {
-      // Html 元素类型 直接返回
-      return selector;
+  guid: {
+    /*#region 函数:create(format, isUpperCase)*/
+    /**
+    * 创建 Guid 格式文本
+    * @method create
+    * @memberof x.guid
+    * @param {string} [format] 分隔符格式(如果填空白字符串则不显示)
+    * @param {bool} [isUpperCase] 是否是大写格式(true|false)
+    * @example
+    * // 输出格式 aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+    * console.log(x.guid.create());
+    * @example
+    * // 输出格式 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    * console.log(x.guid.create(''));
+    * @example
+    * // 输出格式 XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+    * console.log(x.guid.create('-', true));
+    */
+    create: function (format = '-', isUpperCase) {
+      var text = '';
+
+      // 格式限制
+      format = format.toLowerCase();
+
+      for (var i = 0; i < 8; i++) {
+        text += (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+
+        if (i > 0 && i < 5) {
+          if (format === '-') {
+            text += '-';
+          }
+        }
+      }
+
+      text = isUpperCase ? text.toUpperCase() : text.toLowerCase();
+
+      return text;
     }
-    else if (x.type(selector) == 'string') {
-      // var results = Sizzle.apply(window, Array.prototype.slice.call(arguments, 0));
-      // return (results.length == 0) ? null : results[0];
-      return document.querySelector(selector);
-    }
+    /*#endregion*/
   },
-  /*#endregion*/
 
-  /*#region 函数:queryAll(selector)*/
   /**
-  * 精确查询单个表单元素。
-  * @method query
+  * 随机文本
+  * @namespace randomText
   * @memberof x
-  * @param {string} selector 选择表达式
   */
-  queryAll: function (selector) {
-    if (x.type(selector).indexOf('html') == 0) {
-      // Html 元素类型 直接返回
-      var results = [];
-      results.push(selector);
+  randomText: {
+    /*#region 函数:create(length)*/
+    /**
+    * 创建随机文本信息
+    * @method create
+    * @memberof x.randomText
+    * @param {number} length 返回的文本长度
+    * @example
+    * // 输出格式 00000000
+    * console.log(x.randomText.create(8));
+    */
+    create: function (length: number = 8, buffer: string = "0123456789abcdefghijklmnopqrstuvwyzx") {
+      var result = '';
 
-      return results;
+      for (var i = 0; i < length; i++) {
+        result += buffer.charAt(Math.ceil(Math.random() * 100000000) % buffer.length);
+      }
+
+      return result;
     }
-    else if (x.type(selector) == 'string') {
-      // return Sizzle.apply(window, Array.prototype.slice.call(arguments, 0));
-      return document.querySelectorAll(selector);
-    }
+    /*#endregion*/
+  },
+
+  /*#region 函数:nonce(length)*/
+  /**
+  * 创建随机数
+  * @method nonce
+  * @memberof x
+  * @param {length} 随机数长度
+  */
+  nonce: function (length = 6) {
+    return Number(self.randomText.create(1, '123456789') + self.randomText.create(length - 1, '0123456789'));
   },
   /*#endregion*/
 
@@ -295,7 +214,7 @@ var x = {
   serialize: function (data) {
     var buffer = [], length = data.length;
 
-    if (x.isArray(data)) {
+    if (lang.isArray(data)) {
       // 数组对象
       for (var i = 0; i < length; i++) {
         buffer.push(data[i].name + '=' + encodeURIComponent(data[i].value));
@@ -322,7 +241,7 @@ var x = {
   each: function (data, callback) {
     var name, i = 0, length = data.length;
 
-    if (x.isArray(data)) {
+    if (lang.isArray(data)) {
       // 数组对象
       for (var value = data[0]; i < length && callback.call(value, i, value) != false; value = data[++i]) { }
     }
@@ -337,6 +256,50 @@ var x = {
   },
   /*#endregion*/
 
+  /*#region 函数:toXML(text)*/
+  /**
+  * 将字符串转换为XML对象
+  * @method toXML
+  * @memberof x
+  * @param {string} text XML对象的文本格式
+  */
+  toXML: function (text, hideError = false) {
+    if (lang.type(text) === 'xmldocument') { return text; }
+
+    // 类型为 undefined 时或者字符串内容为空时, 返回 undefined 值.
+    if (lang.isUndefined(text) || text === '') { return undefined; }
+
+    let global = self.global();
+
+    let doc;
+
+    // Firefox, Mozilla, Opera, etc.
+    try {
+      if (global["DOMParser"]) {
+        var parser = new DOMParser();
+        doc = parser.parseFromString(text, "text/xml");
+      }
+      else if (global["ActiveXObject"]) {
+        doc = new ActiveXObject("Microsoft.XMLDOM");
+        doc.async = "false";
+        doc.loadXML(text);
+      }
+    }
+    catch (ex) {
+      doc = undefined;
+
+      if (!hideError) self.debug.error('{"method":"x.toXML(text)", "arguments":{"text":"' + text + '"}');
+    }
+
+    if (!doc || doc.getElementsByTagName("parsererror").length) {
+      doc = undefined;
+      if (!hideError) self.debug.error('{"method":"x.toXML(text)", "arguments":{"text":"' + text + '"}');
+    }
+
+    return doc;
+  },
+  /*#endregion*/
+
   /*#region 函数:toJSON(text)*/
   /**
   * 将字符串转换为JSON对象
@@ -345,10 +308,10 @@ var x = {
   * @param {string} text JSON对象的文本格式
   */
   toJSON: function (text) {
-    if (x.type(text) === 'object') { return text; }
+    if (lang.type(text) === 'object') { return text; }
 
     // 类型为 undefined 时或者字符串内容为空时, 返回 undefined 值.
-    if (x.isUndefined(text) || text === '') { return undefined; }
+    if (lang.isUndefined(text) || text === '') { return undefined; }
 
     var hideError = arguments[1];
 
@@ -361,7 +324,7 @@ var x = {
         return (Function("return " + text))();
       }
       catch (ex1) {
-        if (!hideError) x.debug.error('{"method":"x.toJSON(text)", "arguments":{"text":"' + text + '"}');
+        if (!hideError) self.debug.error('{"method":"x.toJSON(text)", "arguments":{"text":"' + text + '"}');
         return undefined;
       }
     }
@@ -491,7 +454,7 @@ var x = {
   * console.log(x.getFriendlyName(location.pathname));
   */
   getFriendlyName: function (name) {
-    return x.camelCase(('x_' + name).replace(/[\#\$\.\/\\\:\?\=]/g, '_').replace(/[-]+/g, '_'));
+    return self.camelCase(('x_' + name).replace(/[\#\$\.\/\\\:\?\=]/g, '_').replace(/[-]+/g, '_'));
   },
   /*#endregion*/
 
@@ -593,8 +556,8 @@ var x = {
         // eval('x.timers.' + this.name + ' = this;');
         // this.timerId = setInterval('x.timers.' + this.name + '.run()', this.interval);
 
-        var that = x.timers[this.name] = this;
-        this.timerId = setInterval(function () { x.timers[that.name].run() }, this.interval);
+        var that = self.timers[this.name] = this;
+        this.timerId = setInterval(function () { self.timers[that.name].run() }, this.interval);
       },
       /*#endregion*/
 
@@ -612,94 +575,8 @@ var x = {
 
     return timer;
   },
+
   /*#endregion*/
-
-  /**
-  * Guid 格式文本
-  * @namespace guid
-  * @memberof x
-  */
-  guid: {
-    /*#region 函数:create(format, isUpperCase)*/
-    /**
-    * 创建 Guid 格式文本
-    * @method create
-    * @memberof x.guid
-    * @param {string} [format] 分隔符格式(如果填空白字符串则不显示)
-    * @param {bool} [isUpperCase] 是否是大写格式(true|false)
-    * @example
-    * // 输出格式 aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
-    * console.log(x.guid.create());
-    * @example
-    * // 输出格式 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-    * console.log(x.guid.create(''));
-    * @example
-    * // 输出格式 XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
-    * console.log(x.guid.create('-', true));
-    */
-    create: function (format = '-', isUpperCase) {
-      var text = '';
-
-      // 格式限制
-      format = format.toLowerCase();
-
-      for (var i = 0; i < 8; i++) {
-        text += (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-
-        if (i > 0 && i < 5) {
-          if (format === '-') {
-            text += '-';
-          }
-        }
-      }
-
-      text = isUpperCase ? text.toUpperCase() : text.toLowerCase();
-
-      return text;
-    }
-    /*#endregion*/
-  },
-
-  /**
-  * 随机文本
-  * @namespace randomText
-  * @memberof x
-  */
-  randomText: {
-    /*#region 函数:create(length)*/
-    /**
-    * 创建随机文本信息
-    * @method create
-    * @memberof x.randomText
-    * @param {number} length 返回的文本长度
-    * @example
-    * // 输出格式 00000000
-    * console.log(x.randomText.create(8));
-    */
-    create: function (length: number = 8, buffer: string = "0123456789abcdefghijklmnopqrstuvwyzx") {
-      var result = '';
-
-      for (var i = 0; i < length; i++) {
-        result += buffer.charAt(Math.ceil(Math.random() * 100000000) % buffer.length);
-      }
-
-      return result;
-    }
-    /*#endregion*/
-  },
-
-  /*#region 函数:nonce(length)*/
-  /**
-  * 创建随机数
-  * @method nonce
-  * @memberof x
-  * @param {length} 随机数长度
-  */
-  nonce: function (length = 6) {
-    return Number(x.randomText.create(1, '123456789') + x.randomText.create(length - 1, '0123456789'));
-  },
-  /*#endregion*/
-
   /**
   * @namespace debug
   * @memberof x
@@ -720,7 +597,7 @@ var x = {
     */
     log: function (object) {
       // firebug
-      if (!x.isUndefined(console)) {
+      if (!lang.isUndefined(console)) {
         console.log(object);
       }
     },
@@ -735,7 +612,7 @@ var x = {
     */
     warn: function (object) {
       // console
-      if (!x.isUndefined(console)) {
+      if (!lang.isUndefined(console)) {
         console.warn(object);
       }
     },
@@ -750,7 +627,7 @@ var x = {
     */
     error: function (object) {
       // console
-      if (!x.isUndefined(console)) {
+      if (!lang.isUndefined(console)) {
         console.error(object);
       }
     },
@@ -765,7 +642,7 @@ var x = {
     */
     assert: function (expression) {
       // console
-      if (!x.isUndefined(console)) {
+      if (!lang.isUndefined(console)) {
         console.assert(expression);
       }
     },
@@ -780,7 +657,7 @@ var x = {
     */
     time: function (name) {
       // console
-      if (!x.isUndefined(console)) {
+      if (!lang.isUndefined(console)) {
         console.time(name);
       }
     },
@@ -795,7 +672,7 @@ var x = {
     */
     timeEnd: function (name) {
       // console
-      if (!x.isUndefined(console)) {
+      if (!lang.isUndefined(console)) {
         console.timeEnd(name);
       }
     },
@@ -825,11 +702,4 @@ var x = {
   }
 };
 
-// 定义全局对象
-var g = x.global();
-
-if (!g.x) {
-  g.x = x;
-}
-
-export = x;
+export = self;

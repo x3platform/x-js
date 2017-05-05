@@ -1,25 +1,33 @@
 "use strict";
-var x = require("./lib/core");
-var declare = require("./lib/base/declare");
+var base = require("./lib/base");
 var event = require("./lib/event");
-var dict2 = require("./lib/dict2");
-var queue = require("./lib/queue");
-var stack = require("./lib/stack");
+var Queue = require("./lib/collections/Queue");
+var Stack = require("./lib/collections/Stack");
 var color = require("./lib/color");
 var encoding = require("./lib/encoding");
-var expressions = require("./lib/expressions");
+var regexp = require("./lib/regexp");
 var string = require("./lib/string");
 var date = require("./lib/date");
-module.exports = x.ext(x, {
-    declare: declare,
+var net = require("./lib/net");
+var x = base.extend({}, base, {
     event: event,
-    dict: dict2,
-    Dict: dict2,
-    queue: queue,
-    stack: stack,
+    queue: Queue,
+    stack: Stack,
     color: color,
     encoding: encoding,
-    expressions: expressions,
+    regexp: regexp,
     string: string,
-    date: date
+    date: date,
+    on: event.add,
+    net: net
 });
+base.extend(x, {
+    on: event.add,
+    xhr: net.xhr
+});
+var g = x.global();
+if (g.x) {
+    g._x_ = g.x;
+}
+g.x = x;
+module.exports = x;

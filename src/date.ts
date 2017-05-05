@@ -1,6 +1,6 @@
 // -*- ecoding=utf-8 -*-
 
-import * as x from "./core";
+import * as x from "./base";
 
 var weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
 
@@ -166,10 +166,11 @@ let self = {
         date = new Date(Math.floor(timeValue.replace(/\/Date\((-?\d+)\)\//, '$1')));
       }
       else {
-        // 其他情况
-        var keys = timeValue.replace(/[-|:|\/| |年|月|日]/g, ',').split(',');
+        // 处理规则 年 月 日 时 分 秒 顺序规则时间
+        var keys = timeValue.replace(/[-|:|\/| |年|月|日]/g, ',').replace(/,,/g, ',').split(',');
 
         for (var i = 0; i < 6; i++) {
+          // 处理默认值
           keys[i] = isNaN(keys[i]) ? (i < 3 ? 1 : 0) : Number(keys[i]);
         }
 

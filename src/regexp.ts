@@ -1,10 +1,10 @@
 ﻿// -*- ecoding=utf-8 -*-
 
-import * as x from "./core";
+import * as x from "./base";
 import * as string from "./string";
 
 /**
-* @namespace expressions
+* @namespace regexp
 * @memberof x
 * @description 正则表达式管理
 */
@@ -12,7 +12,7 @@ let self = {
   /**
   * 规则集合
   * @member {object} rules
-  * @memberof x.expressions
+  * @memberof x.regexp
   * @example
   * // 返回邮箱地址的正则表达式
   * self.rules['email'];
@@ -130,11 +130,11 @@ let self = {
   /**
   * 匹配
   * @method match
-  * @memberof x.expressions
+  * @memberof x.regexp
   * @param {JSON} options 选项信息
   * @example
   * // 输出 匹配的对象
-  * console.log(x.expressions.match({text:'abc',regexp:/^\d{6}$/g}));
+  * console.log(x.regexp.match({text:'abc',regexp:/^\d{6}$/g}));
   */
   match: function (options) {
     // 文本信息
@@ -163,7 +163,7 @@ let self = {
   /**
   * 利用正则表达式验证字符串规则
   * @method exists
-  * @memberof x.expressions
+  * @memberof x.regexp
   * @param {object} options 选项信息
   * @example
   * // result = false;
@@ -207,7 +207,7 @@ let self = {
   /**
   * 验证文件的扩展名.
   * @method isFileExt
-  * @memberof x.expressions
+  * @memberof x.regexp
   * @param {string} path 文件路径
   * @param {string} allowFileExt 允许的扩展名, 多个以半角逗号隔开
   */
@@ -244,7 +244,7 @@ let self = {
   /**
   * 验证URL地址格式
   * @method isUrl
-  * @memberof x.expressions
+  * @memberof x.regexp
   * @param {string} text 文本信息
   */
   isUrl: function (text) {
@@ -256,7 +256,7 @@ let self = {
   /*
   * 验证Email地址格式
   * @method isEmail
-  * @memberof x.expressions
+  * @memberof x.regexp
   * @param {string} text 文本信息
   */
   isEmail: function (text) {
@@ -268,7 +268,7 @@ let self = {
   /*
   * 验证邮编
   * @method isZipcode
-  * @memberof x.expressions
+  * @memberof x.regexp
   * @param {string} text 文本信息
   * @param {string} nature 区域信息
   */
@@ -283,7 +283,7 @@ let self = {
   /**
   * 验证输入的字符串是否为安全字符, 即只允许字母、数字、下滑线。
   * @method isSafeText
-  * @memberof x.expressions
+  * @memberof x.regexp
   * @param {string} text 文本信息
   */
   isSafeText: function (text) {
@@ -295,7 +295,7 @@ let self = {
   /**
   * 格式化输入的输入的文本为电话号码.
   * @method formatTelephone
-  * @memberof x.expressions
+  * @memberof x.regexp
   * @param {string} text 文本信息
   */
   formatTelephone: function (text) {
@@ -307,7 +307,7 @@ let self = {
   /**
   * 格式化输入的输入的文本为整数.
   * @method formatInteger
-  * @memberof x.expressions
+  * @memberof x.regexp
   * @param {string} value 文本信息
   * @param {bool} [removePaddingZero] 移除两侧多余的零
   * @example
@@ -340,7 +340,7 @@ let self = {
   /**
   * 格式化输入的输入的文本为数字.
   * @method formatInteger
-  * @memberof x.expressions
+  * @memberof x.regexp
   * @param {string} value 文本信息
   * @param {bool} [removePaddingZero] 移除两侧多余的零
   * @example
@@ -372,7 +372,7 @@ let self = {
   * 格式化输入的文本统一为保留小数点后面两位的数字。
   * 小数点右侧两位之后的数字采用四舍五入的规则取舍。
   * @method formatNumberRound2
-  * @memberof x.expressions
+  * @memberof x.regexp
   * @param {string} value 文本信息
   * @param {bool} [removePaddingZero] 移除两侧多余的零
   * @example
@@ -410,7 +410,7 @@ let self = {
   * 格式化输入的文本统一为保留小数点后面两位的数字。
   * 小数点右侧N位之后的数字采用四舍五入的规则取舍。
   * @method formatNumberRound2
-  * @memberof x.expressions
+  * @memberof x.regexp
   * @param {string} value 文本信息
   * @param {number} [length] 小数点右侧保留的位数
   * @param {bool} [removePaddingZero] 移除两侧多余的零
@@ -456,7 +456,7 @@ let self = {
   /**
   * 格式化输入的文本为安全字符(常用于登录名和拼音字母的检测)
   * @method formatSafeText
-  * @memberof x.expressions
+  * @memberof x.regexp
   * @param {string} text 文本信息
   * @example
   * var text = 'abcd-$1234';

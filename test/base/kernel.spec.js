@@ -1,110 +1,14 @@
 var assert = require('assert');
 
-var x = require('../index.js');
+var x = require('../../index.js');
 
-describe('core', function () {
-  describe('#x.type(object)', function () {
-    it('type -> bool', function () {
-      assert.equal(x.type(true), 'boolean');
-    });
-
-    it('type -> number', function () {
-      assert.equal(x.type(1), 'number');
-    });
-
-    it('type -> string', function () {
-      assert.equal(x.type('string'), 'string');
-    });
-
-    it('type -> date', function () {
-      assert.equal(x.type(new Date), 'date');
-    });
-
-    it('type -> object', function () {
-      assert.equal(x.type({}), 'object');
-    });
-  });
-
-  describe('#x.isArray(object)', function () {
-    it('should return true when the value is Array', function () {
-      assert.equal(x.isArray([2, 4, 6]), true);
-    });
-
-    it('should return true when the value is String', function () {
-      assert.equal(x.isArray('a'), false);
-    });
-  });
-
-  describe('#x.isFunction(object)', function () {
-    it('should return true when the object is Function', function () {
-      assert.equal(x.isFunction(x.noop), true);
-    });
-
-    it('should return true when the object is not Function', function () {
-      assert.equal(x.isFunction('abcdefghi'), false);
-      assert.equal(x.isFunction(1234567890), false);
-    });
-  });
-
-  describe('#x.isString(object)', function () {
-    it('should return true when the value is String', function () {
-      assert.equal(x.isString('abcdefghijklmn'), true);
-    });
-
-    it('should return true when the value is Number', function () {
-      assert.equal(x.isString(0), false);
-    });
-  });
-
+describe('base/kernel', function () {
   describe('#x.register(value)', function () {
     it('should create empty object when the object is not exist', function () {
       x.register('tests.core.net');
       assert.equal(!!tests, true);
       assert.equal(!!tests.core, true);
       assert.equal(!!tests.core.net, true);
-    });
-  });
-
-  describe('#x.ext()', function () {
-    it('should return true when the value is Array', function () {
-      assert.deepEqual(x.ext({ a: 'a' }, { b: 'b', c: 'c' }), { a: 'a', b: 'b', c: 'c' });
-      assert.deepEqual(x.ext(null, { a: 'a' }), { a: 'a' });
-    });
-  });
-
-  describe('#x.clone(object)', function () {
-    it('should return a clone object', function () {
-      var obj = x.clone({ a: 'a', b: 'b', c: 'c' });
-      assert.deepEqual(obj, { a: 'a', b: 'b', c: 'c' });
-    });
-  });
-
-  describe('#x.declare(object)', function () {
-    it('should return true when the value is Array', function () {
-      // 定义一个对象
-      x.declare('a.B', {
-        name: 'A',
-        age: 10,
-        constructor: function () {
-          this.name = 'B';
-        }
-      });
-
-      var obj = new a.B();
-
-      assert.equal(obj.name, 'B');
-
-      // 定义一个对象
-      var T = x.declare({
-        name: 'T',
-        constructor: function () {
-          // this.name = 'B';
-        }
-      });
-
-      var obj = new T();
-
-      assert.equal(obj.name, 'T');
     });
   });
 
@@ -142,14 +46,24 @@ describe('core', function () {
 
   describe('#x.serialize(object)', function () {
     it('should return true when the value is Array', function () {
+      var obj = x.serialize([
+        { name: 'a', value: '1' },
+        { name: 'b', value: '2' },
+        { name: 'c', value: '3' }
+      ]);
+      assert.equal(obj, 'a=1&b=2&c=3');
+    });
+
+    it('should return true when the value is Array', function () {
       var obj = x.serialize({ a: '1', b: '2', c: '3' });
       assert.equal(obj, 'a=1&b=2&c=3');
     });
   });
 
   describe('#x.each(data, callback)', function () {
+    var outString = '';
     it('should return data when the data is Array', function () {
-      var outString = '';
+      outString = '';
 
       x.each(['c', 'b', 'a'], function (index, node) {
         outString += '[' + index + ']=' + node + ' ';
@@ -158,6 +72,19 @@ describe('core', function () {
       outString = x.string.trim(outString, ' ');
 
       assert.equal('[0]=c [1]=b [2]=a', outString);
+
+      // 测试中途退出功能能
+      outString = '';
+
+      x.each(['c', 'b', 'a'], function (index, node) {
+        if (index == 2) { return false; }
+        outString += '[' + index + ']=' + node + ' ';
+      });
+
+      outString = x.string.trim(outString, ' ');
+
+      assert.equal('[0]=c [1]=b', outString);
+
     });
 
     it('should return text when the data is Object', function () {
@@ -170,6 +97,18 @@ describe('core', function () {
       outString = x.string.trim(outString, ' ');
 
       assert.equal('[0]=c [1]=b [2]=a', outString);
+
+      // 测试中途退出功能能
+      outString = '';
+
+      x.each({ '0': 'c', '1': 'b', '2': 'a' }, function (name, value) {
+        if (name == '2') { return false; }
+        outString += '[' + name + ']=' + value + ' ';
+      });
+
+      outString = x.string.trim(outString, ' ');
+
+      assert.equal('[0]=c [1]=b', outString);
     });
   });
 
@@ -255,19 +194,19 @@ describe('core', function () {
 
   describe('debug', function () {
     it('should output logging', function () {
-      x.debug.log('\t==> log');
+      // x.debug.log('\t==> log');
       assert.ok(1);
 
-      x.debug.warn('\t==> warn');
+      // x.debug.warn('\t==> warn');
       assert.ok(1);
 
-      x.debug.error('\t==> error');
+      // x.debug.error('\t==> error');
       assert.ok(1);
 
       // x.debug.assert("a"=="c");
 
-      x.debug.time('\tdebug-method');
-      x.debug.timeEnd('\tdebug-method');
+      // x.debug.time('\tdebug-method');
+      // x.debug.timeEnd('\tdebug-method');
 
       // 输出时间戳
       var timestamp = x.debug.timestamp();

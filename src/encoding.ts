@@ -1,6 +1,6 @@
 // -*- ecoding=utf-8 -*-
 
-import * as x from "./core";
+import * as x from "./base";
 import * as string from "./string";
 
 /**

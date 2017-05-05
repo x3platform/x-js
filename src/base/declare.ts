@@ -1,4 +1,6 @@
-import * as x from "../core";
+import * as lang from "./lang";
+import * as kernel from "./kernel";
+
 // 此方法来源与 dojo.declare
 // declare
 var xtor = function () { };
@@ -202,12 +204,13 @@ var declare = function (className?, superclass?, props?) {
     props = arguments[0] || {};
   } else if (arguments.length == 2) {
     // 两个参数
-    if (x.isString(arguments[0])) {
+    if (lang.isString(arguments[0])) {
       className = arguments[0] || {};
       superclass = null;
       props = arguments[1] || {};
     }
     else {
+      className = null;
       superclass = arguments[0] || {};
       props = arguments[1] || {};
     }
@@ -226,20 +229,20 @@ var declare = function (className?, superclass?, props?) {
   // 定义 prototype
   proto = {};
 
-  if (x.isArray(superclass)) {
+  if (lang.isArray(superclass)) {
     // 多个类继承
     for (var i = 0; i < superclass.length; i++) {
-      x.ext(proto, superclass[i]);
+      lang.extend(proto, superclass[i]);
     }
   }
   else if (superclass != null) {
-    x.ext(proto, superclass);
+    lang.extend(proto, superclass);
   }
 
-  // target = x.ext(target, props);
+  // target = lang.ext(target, props);
   for (var property in props) {
     ctor.prototype[property] = props[property];
-    x.ext(proto, props);
+    lang.extend(proto, props);
   }
 
   // add constructor
@@ -255,7 +258,7 @@ var declare = function (className?, superclass?, props?) {
   //build ctor
   // 构建类的构造函数
 
-  // ctor.prototype.constructor = props.constructor ? props.constructor : x.noop;
+  // ctor.prototype.constructor = props.constructor ? props.constructor : lang.noop;
   // t = !chains || !chains.hasOwnProperty(cname);
   // bases[0] = ctor = (chains && chains.constructor === "manual") ? simpleConstructor(bases) :
   //  (bases.length == 1 ? singleConstructor(props.constructor, t) : chainedConstructor(bases, t));
@@ -283,7 +286,7 @@ var declare = function (className?, superclass?, props?) {
     let parts = className.split(".");
     let name = parts.pop();
 
-    let context = parts.length == 0 ? x.global() : x.register(parts.join('.'));
+    let context = parts.length == 0 ? kernel.global() : kernel.register(parts.join('.'));
 
     context[name] = ctor;
   }

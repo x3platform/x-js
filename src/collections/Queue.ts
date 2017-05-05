@@ -1,9 +1,5 @@
-// -*- ecoding=utf-8 -*-
-
-import * as x from "./core";
-
 /**
-* 栈
+* 队列
 * @namespace queue
 * @memberof x
 */

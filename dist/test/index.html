@@ -3,17 +3,48 @@
 <head>
   <meta charset="utf-8">
   <title>Tests</title>
-  <link href="../../node_modules/mocha/mocha.css" rel="stylesheet" />
+  <link href="node_modules/mocha/mocha.css" rel="stylesheet" />
+  <style type="text/css">
+    #mocha {
+      width: 480px;
+      margin-top: 75px;
+      margin-left: 20px;
+    }
+
+    #mocha-stats {
+      right: auto;
+      opacity: 0.85;
+      background: #fff;
+      padding: 10px !important;
+      border-radius: 4px;
+    }
+
+    #dom-container {
+      position: fixed;
+      top: 15px;
+      left: 520px;
+      font-size: 12px;
+      margin: 0;
+      z-index: 1;
+    }
+  </style>
 </head>
 
 <body>
   <div id="mocha"></div>
+  <div id="dom-container">
+    <div>
+      <div>Form DOM</div>
+      <input id="test-input-1" />
+      <button>OK</button>
+    </div>
+  </div>
 
   <!-- 引入测试框架 -->
-  <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
-  <script src="../../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script src="../../node_modules/mocha/mocha.js"></script>
-  <script src="../../node_modules/chai/chai.js"></script>
+  <script src="node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="node_modules/mocha/mocha.js"></script>
+  <script src="node_modules/chai/chai.js"></script>
   <!-- 引入测试文件 -->
 
   <script src="helper/setup.js"></script>
@@ -21,11 +52,15 @@
     setup();
   </script>
   <script src="helper/helper-test.js"></script>
-  <script src="spec/core.spec.js"></script>
+  <script src="spec/base/lang.spec.js"></script>
+  <script src="spec/base/kernel.spec.js"></script>
+  <script src="spec/base/declare.spec.js"></script>
+  <script src="spec/base.spec.js"></script>
+  <script src="spec/net.spec.js"></script>
+  <script src="spec/string.spec.js"></script>
   <script src="spec/date.spec.js"></script>
   <script src="spec/encoding.spec.js"></script>
-  <script src="spec/expressions.spec.js"></script>
-  <script src="spec/string.spec.js"></script>
+  <script src="spec/regexp.spec.js"></script>
   <script src="require.js"></script>
   <script>
     // mocha.setup('bdd')
