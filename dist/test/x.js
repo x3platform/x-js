@@ -1,12 +1,14 @@
 define("src/core", ["require", "exports"], function (require, exports) {
     "use strict";
-    function getGlobal() {
-        return typeof window !== 'undefined' ? window : global;
-    }
-    ;
     var locales = { "en-us": "en-us", "zh-cn": "zh-cn" };
     var defaultLocaleName = 'zh-cn';
     var x = {
+        global: function () {
+            return typeof window !== 'undefined' ? window : global;
+        },
+        error: function (msg) {
+            throw new Error(msg);
+        },
         type: function (object) {
             try {
                 if (typeof (object) === 'undefined') {
@@ -46,7 +48,7 @@ define("src/core", ["require", "exports"], function (require, exports) {
         noop: function () { },
         register: function (value) {
             var parts = value.split(".");
-            var root = getGlobal();
+            var root = x.global();
             for (var i = 0; i < parts.length; i++) {
                 if (x.isUndefined(root[parts[i]])) {
                     root[parts[i]] = {};
@@ -208,92 +210,7 @@ define("src/core", ["require", "exports"], function (require, exports) {
             return locale ? locale : defaultLocaleName;
         },
         getFriendlyName: function (name) {
-            return x.camelCase(('x-' + name).replace(/[\#\$\.\/\\\:\?\=]/g, '-').replace(/[-]+/g, '-'));
-        },
-        newHashTable: function () {
-            var hashTable = {
-                innerArray: [],
-                clear: function () {
-                    this.innerArray = [];
-                },
-                exist: function (key) {
-                    for (var i = 0; i < this.innerArray.length; i++) {
-                        if (this.innerArray[i].name === key) {
-                            return true;
-                        }
-                    }
-                    return false;
-                },
-                get: function (index) {
-                    return this.innerArray[index];
-                },
-                add: function (key, value) {
-                    if (arguments.length === 1) {
-                        var keyArr = key.split(';');
-                        for (var i = 0; i < keyArr.length; i++) {
-                            var valueArr = keyArr[i].split('#');
-                            this.innerArray.push({ name: valueArr[0], value: valueArr[1] });
-                        }
-                    }
-                    else {
-                        if (this.exist(key)) {
-                            throw 'hashtable aleardy exist same key[' + key + ']';
-                        }
-                        else {
-                            this.innerArray.push({ name: key, value: value });
-                        }
-                    }
-                },
-                find: function (key) {
-                    for (var i = 0; i < this.innerArray.length; i++) {
-                        if (this.innerArray[i].name === key) {
-                            return this.innerArray[i].value;
-                        }
-                    }
-                    return null;
-                },
-                size: function () {
-                    return this.innerArray.length;
-                }
-            };
-            return hashTable;
-        },
-        newQueue: function () {
-            var queue = {
-                innerArray: [],
-                push: function (targetObject) {
-                    this.innerArray.push(targetObject);
-                },
-                pop: function () {
-                    if (this.innerArray.length === 0) {
-                        return null;
-                    }
-                    else {
-                        var targetObject = this.innerArray[0];
-                        for (var i = 0; i < this.innerArray.length - 1; i++) {
-                            this.innerArray[i] = this.innerArray[i + 1];
-                        }
-                        this.innerArray.length = this.innerArray.length - 1;
-                        return targetObject;
-                    }
-                },
-                peek: function () {
-                    if (this.innerArray.length === 0) {
-                        return null;
-                    }
-                    return this.innerArray[0];
-                },
-                clear: function () {
-                    this.innerArray.length = 0;
-                },
-                size: function () {
-                    return this.innerArray.length;
-                },
-                isEmpty: function () {
-                    return (this.innerArray.length === 0) ? true : false;
-                }
-            };
-            return queue;
+            return x.camelCase(('x_' + name).replace(/[\#\$\.\/\\\:\?\=]/g, '_').replace(/[-]+/g, '_'));
         },
         newStringBuilder: function () {
             var stringBuilder = {
@@ -325,65 +242,6 @@ define("src/core", ["require", "exports"], function (require, exports) {
                 }
             };
             return timer;
-        },
-        event: {
-            getEvent: function (event) {
-                return window.event ? window.event : event;
-            },
-            getTarget: function (event) {
-                return window.event ? window.event.srcElement : (event ? event.target : null);
-            },
-            getPosition: function (event) {
-                var docElement = document.documentElement;
-                var body = document.body || { scrollLeft: 0, scrollTop: 0 };
-                return {
-                    x: event.pageX || (event.clientX + (docElement.scrollLeft || body.scrollLeft) - (docElement.clientLeft || 0)),
-                    y: event.pageY || (event.clientY + (docElement.scrollTop || body.scrollTop) - (docElement.clientTop || 0))
-                };
-            },
-            preventDefault: function (event) {
-                if (event && event.preventDefault) {
-                    event.preventDefault();
-                }
-                else {
-                    window.event.returnValue = false;
-                }
-            },
-            stopPropagation: function (event) {
-                if (event && event.stopPropagation) {
-                    event.stopPropagation();
-                }
-                else {
-                    window.event.cancelBubble = true;
-                }
-                return false;
-            },
-            add: function (target, type, listener, useCapture) {
-                if (target == null)
-                    return;
-                if (target.addEventListener) {
-                    target.addEventListener(type, listener, useCapture);
-                }
-                else if (target.attachEvent) {
-                    target.attachEvent('on' + type, listener);
-                }
-                else {
-                    target['on' + type] = listener;
-                }
-            },
-            remove: function (target, type, listener, useCapture) {
-                if (target == null)
-                    return;
-                if (target.removeEventListener) {
-                    target.removeEventListener(type, listener, useCapture);
-                }
-                else if (target.detachEvent) {
-                    target.detachEvent('on' + type, listener);
-                }
-                else {
-                    target['on' + type] = null;
-                }
-            }
         },
         guid: {
             create: function (format, isUpperCase) {
@@ -461,7 +319,450 @@ define("src/core", ["require", "exports"], function (require, exports) {
             }
         }
     };
+    var g = x.global();
+    if (!g.x) {
+        g.x = x;
+    }
     return x;
+});
+define("src/base/declare", ["require", "exports", "src/core"], function (require, exports, x) {
+    "use strict";
+    var xtor = function () { };
+    var op = Object.prototype, opts = op.toString, cname = "constructor";
+    function forceNew(ctor) {
+        xtor.prototype = ctor.prototype;
+        var t = new xtor;
+        xtor.prototype = null;
+        return t;
+    }
+    function applyNew(args) {
+        var ctor = args.callee, t = forceNew(ctor);
+        ctor.apply(t, args);
+        return t;
+    }
+    function chainedConstructor(bases, ctorSpecial) {
+        return function () {
+            var a = arguments, args = a, a0 = a[0], f, i, m, l = bases.length, preArgs;
+            if (!(this instanceof a.callee)) {
+                return applyNew(a);
+            }
+            if (ctorSpecial && (a0 && a0.preamble || this.preamble)) {
+                preArgs = new Array(bases.length);
+                preArgs[0] = a;
+                for (i = 0;;) {
+                    a0 = a[0];
+                    if (a0) {
+                        f = a0.preamble;
+                        if (f) {
+                            a = f.apply(this, a) || a;
+                        }
+                    }
+                    f = bases[i].prototype;
+                    f = f.hasOwnProperty("preamble") && f.preamble;
+                    if (f) {
+                        a = f.apply(this, a) || a;
+                    }
+                    if (++i == l) {
+                        break;
+                    }
+                    preArgs[i] = a;
+                }
+            }
+            for (i = l - 1; i >= 0; --i) {
+                f = bases[i];
+                m = f._meta;
+                f = m ? m.ctor : f;
+                if (f) {
+                    f.apply(this, preArgs ? preArgs[i] : a);
+                }
+            }
+            f = this.postscript;
+            if (f) {
+                f.apply(this, args);
+            }
+        };
+    }
+    function singleConstructor(ctor, ctorSpecial) {
+        return function () {
+            var a = arguments, t = a, a0 = a[0], f;
+            if (ctorSpecial) {
+                if (a0) {
+                    f = a0.preamble;
+                    if (f) {
+                        t = f.apply(this, t) || t;
+                    }
+                }
+                f = this.preamble;
+                if (f) {
+                    f.apply(this, t);
+                }
+            }
+            if (ctor) {
+                ctor.apply(this, a);
+            }
+            f = this.postscript;
+            if (f) {
+                f.apply(this, a);
+            }
+        };
+    }
+    function simpleConstructor(bases) {
+        return function () {
+            var a = arguments, i = 0, f, m;
+            if (!(this instanceof a.callee)) {
+                return applyNew(a);
+            }
+            for (; f = bases[i]; ++i) {
+                m = f._meta;
+                f = m ? m.ctor : f;
+                if (f) {
+                    f.apply(this, a);
+                    break;
+                }
+            }
+            f = this.postscript;
+            if (f) {
+                f.apply(this, a);
+            }
+        };
+    }
+    function chain(name, bases, reversed) {
+        return function () {
+            var b, m, f, i = 0, step = 1;
+            if (reversed) {
+                i = bases.length - 1;
+                step = -1;
+            }
+            for (; b = bases[i]; i += step) {
+                m = b._meta;
+                f = (m ? m.hidden : b.prototype)[name];
+                if (f) {
+                    f.apply(this, arguments);
+                }
+            }
+        };
+    }
+    var declare = function (className, superclass, props) {
+        var className, superclass, props;
+        if (arguments.length == 1) {
+            className = null;
+            superclass = null;
+            props = arguments[0] || {};
+        }
+        else if (arguments.length == 2) {
+            if (x.isString(arguments[0])) {
+                className = arguments[0] || {};
+                superclass = null;
+                props = arguments[1] || {};
+            }
+            else {
+                superclass = arguments[0] || {};
+                props = arguments[1] || {};
+            }
+        }
+        else if (arguments.length == 3) {
+            className = arguments[0];
+            superclass = arguments[1] || {};
+            props = arguments[2] || {};
+        }
+        var proto, t, ctor;
+        ctor = function () { };
+        proto = {};
+        if (x.isArray(superclass)) {
+            for (var i = 0; i < superclass.length; i++) {
+                x.ext(proto, superclass[i]);
+            }
+        }
+        else if (superclass != null) {
+            x.ext(proto, superclass);
+        }
+        for (var property in props) {
+            ctor.prototype[property] = props[property];
+            x.ext(proto, props);
+        }
+        t = props.constructor;
+        if (t !== op.constructor) {
+            t.nom = cname;
+            proto.constructor = t;
+        }
+        ctor = singleConstructor(props.constructor, t);
+        ctor._meta = {
+            hidden: props,
+            ctor: props.constructor
+        };
+        ctor.superclass = superclass && superclass.prototype;
+        ctor.prototype = proto;
+        proto.constructor = ctor;
+        if (className) {
+            ctor.prototype.declaredClass = className;
+            var parts = className.split(".");
+            var name_1 = parts.pop();
+            var context = parts.length == 0 ? x.global() : x.register(parts.join('.'));
+            context[name_1] = ctor;
+        }
+        return ctor;
+    };
+    return declare;
+});
+define("src/event", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var self = {
+        getEvent: function (event) {
+            return window.event ? window.event : event;
+        },
+        getTarget: function (event) {
+            return window.event ? window.event.srcElement : (event ? event.target : null);
+        },
+        getPosition: function (event) {
+            var docElement = document.documentElement;
+            var body = document.body || { scrollLeft: 0, scrollTop: 0 };
+            return {
+                x: event.pageX || (event.clientX + (docElement.scrollLeft || body.scrollLeft) - (docElement.clientLeft || 0)),
+                y: event.pageY || (event.clientY + (docElement.scrollTop || body.scrollTop) - (docElement.clientTop || 0))
+            };
+        },
+        preventDefault: function (event) {
+            if (event && event.preventDefault) {
+                event.preventDefault();
+            }
+            else {
+                window.event.returnValue = false;
+            }
+        },
+        stopPropagation: function (event) {
+            if (event && event.stopPropagation) {
+                event.stopPropagation();
+            }
+            else {
+                window.event.cancelBubble = true;
+            }
+            return false;
+        },
+        add: function (target, type, listener, useCapture) {
+            if (target == null)
+                return;
+            if (target.addEventListener) {
+                target.addEventListener(type, listener, useCapture);
+            }
+            else if (target.attachEvent) {
+                target.attachEvent('on' + type, listener);
+            }
+            else {
+                target['on' + type] = listener;
+            }
+        },
+        remove: function (target, type, listener, useCapture) {
+            if (target == null)
+                return;
+            if (target.removeEventListener) {
+                target.removeEventListener(type, listener, useCapture);
+            }
+            else if (target.detachEvent) {
+                target.detachEvent('on' + type, listener);
+            }
+            else {
+                target['on' + type] = null;
+            }
+        }
+    };
+    return self;
+});
+define("src/dict", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var self = {
+        create: function () {
+            return self.constructor();
+        },
+        constructor: function () {
+            var dictionary = {
+                innerArray: [],
+                clear: function () {
+                    this.innerArray = [];
+                },
+                exist: function (key) {
+                    for (var i = 0; i < this.innerArray.length; i++) {
+                        if (this.innerArray[i].name === key) {
+                            return true;
+                        }
+                    }
+                    return false;
+                },
+                get: function (index) {
+                    return this.innerArray[index];
+                },
+                add: function (key, value) {
+                    if (arguments.length === 1) {
+                        var keyArr = key.split(';');
+                        for (var i = 0; i < keyArr.length; i++) {
+                            var valueArr = keyArr[i].split('#');
+                            this.innerArray.push({ key: valueArr[0], value: valueArr[1] });
+                        }
+                    }
+                    else {
+                        if (this.exist(key)) {
+                            throw 'hashtable aleardy exist same key[' + key + ']';
+                        }
+                        else {
+                            this.innerArray.push({ key: key, value: value });
+                        }
+                    }
+                },
+                find: function (key) {
+                    for (var i = 0; i < this.innerArray.length; i++) {
+                        if (this.innerArray[i].key === key) {
+                            return this.innerArray[i].value;
+                        }
+                    }
+                    return null;
+                },
+                size: function () {
+                    return this.innerArray.length;
+                }
+            };
+            return dictionary;
+        }
+    };
+    return self;
+});
+define("src/dict2", ["require", "exports", "src/base/declare"], function (require, exports, declare) {
+    "use strict";
+    var self = declare({
+        constructor: function () {
+            this.innerArray = [];
+        },
+        clear: function () {
+            this.innerArray = [];
+        },
+        exist: function (key) {
+            for (var i = 0; i < this.innerArray.length; i++) {
+                if (this.innerArray[i].name === key) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        get: function (index) {
+            return this.innerArray[index];
+        },
+        add: function (key, value) {
+            if (arguments.length === 1) {
+                var keyArr = key.split(';');
+                for (var i = 0; i < keyArr.length; i++) {
+                    var valueArr = keyArr[i].split('#');
+                    this.innerArray.push({ key: valueArr[0], value: valueArr[1] });
+                }
+            }
+            else {
+                if (this.exist(key)) {
+                    throw 'hashtable aleardy exist same key[' + key + ']';
+                }
+                else {
+                    this.innerArray.push({ key: key, value: value });
+                }
+            }
+        },
+        find: function (key) {
+            for (var i = 0; i < this.innerArray.length; i++) {
+                if (this.innerArray[i].key === key) {
+                    return this.innerArray[i].value;
+                }
+            }
+            return null;
+        },
+        size: function () {
+            return this.innerArray.length;
+        }
+    });
+    return self;
+});
+define("src/queue", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var self = {
+        create: function () {
+            return self.constructor();
+        },
+        constructor: function () {
+            var queue = {
+                innerArray: [],
+                push: function (targetObject) {
+                    this.innerArray.push(targetObject);
+                },
+                pop: function () {
+                    if (this.innerArray.length === 0) {
+                        return null;
+                    }
+                    else {
+                        var targetObject = this.innerArray[0];
+                        for (var i = 0; i < this.innerArray.length - 1; i++) {
+                            this.innerArray[i] = this.innerArray[i + 1];
+                        }
+                        this.innerArray.length = this.innerArray.length - 1;
+                        return targetObject;
+                    }
+                },
+                peek: function () {
+                    if (this.innerArray.length === 0) {
+                        return null;
+                    }
+                    return this.innerArray[0];
+                },
+                clear: function () {
+                    this.innerArray.length = 0;
+                },
+                size: function () {
+                    return this.innerArray.length;
+                },
+                isEmpty: function () {
+                    return (this.innerArray.length === 0) ? true : false;
+                }
+            };
+            return queue;
+        }
+    };
+    return self;
+});
+define("src/stack", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var self = {
+        create: function () {
+            return self.constructor();
+        },
+        constructor: function () {
+            var stack = {
+                innerArray: [],
+                push: function (targetObject) {
+                    this.innerArray[this.innerArray.length] = targetObject;
+                },
+                pop: function () {
+                    if (this.innerArray.length === 0) {
+                        return null;
+                    }
+                    else {
+                        var targetObject = this.innerArray[this.innerArray.length - 1];
+                        this.innerArray.length--;
+                        return targetObject;
+                    }
+                },
+                peek: function () {
+                    if (this.innerArray.length === 0) {
+                        return null;
+                    }
+                    return this.innerArray[this.innerArray.length - 1];
+                },
+                clear: function () {
+                    this.innerArray.length = 0;
+                },
+                size: function () {
+                    return this.innerArray.length;
+                },
+                isEmpty: function () {
+                    return (this.innerArray.length === 0) ? true : false;
+                }
+            };
+            return stack;
+        }
+    };
+    return self;
 });
 define("src/color", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -525,7 +826,7 @@ define("src/color", ["require", "exports"], function (require, exports) {
 define("src/string", ["require", "exports", "src/core"], function (require, exports, x) {
     "use strict";
     var trimExpr = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
-    var string = {
+    var self = {
         stringify: function (value) {
             var type = x.type(value);
             if (type !== 'string') {
@@ -533,7 +834,7 @@ define("src/string", ["require", "exports", "src/core"], function (require, expo
                     value += '';
                 }
                 else if (type === 'function') {
-                    value = string.stringify(value.call(value));
+                    value = self.stringify(value.call(value));
                 }
                 else {
                     value = '';
@@ -547,7 +848,7 @@ define("src/string", ["require", "exports", "src/core"], function (require, expo
                 return text.replace(trimExpr, '');
             }
             else {
-                return string.rtrim(string.ltrim(text, trimText), trimText);
+                return self.rtrim(self.ltrim(text, trimText), trimText);
             }
         },
         ltrim: function (text, trimText) {
@@ -592,7 +893,7 @@ define("src/string", ["require", "exports", "src/core"], function (require, expo
             }
         }
     };
-    return string;
+    return self;
 });
 define("src/encoding", ["require", "exports", "src/core", "src/string"], function (require, exports, x, string) {
     "use strict";
@@ -800,6 +1101,29 @@ define("src/expressions", ["require", "exports", "src/core", "src/string"], func
                 value = parseFloat(text);
             }
             return value;
+        },
+        formatNumberRound: function (value, length, removePaddingZero) {
+            if (length === void 0) { length = 2; }
+            if (removePaddingZero === void 0) { removePaddingZero = true; }
+            var multiple = 10;
+            var count = 0;
+            while (count < length) {
+                multiple *= 10;
+                count++;
+            }
+            var text = '' + Math.round(Number(self.formatNumber(value)) * multiple) / multiple;
+            var index = text.indexOf('.');
+            if (index < 0) {
+                return text + '.00';
+            }
+            var text = text.substring(0, index + 1) + text.substring(index + 1, index + length + 1);
+            while ((index + length) > text.length) {
+                text += '0';
+            }
+            if (removePaddingZero) {
+                text = parseFloat(text).toString();
+            }
+            return text;
         },
         formatSafeText: function (text) {
             return text.replace(self.rules['non-safeText'], '');
@@ -1064,27 +1388,27 @@ define("src/date", ["require", "exports", "src/core"], function (require, export
             };
             return time;
         },
-        newDateTimeSpan: function (timeSpanValue, format) {
+        timespan: function (timespanValue, format) {
             if (format === void 0) { format = 'second'; }
             if (format == 'day' || format == 'd') {
-                timeSpanValue = timeSpanValue * 24 * 60 * 60;
+                timespanValue = timespanValue * 24 * 60 * 60;
             }
             if (format == 'hour' || format == 'h') {
-                timeSpanValue = timeSpanValue * 60 * 60;
+                timespanValue = timespanValue * 60 * 60;
             }
             if (format == 'minute' || format == 'm') {
-                timeSpanValue = timeSpanValue * 60;
+                timespanValue = timespanValue * 60;
             }
             if (format == 'second' || format == 's') {
-                timeSpanValue = timeSpanValue * 1000;
+                timespanValue = timespanValue * 1000;
             }
-            var timeSpan = {
-                timeSpanValue: timeSpanValue,
-                day: timeSpanValue / (24 * 60 * 60 * 1000),
-                hour: timeSpanValue / (60 * 60 * 1000),
-                minute: timeSpanValue / (60 * 1000),
-                second: timeSpanValue / 1000,
-                millisecond: timeSpanValue % 1000,
+            var timespan = {
+                timespanValue: timespanValue,
+                day: timespanValue / (24 * 60 * 60 * 1000),
+                hour: timespanValue / (60 * 60 * 1000),
+                minute: timespanValue / (60 * 1000),
+                second: timespanValue / 1000,
+                millisecond: timespanValue % 1000,
                 toString: function (format) {
                     var outString = '';
                     switch (format) {
@@ -1101,57 +1425,19 @@ define("src/date", ["require", "exports", "src/core"], function (require, export
                     return outString;
                 }
             };
-            return timeSpan;
+            return timespan;
         }
     };
     return self;
 });
-define("src/stack", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var self = {
-        create: function () {
-            self.newStack();
-        },
-        newStack: function () {
-            var stack = {
-                innerArray: [],
-                push: function (targetObject) {
-                    this.innerArray[this.innerArray.length] = targetObject;
-                },
-                pop: function () {
-                    if (this.innerArray.length === 0) {
-                        return null;
-                    }
-                    else {
-                        var targetObject = this.innerArray[this.innerArray.length - 1];
-                        this.innerArray.length--;
-                        return targetObject;
-                    }
-                },
-                peek: function () {
-                    if (this.innerArray.length === 0) {
-                        return null;
-                    }
-                    return this.innerArray[this.innerArray.length - 1];
-                },
-                clear: function () {
-                    this.innerArray.length = 0;
-                },
-                size: function () {
-                    return this.innerArray.length;
-                },
-                isEmpty: function () {
-                    return (this.innerArray.length === 0) ? true : false;
-                }
-            };
-            return stack;
-        }
-    };
-    return self;
-});
-define("x", ["require", "exports", "src/core", "src/color", "src/encoding", "src/expressions", "src/string", "src/date", "src/stack"], function (require, exports, x, color, encoding, expressions, string, date, stack) {
+define("x", ["require", "exports", "src/core", "src/base/declare", "src/event", "src/dict2", "src/queue", "src/stack", "src/color", "src/encoding", "src/expressions", "src/string", "src/date"], function (require, exports, x, declare, event, dict2, queue, stack, color, encoding, expressions, string, date) {
     "use strict";
     return x.ext(x, {
+        declare: declare,
+        event: event,
+        dict: dict2,
+        Dict: dict2,
+        queue: queue,
         stack: stack,
         color: color,
         encoding: encoding,

@@ -1,7 +1,9 @@
 import * as x from "./src/core";
+import * as declare from "./src/base/declare";
 
 import * as event from "./src/event";
 
+import * as Dict from "./src/Dict";
 import * as queue from "./src/queue";
 import * as stack from "./src/stack";
 // import * as stack from "./src/stack";
@@ -13,8 +15,12 @@ import * as string from "./src/string";
 import * as date from "./src/date";
 
 export = x.ext(x, {
+  // 声明对象
+  declare: declare,
   // 事件
   event: event,
+  // 字典
+  Dict: Dict,
   // 队列
   queue: queue,
   // 栈

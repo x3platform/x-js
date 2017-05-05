@@ -40,7 +40,8 @@ module.exports = function (grunt) {
           removeComments: true,
           sourcemap: false,
           declaration: false,
-          noEmitOnError: true
+          noEmitOnError: true,
+          alwaysStrict:false
         }
       },
       amd: {
@@ -52,7 +53,8 @@ module.exports = function (grunt) {
           removeComments: true,
           sourcemap: false,
           declaration: false,
-          noEmitOnError: true
+          noEmitOnError: true,
+          alwaysStrict:false
         }
       },
       docs: {
@@ -67,7 +69,7 @@ module.exports = function (grunt) {
       },
       // UMD 没什么效果
       umd: {
-        src: ['x.ts','src/color.ts'],
+        src: ['x.ts', 'src/color.ts'],
         dest: 'dist/umd/x.js',
         options: {
           module: 'system', //or commonjs
@@ -124,7 +126,7 @@ module.exports = function (grunt) {
       {
         expand: true,
         cwd: 'src/',
-        src: '*.js',
+        src: ['*.js','base/*.js'],
         dest: 'lib/'
       },
       // 发布到 test 目录
@@ -137,10 +139,10 @@ module.exports = function (grunt) {
         options: {
           process: function (content, srcpath) {
             return content.replace('var assert = require(\'assert\');', '')
-                    .replace('var should = require(\'should\');', '')
-                    .replace('var x = require(\'../index.js\');', '')
-                    .replace(/\n\n\n\n/g, '')
-                    .replace(/\r\n\r\n\r\n\r\n/g, '');
+              .replace('var should = require(\'should\');', '')
+              .replace('var x = require(\'../index.js\');', '')
+              .replace(/\n\n\n\n/g, '')
+              .replace(/\r\n\r\n\r\n\r\n/g, '');
           }
         }
       },
@@ -216,6 +218,25 @@ module.exports = function (grunt) {
       },
     },
 
+    // karma runner
+    karma: {
+      unit: {
+        configFile: 'karma.conf.js'
+      },
+      client: {
+        mocha: {
+          // change Karma's debug.html to the mocha web reporter 
+          reporter: 'html'
+
+          // require specific files after Mocha is initialized 
+          // require: [require.resolve('bdd-lazy-var/bdd_lazy_var_global')],
+
+          // custom ui, defined in required file above 
+          // ui: 'bdd-lazy-var/global',
+        }
+      }
+    },
+
     // 生成文档
     jsdoc:
     {
@@ -256,9 +277,10 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-jsdoc');
   // grunt.loadNpmTasks('grunt-file-beautify');
 
-  // test
+  // 测试任务
   grunt.loadNpmTasks('grunt-mocha-istanbul');
   grunt.loadNpmTasks('grunt-coveralls');
+  grunt.loadNpmTasks('grunt-karma');
 
 
   // 注意看，每一个任务列表格式是：“任务名：启用的任务配置”。通过这样的形式，我们可以指定MultiTasks运行时使用的配置，
@@ -275,7 +297,6 @@ module.exports = function (grunt) {
     'copy:test',
     'mocha_istanbul:coverage',
     'coveralls'
-    //'jsdoc'
   ]);
 
   // 开发环境
@@ -306,5 +327,5 @@ module.exports = function (grunt) {
   ]);
 
   // 测试
-  grunt.registerTask('test', ['copy:test','mocha_istanbul:coverage']);
+  grunt.registerTask('test', ['copy:test', 'mocha_istanbul:coverage']);
 };

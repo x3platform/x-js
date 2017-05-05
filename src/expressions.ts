@@ -12,7 +12,7 @@ let self = {
   /**
   * 规则集合
   * @member {object} rules
-  * @memberof self
+  * @memberof x.expressions
   * @example
   * // 返回邮箱地址的正则表达式
   * self.rules['email'];
@@ -163,7 +163,7 @@ let self = {
   /**
   * 利用正则表达式验证字符串规则
   * @method exists
-  * @memberof self
+  * @memberof x.expressions
   * @param {object} options 选项信息
   * @example
   * // result = false;
@@ -207,7 +207,7 @@ let self = {
   /**
   * 验证文件的扩展名.
   * @method isFileExt
-  * @memberof self
+  * @memberof x.expressions
   * @param {string} path 文件路径
   * @param {string} allowFileExt 允许的扩展名, 多个以半角逗号隔开
   */
@@ -244,7 +244,7 @@ let self = {
   /**
   * 验证URL地址格式
   * @method isUrl
-  * @memberof self
+  * @memberof x.expressions
   * @param {string} text 文本信息
   */
   isUrl: function (text) {
@@ -256,7 +256,7 @@ let self = {
   /*
   * 验证Email地址格式
   * @method isEmail
-  * @memberof self
+  * @memberof x.expressions
   * @param {string} text 文本信息
   */
   isEmail: function (text) {
@@ -268,7 +268,7 @@ let self = {
   /*
   * 验证邮编
   * @method isZipcode
-  * @memberof self
+  * @memberof x.expressions
   * @param {string} text 文本信息
   * @param {string} nature 区域信息
   */
@@ -283,7 +283,7 @@ let self = {
   /**
   * 验证输入的字符串是否为安全字符, 即只允许字母、数字、下滑线。
   * @method isSafeText
-  * @memberof self
+  * @memberof x.expressions
   * @param {string} text 文本信息
   */
   isSafeText: function (text) {
@@ -295,7 +295,7 @@ let self = {
   /**
   * 格式化输入的输入的文本为电话号码.
   * @method formatTelephone
-  * @memberof self
+  * @memberof x.expressions
   * @param {string} text 文本信息
   */
   formatTelephone: function (text) {
@@ -307,7 +307,7 @@ let self = {
   /**
   * 格式化输入的输入的文本为整数.
   * @method formatInteger
-  * @memberof self
+  * @memberof x.expressions
   * @param {string} value 文本信息
   * @param {bool} [removePaddingZero] 移除两侧多余的零
   * @example
@@ -340,7 +340,7 @@ let self = {
   /**
   * 格式化输入的输入的文本为数字.
   * @method formatInteger
-  * @memberof self
+  * @memberof x.expressions
   * @param {string} value 文本信息
   * @param {bool} [removePaddingZero] 移除两侧多余的零
   * @example
@@ -372,7 +372,7 @@ let self = {
   * 格式化输入的文本统一为保留小数点后面两位的数字。
   * 小数点右侧两位之后的数字采用四舍五入的规则取舍。
   * @method formatNumberRound2
-  * @memberof self
+  * @memberof x.expressions
   * @param {string} value 文本信息
   * @param {bool} [removePaddingZero] 移除两侧多余的零
   * @example
@@ -405,11 +405,58 @@ let self = {
   },
   /*#endregion*/
 
+  /*#region 函数:formatNumberRound2(value, removePaddingZero)*/
+  /**
+  * 格式化输入的文本统一为保留小数点后面两位的数字。
+  * 小数点右侧N位之后的数字采用四舍五入的规则取舍。
+  * @method formatNumberRound2
+  * @memberof x.expressions
+  * @param {string} value 文本信息
+  * @param {number} [length] 小数点右侧保留的位数
+  * @param {bool} [removePaddingZero] 移除两侧多余的零
+  * @example
+  * var value = '12345';
+  * // return value = '12345.00'
+  * value = self.formatNumberRound(value);
+  */
+  formatNumberRound: function (value: string | number, length: number = 2, removePaddingZero: boolean = true) {
+    // 设置倍数
+    let multiple = 10;
+    let count = 0;
+
+    while (count < length) {
+      multiple *= 10;
+      count++;
+    }
+
+    var text = '' + Math.round(Number(self.formatNumber(value)) * multiple) / multiple;
+
+    var index = text.indexOf('.');
+
+    if (index < 0) {
+      return text + '.00';
+    }
+
+    var text = text.substring(0, index + 1) + text.substring(index + 1, index + length + 1);
+
+    while ((index + length) > text.length) {
+      text += '0';
+    }
+
+    // 去除两侧多余的零
+    if (removePaddingZero) {
+      text = parseFloat(text).toString();
+    }
+
+    return text;
+  },
+  /*#endregion*/
+
   /*#region 函数:formatSafeText(text)*/
   /**
   * 格式化输入的文本为安全字符(常用于登录名和拼音字母的检测)
   * @method formatSafeText
-  * @memberof self
+  * @memberof x.expressions
   * @param {string} text 文本信息
   * @example
   * var text = 'abcd-$1234';

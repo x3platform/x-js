@@ -22,6 +22,14 @@ var x = {
     return typeof window !== 'undefined' ? window : global;
   },
 
+  /**
+   * 抛出错误信息
+   * @private
+   */
+  error: function (msg) {
+    throw new Error(msg);
+  },
+
   /*#region 函数:type(object)*/
   /**
   * 检查对象类型
@@ -816,5 +824,12 @@ var x = {
     /*#endregion*/
   }
 };
+
+// 定义全局对象
+var g = x.global();
+
+if (!g.x) {
+  g.x = x;
+}
 
 export = x;

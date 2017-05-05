@@ -1,7 +1,3 @@
-var assert = require('assert');
-
-var x = require('../index.js');
-
 describe('core', function () {
   describe('#x.type(object)', function () {
     it('type -> bool', function () {
