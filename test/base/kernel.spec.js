@@ -192,6 +192,57 @@ describe('base/kernel', function () {
     });
   });
 
+  describe('#StringBuilder()', function () {
+    it('should return text when StringBuilder()', function () {
+      // 支持 RGB 格式字符串转 HEX 格式字符串
+      var s1 = new x.StringBuilder();
+      var s2 = new x.StringBuilder();
+
+      s1.append('a');
+      s1.append('b');
+
+      s2.append('1');
+      s1.append('c');
+
+      s2.append('2');
+      s2.append('3');
+
+      assert.equal(s1.toString(), 'abc');
+      assert.equal(s2.toString(), '123');
+    });
+  });
+
+  describe('#Timer()', function () {
+    it('should return ok when Timer()', function (done) {
+      var begin = x.date.now();
+
+      // 支持 RGB 格式字符串转 HEX 格式字符串
+      var timer1 = new x.Timer(5, function () {
+        var end = x.date.now();
+        var timespan = x.date.diff(begin.toNativeDate(), end.toNativeDate(), 's');
+        console.log(timespan);
+        assert.equal(true, timespan >= 5);
+        timer1.stop();
+        done()
+      });
+
+      timer1.start();
+    });
+
+    it('should return ok when Timer()', function (done) {
+      var begin = x.date.now();
+      var timer2 = new x.Timer(1, function () {
+        var end = x.date.now();
+        var timespan = x.date.diff(begin.toNativeDate(), end.toNativeDate(), 's');
+        console.log(timespan);
+        assert.equal(true, timespan >= 1);
+        timer2.stop();
+        done()
+      });
+      timer2.start();
+    });
+  });
+
   describe('debug', function () {
     it('should output logging', function () {
       // x.debug.log('\t==> log');

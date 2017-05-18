@@ -41,6 +41,51 @@ define("src/base/lang", ["require", "exports"], function (require, exports) {
         clone: function (object) {
             return self.extend({}, object);
         },
+        EventTarget: function () {
+            this.eventListeners = {};
+            this.addEventListener = function (type, listener) {
+                if (typeof type === "string" && typeof listener === "function") {
+                    if (typeof this.eventListeners[type] === "undefined") {
+                        this.eventListeners[type] = [listener];
+                    }
+                    else {
+                        this.eventListeners[type].push(listener);
+                    }
+                }
+                return this;
+            };
+            this.removeEventListener = function (type, listener) {
+                var listeners = this.eventListeners[type];
+                if (listeners instanceof Array) {
+                    if (typeof listener === "function") {
+                        for (var i = 0, length = listeners.length; i < length; i += 1) {
+                            if (listeners[i] === listener) {
+                                listeners.splice(i, 1);
+                                break;
+                            }
+                        }
+                    }
+                    else if (listener instanceof Array) {
+                        for (var lis = 0, lenkey = listener.length; lis < lenkey; lis += 1) {
+                            this.unbind(type, listener[lenkey]);
+                        }
+                    }
+                    else {
+                        delete this.eventListeners[type];
+                    }
+                }
+                return this;
+            };
+            this.fire = function (type) {
+                if (type && this.eventListeners[type]) {
+                    var events = { type: type, target: this };
+                    for (var length = this._listener[type].length, start = 0; start < length; start += 1) {
+                        this.eventListeners[type][start].call(this, events);
+                    }
+                }
+                return this;
+            };
+        }
     };
     var types = ["Array", "Function", "String", "Number", "Undefined"];
     var _loop_1 = function (i) {
@@ -53,9 +98,52 @@ define("src/base/lang", ["require", "exports"], function (require, exports) {
     }
     return self;
 });
-define("src/base/kernel", ["require", "exports", "src/base/lang"], function (require, exports, lang) {
+define("src/base/StringBuilder", ["require", "exports"], function (require, exports) {
     "use strict";
-    var locales = { "en-us": "en-us", "zh-cn": "zh-cn" };
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var StringBuilder = (function () {
+        function StringBuilder() {
+            this.innerArray = [];
+        }
+        StringBuilder.prototype.append = function (text) {
+            this.innerArray[this.innerArray.length] = text;
+        };
+        StringBuilder.prototype.toString = function () {
+            return this.innerArray.join('');
+        };
+        return StringBuilder;
+    }());
+    exports.StringBuilder = StringBuilder;
+});
+define("src/base/Timer", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var timers = {};
+    var namePrefix = 'timer$';
+    var Timer = (function () {
+        function Timer(interval, callback) {
+            this.timerId = -1;
+            this.name = namePrefix + Math.ceil(Math.random() * 900000000 + 100000000);
+            this.interval = interval * 1000;
+            this.callback = callback;
+        }
+        Timer.prototype.run = function () {
+            this.callback(this);
+        };
+        Timer.prototype.start = function () {
+            var that = timers[this.name] = this;
+            this.timerId = setInterval(function () { timers[that.name].run(); }, this.interval);
+        };
+        Timer.prototype.stop = function () {
+            clearInterval(this.timerId);
+        };
+        return Timer;
+    }());
+    exports.Timer = Timer;
+});
+define("src/base/kernel", ["require", "exports", "src/base/lang", "src/base/StringBuilder", "src/base/Timer"], function (require, exports, lang, StringBuilder_1, Timer_1) {
+    "use strict";
+    var locales = { "en-us": "en-us", "zh-cn": "zh-cn", "zh-tw": "zh-tw" };
     var defaultLocaleName = 'zh-cn';
     var self = {
         global: function () {
@@ -168,6 +256,39 @@ define("src/base/kernel", ["require", "exports", "src/base/lang"], function (req
             }
             return data;
         },
+        toXML: function (text, hideError) {
+            if (hideError === void 0) { hideError = false; }
+            if (lang.type(text) === 'xmldocument') {
+                return text;
+            }
+            if (lang.isUndefined(text) || text === '') {
+                return undefined;
+            }
+            var global = self.global();
+            var doc;
+            try {
+                if (global["DOMParser"]) {
+                    var parser = new DOMParser();
+                    doc = parser.parseFromString(text, "text/xml");
+                }
+                else if (global["ActiveXObject"]) {
+                    doc = new ActiveXObject("Microsoft.XMLDOM");
+                    doc.async = "false";
+                    doc.loadXML(text);
+                }
+            }
+            catch (ex) {
+                doc = undefined;
+                if (!hideError)
+                    self.debug.error('{"method":"x.toXML(text)", "arguments":{"text":"' + text + '"}');
+            }
+            if (!doc || doc.getElementsByTagName("parsererror").length) {
+                doc = undefined;
+                if (!hideError)
+                    self.debug.error('{"method":"x.toXML(text)", "arguments":{"text":"' + text + '"}');
+            }
+            return doc;
+        },
         toJSON: function (text) {
             if (lang.type(text) === 'object') {
                 return text;
@@ -241,18 +362,8 @@ define("src/base/kernel", ["require", "exports", "src/base/lang"], function (req
         getFriendlyName: function (name) {
             return self.camelCase(('x_' + name).replace(/[\#\$\.\/\\\:\?\=]/g, '_').replace(/[-]+/g, '_'));
         },
-        newStringBuilder: function () {
-            var stringBuilder = {
-                innerArray: [],
-                append: function (text) {
-                    this.innerArray[this.innerArray.length] = text;
-                },
-                toString: function () {
-                    return this.innerArray.join('');
-                }
-            };
-            return stringBuilder;
-        },
+        StringBuilder: StringBuilder_1.StringBuilder,
+        Timer: Timer_1.Timer,
         timers: {},
         newTimer: function (interval, callback) {
             var timer = {
@@ -747,6 +858,17 @@ define("src/event", ["require", "exports"], function (require, exports) {
             else {
                 target['on' + type] = null;
             }
+        },
+        fire: function (target, type) {
+            var events = target._listeners[type];
+            if (events instanceof Array) {
+                for (var i = 0, length = events.length; i < length; i++) {
+                    if (typeof events[i] === "function") {
+                        events[i]({ type: type });
+                    }
+                }
+            }
+            return target;
         }
     };
     return self;

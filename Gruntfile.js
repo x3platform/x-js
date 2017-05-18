@@ -30,18 +30,64 @@ module.exports = function (grunt) {
       // files to lint
       all: ['src/core/x.js']
     },
-
+    ts: {
+      commonjs: {
+        src: ['x.ts'],
+        options: {
+          module: 'commonjs',
+          target: 'es5',
+          lib: ["dom", "es5", "es2015"],
+          removeComments: true,
+          sourceMap: false,
+          declaration: false,
+          noEmitOnError: true,
+          alwaysStrict: false,
+          failOnTypeErrors: false,
+          fast: 'never'
+        }
+      },
+      amd: {
+        src: ['x.ts'],
+        out: 'dist/test/x.js',
+        options: {
+          module: 'amd',
+          target: 'es5',
+          lib: ["dom", "es5", "es2015"],
+          removeComments: true,
+          sourceMap: false,
+          // declaration: false,
+          noEmitOnError: false,
+          alwaysStrict: false,
+          failOnTypeErrors: false,
+          fast: 'never'
+        }
+      },
+      docs: {
+        src: ['x.ts'],
+        options: {
+          module: 'commonjs',
+          target: 'ES2015',
+          sourceMap: false,
+          declaration: false,
+          noEmitOnError: true,
+          failOnTypeErrors: false,
+          fast: 'never'
+        }
+      }
+    },
     typescript: {
       commonjs: {
         src: ['x.ts'],
         options: {
           module: 'commonjs', //or commonjs
-          target: 'es5',
+          target: 'ES2015',
+          lib: ["ES5", "ES2015", "DOM"],
           removeComments: true,
           sourcemap: false,
           declaration: false,
           noEmitOnError: true,
-          alwaysStrict: false
+          alwaysStrict: false,
+          references: []
         }
       },
       amd: {
@@ -50,6 +96,7 @@ module.exports = function (grunt) {
         options: {
           module: 'amd', //or commonjs
           target: 'es5',
+          lib: ["es5", "es2015.promise"],
           removeComments: true,
           sourcemap: false,
           declaration: false,
@@ -73,7 +120,7 @@ module.exports = function (grunt) {
         dest: 'dist/umd/x.js',
         options: {
           module: 'system', //or commonjs
-          target: 'es3',
+          target: 'es5',
           sourcemap: false,
           declaration: false,
           noEmitOnError: true
@@ -159,12 +206,14 @@ module.exports = function (grunt) {
 
     mocha_istanbul: {
       coverage: {
-        src: ['test/base/*.js',
+        src: [
+          'test/base/*.js',
           'test/*.js',
           'test/*/*.js'], // a folder works nicely
         options: {
+          timeout: 10000,
           coverageFolder: 'coverage',
-          //  mochaOptions: ['--harmony', '--async-only'], // any extra options
+          mochaOptions: ['--harmony', "--slow", "10"], // any extra options
           // istanbulOptions: ['--harmony', '--handle-sigint']
           // mask: '*.spec.js'
         }
@@ -276,7 +325,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  // grunt.loadNpmTasks('grunt-typescript');
+  grunt.loadNpmTasks('grunt-ts');
   grunt.loadNpmTasks('grunt-jsdoc');
   // grunt.loadNpmTasks('grunt-file-beautify');
 
@@ -292,8 +341,8 @@ module.exports = function (grunt) {
 
   // 生产环境(默认)
   grunt.registerTask('production', [
-    'typescript:commonjs',
-    'typescript:amd',
+    'ts:commonjs',
+    'ts:amd',
     // 'cleanup',
     'uglify',
     'copy:lib',
@@ -305,7 +354,7 @@ module.exports = function (grunt) {
   // 开发环境
   grunt.registerTask('development', [
     // 'typescript:umd',
-    'typescript:commonjs',
+    'ts:commonjs',
     // 'typescript:amd',
     // 'cleanup',
     'uglify',
@@ -323,7 +372,7 @@ module.exports = function (grunt) {
 
   // 生成文档
   grunt.registerTask('docs', [
-    'typescript:docs',
+    'ts:docs',
     'copy:docs',
     'jsdoc',
     'clean:docs'

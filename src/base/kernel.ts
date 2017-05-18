@@ -1,10 +1,14 @@
-import * as lang from "./lang";
+// import { Promise } from 'es6-promise';
 
-declare var window: any;
+import * as lang from "./lang";
+import { StringBuilder } from "./StringBuilder";
+import { Timer } from "./Timer";
+
 declare var global: any;
+declare var window: any;
 
 // 支持的本地化配置
-const locales = { "en-us": "en-us", "zh-cn": "zh-cn" };
+const locales = { "en-us": "en-us", "zh-cn": "zh-cn", "zh-tw": "zh-tw" };
 const defaultLocaleName = 'zh-cn';
 
 var self = {
@@ -19,6 +23,7 @@ var self = {
     // Node 环境 获取 Global 对象
     return typeof window !== 'undefined' ? window : global;
   },
+
   isBrower: function () {
     return lang.type(self.global()) === 'window';
   },
@@ -117,6 +122,10 @@ var self = {
     }
   },
   /*#endregion*/
+
+  // promise: function (fn) {
+  //  return new Promise(fn);
+  // },
 
   /**
   * Guid 格式文本
@@ -458,48 +467,10 @@ var self = {
   },
   /*#endregion*/
 
-  /*#region 类:newStringBuilder()*/
-  /**
-  * 高效字符串构建器<br />
-  * 注: 现在的主流浏览器都针对字符串连接作了优化，所以性能要好于StringBuilder类，不推荐使用，仅作字符串算法研究。
-  * @class StringBuilder
-  * @constructor newStringBuilder
-  * @memberof x
-  */
-  newStringBuilder: function () {
-    var stringBuilder = {
-
-      // 内部数组对象
-      innerArray: [],
-
-      /*#region 函数:append(text)*/
-      /**
-      * 附加文本信息
-      * @method append
-      * @memberof x.newStringBuilder#
-      * @param {string} text 文本信息
-      */
-      append: function (text) {
-        this.innerArray[this.innerArray.length] = text;
-      },
-      /*#endregion*/
-
-      /*#region 函数:toString()*/
-      /**
-      * 转换为字符串
-      * @method toString
-      * @memberof x.newStringBuilder#
-      * @returns {string}
-      */
-      toString: function () {
-        return this.innerArray.join('');
-      }
-      /*#endregion*/
-    };
-
-    return stringBuilder;
-  },
-  /*#endregion*/
+  // 字符串构建器
+  StringBuilder: StringBuilder,
+  // 定时器
+  Timer: Timer,
 
   // 缓存
   timers: {},

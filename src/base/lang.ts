@@ -114,6 +114,64 @@ var self = {
     return self.extend({}, object);
   },
   /*#endregion*/
+
+  /**
+   * 定义事件目标
+   */
+  EventTarget: function () {
+    this.eventListeners = {};
+
+    /**
+     * 添加事件
+     */
+    this.addEventListener = function (type, listener) {
+      if (typeof type === "string" && typeof listener === "function") {
+        if (typeof this.eventListeners[type] === "undefined") {
+          this.eventListeners[type] = [listener];
+        } else {
+          this.eventListeners[type].push(listener);
+        }
+      }
+      return this;
+    }
+
+    /**
+     * 删除事件
+     */
+    this.removeEventListener = function (type, listener) {
+      var listeners = this.eventListeners[type];
+      if (listeners instanceof Array) {
+        if (typeof listener === "function") {
+          for (var i = 0, length = listeners.length; i < length; i += 1) {
+            if (listeners[i] === listener) {
+              listeners.splice(i, 1);
+              break;
+            }
+          }
+        } else if (listener instanceof Array) {
+          for (var lis = 0, lenkey = listener.length; lis < lenkey; lis += 1) {
+            this.unbind(type, listener[lenkey]);
+          }
+        } else {
+          delete this.eventListeners[type];
+        }
+      }
+      return this;
+    }
+
+    /**
+     * 执行事件
+     */
+    this.fire = function (type) {
+      if (type && this.eventListeners[type]) {
+        var events = { type: type, target: this };
+        for (var length = this._listener[type].length, start = 0; start < length; start += 1) {
+          this.eventListeners[type][start].call(this, events);
+        }
+      }
+      return this;
+    };
+  }
 };
 
 // 定义类型判断
