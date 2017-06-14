@@ -44,18 +44,19 @@ var x = base.extend({}, base, {
 base.extend(x, {
   // 事件
   on: event.add,
-  //
+  off: event.remove,
+  // Ajax 请求
   xhr: net.xhr
 });
 
 // 定义全局对象
-var g = x.global();
+var global = x.global();
 
-if (g.x) {
+if (global.x) {
   // 如果已存在全局的x变量, 赋值到_x_变量。
-  g._x_ = g.x;
+  global._x_ = global.x;
 }
 
-g.x = x;
+global.x = x;
 
 export = x;

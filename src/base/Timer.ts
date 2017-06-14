@@ -10,7 +10,7 @@ const namePrefix='timer$';
   * @param {function} callback 回调函数
   * @example
   * // 初始化一个计时器
-  * var timer = x.newTimer(5, function(timer) {
+  * var timer = x.Timer(5, function(timer) {
   *   console.log(new Date());
   *   // 停止计时器
   *   timer.stop();

@@ -213,33 +213,27 @@ describe('base/kernel', function () {
   });
 
   describe('#Timer()', function () {
-    it('should return ok when Timer()', function (done) {
-      var begin = x.date.now();
+    it('should return done when Timer(interval, function(){})', function (done) {
+      var list = [1, 3, 5];
 
-      // 支持 RGB 格式字符串转 HEX 格式字符串
-      var timer1 = new x.Timer(5, function () {
-        var end = x.date.now();
-        var timespan = x.date.diff(begin.toNativeDate(), end.toNativeDate(), 's');
-        console.log(timespan);
-        assert.equal(true, timespan >= 5);
-        timer1.stop();
-        done()
+      x.each(list, function (index, node) {
+
+        var begin = x.date.now();
+
+        // 支持 RGB 格式字符串转 HEX 格式字符串
+        var timer = new x.Timer(node, function () {
+          var end = x.date.now();
+          var timespan = x.date.diff(begin.toNativeDate(), end.toNativeDate(), 's');
+          // console.log(timespan);
+          assert.equal(true, timespan >= node);
+          // 误差2秒之内
+          assert.equal(true, timespan <= node + 2);
+          timer.stop();
+          done()
+        });
+
+        timer.start();
       });
-
-      timer1.start();
-    });
-
-    it('should return ok when Timer()', function (done) {
-      var begin = x.date.now();
-      var timer2 = new x.Timer(1, function () {
-        var end = x.date.now();
-        var timespan = x.date.diff(begin.toNativeDate(), end.toNativeDate(), 's');
-        console.log(timespan);
-        assert.equal(true, timespan >= 1);
-        timer2.stop();
-        done()
-      });
-      timer2.start();
     });
   });
 
