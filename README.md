@@ -3,4 +3,16 @@
 # X JavaScript Library  
 常用工具函数
 
-## 主要功能
+## Install
+npm install x-lib -save
+
+## Useage
+import x from 'x-lib'
+
+## Build
+grunt publish
+
+## Test
+
+online
+https://unpkg.com/x-lib@0.0.10/dist/x.min.js

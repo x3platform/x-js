@@ -49,14 +49,4 @@ base.extend(x, {
   xhr: net.xhr
 });
 
-// 定义全局对象
-var global = x.global();
-
-if (global.x) {
-  // 如果已存在全局的x变量, 赋值到_x_变量。
-  global._x_ = global.x;
-}
-
-global.x = x;
-
 export = x;

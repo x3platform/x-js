@@ -6,6 +6,7 @@ import { Timer } from "./Timer";
 
 declare var global: any;
 declare var window: any;
+declare var ActiveXObject: (type: string) => void;
 
 // 支持的本地化配置
 const locales = { "en-us": "en-us", "zh-cn": "zh-cn", "zh-tw": "zh-tw" };

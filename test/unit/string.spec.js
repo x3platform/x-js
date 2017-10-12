@@ -1,6 +1,6 @@
 var assert = require('assert');
 
-var x = require('../index.js');
+// var x = require('../index.js');
 
 describe('string', function () {
   describe('#x.string.stringify()', function () {

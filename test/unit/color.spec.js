@@ -1,6 +1,6 @@
 ﻿var assert = require('assert');
 
-var x = require('../index.js');
+// var x = require('../index.js');
 
 describe('color', function () {
   describe('#x.color.hex(\'#ffffff\')', function () {

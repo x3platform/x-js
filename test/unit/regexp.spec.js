@@ -1,6 +1,6 @@
 var assert = require('assert');
 
-var x = require('../index.js');
+// var x = require('../index.js');
 
 describe('expressions', function () {
   describe('#x.regexp.match()', function () {

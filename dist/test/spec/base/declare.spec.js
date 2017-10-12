@@ -1,3 +1,7 @@
+
+
+// 
+
 describe('base/declare', function () {
   describe('#x.declare(className, superclass, props)', function () {
     // 定义一个变量

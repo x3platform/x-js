@@ -23,11 +23,7 @@ var x = base.extend({}, base, {
 });
 base.extend(x, {
     on: event.add,
+    off: event.remove,
     xhr: net.xhr
 });
-var g = x.global();
-if (g.x) {
-    g._x_ = g.x;
-}
-g.x = x;
 module.exports = x;

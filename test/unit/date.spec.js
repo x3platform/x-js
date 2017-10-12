@@ -1,6 +1,6 @@
 var assert = require('assert');
 
-var x = require('../index.js');
+// var x = require('../index.js');
 
 describe('date', function () {
   describe('#x.date.now()', function () {

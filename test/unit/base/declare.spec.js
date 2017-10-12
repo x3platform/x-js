@@ -1,6 +1,6 @@
 var assert = require('assert');
 
-var x = require('../../index.js');
+// var x = require('../../index.js');
 
 describe('base/declare', function () {
   describe('#x.declare(className, superclass, props)', function () {

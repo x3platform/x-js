@@ -1,3 +1,7 @@
+
+
+// 
+
 describe('color', function () {
   describe('#x.color.hex(\'#ffffff\')', function () {
     it('should return #ffffff when this color is rgb(255, 255, 255)', function () {

@@ -1,14 +1,24 @@
 .vscode
+.tscache
 
 bin
 build
-dist
-doc
+dist/test
+docs
 src
+coverage
+test
 
 .gitignore
 .npmignore
 Gruntfile.js
+
+.coveralls.yml
+.editorconfig
+.travis.yml
+docs.conf.json
+karma.conf.js
+serve.js
 
 x.js
 x.js.map

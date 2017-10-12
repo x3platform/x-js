@@ -36,7 +36,7 @@ module.exports = function (grunt) {
         options: {
           module: 'commonjs',
           target: 'es5',
-          lib: ["dom", "es5", "es2015"],
+          lib: ['dom', 'es5', 'es2015'],
           removeComments: true,
           sourceMap: false,
           declaration: false,
@@ -48,11 +48,27 @@ module.exports = function (grunt) {
       },
       amd: {
         src: ['x.ts'],
-        out: 'dist/test/x.js',
+        out: 'dist/amd/x.js',
         options: {
           module: 'amd',
           target: 'es5',
-          lib: ["dom", "es5", "es2015"],
+          lib: ['dom', 'es5', 'es2015'],
+          removeComments: true,
+          sourceMap: false,
+          // declaration: false,
+          noEmitOnError: false,
+          alwaysStrict: false,
+          failOnTypeErrors: false,
+          fast: 'never'
+        }
+      },
+      umd: {
+        src: ['x.ts'],
+        // out: 'dist/umd/x1.js',
+        options: {
+          module: 'umd',
+          target: 'es5',
+          lib: ['dom', 'es5', 'es2015'],
           removeComments: true,
           sourceMap: false,
           // declaration: false,
@@ -67,6 +83,7 @@ module.exports = function (grunt) {
         options: {
           module: 'commonjs',
           target: 'ES2015',
+          removeComments: false,
           sourceMap: false,
           declaration: false,
           noEmitOnError: true,
@@ -75,55 +92,17 @@ module.exports = function (grunt) {
         }
       }
     },
-    typescript: {
-      commonjs: {
-        src: ['x.ts'],
+
+    browserify: {
+      dist: {
+        files: {
+          'dist/x.js': ['./index.js']
+        },
         options: {
-          module: 'commonjs', //or commonjs
-          target: 'ES2015',
-          lib: ["ES5", "ES2015", "DOM"],
-          removeComments: true,
-          sourcemap: false,
-          declaration: false,
-          noEmitOnError: true,
-          alwaysStrict: false,
-          references: []
-        }
-      },
-      amd: {
-        src: ['x.ts'],
-        dest: 'dist/test/x.js',
-        options: {
-          module: 'amd', //or commonjs
-          target: 'es5',
-          lib: ["es5", "es2015.promise"],
-          removeComments: true,
-          sourcemap: false,
-          declaration: false,
-          noEmitOnError: true,
-          alwaysStrict: false
-        }
-      },
-      docs: {
-        src: ['x.ts'],
-        options: {
-          module: 'commonjs', //or commonjs
-          target: 'es5',
-          sourcemap: false,
-          declaration: false,
-          noEmitOnError: true
-        }
-      },
-      // UMD 没什么效果
-      umd: {
-        src: ['x.ts', 'src/color.ts'],
-        dest: 'dist/umd/x.js',
-        options: {
-          module: 'system', //or commonjs
-          target: 'es5',
-          sourcemap: false,
-          declaration: false,
-          noEmitOnError: true
+          browserifyOptions: {
+            standalone: 'x',
+            debug: true
+          }
         }
       }
     },
@@ -134,7 +113,7 @@ module.exports = function (grunt) {
       'amd':
       {
         tags: ['#region', '#endregion', 'x.debug.log'],
-        dest: "dist/x.js"
+        dest: 'dist/x.js'
       }
     },
 
@@ -145,11 +124,11 @@ module.exports = function (grunt) {
       {
         banner: '// -*- ecoding=utf-8 -*-\n// Name\t\t:<%= pkg.name %> \n// Version\t:<%= pkg.version %> \n// Author\t:<%= pkg.author %> \n// Date\t\t:<%= grunt.template.today("yyyy-mm-dd") %>\n'
       },
-      'dist':
+      umd:
       {
         files:
         {
-          'dist/x.js': ['dist/test/x.js']
+          'dist/x.min.js': ['dist/x.js']
         }
       }
     },
@@ -164,7 +143,7 @@ module.exports = function (grunt) {
         dest: 'index.js',
         options: {
           process: function (content, srcpath) {
-            return content.replace(/\/src\//g, "/lib/");
+            return content.replace(/\/src\//g, '/lib/');
           }
         }
       },
@@ -175,6 +154,12 @@ module.exports = function (grunt) {
         cwd: 'src/',
         src: ['*.js', 'base/*.js', 'collections/*.js'],
         dest: 'lib/'
+      },
+      // 发布到 dist 目录
+      karma:
+      {
+        // src: 'dist/umd/x.js',
+        // dest: 'dist/karma/bundle.js'
       },
       // 发布到 test 目录
       test:
@@ -203,6 +188,24 @@ module.exports = function (grunt) {
         dest: 'docs/src/'
       }
     },
+    karma: {
+      unit: {
+        configFile: 'test/karma/karma.conf.js',
+        port: 9999,
+        browsers: ['PhantomJS'],
+        singleRun: true
+      }
+    },
+
+    coveralls: {
+      options: {
+        debug: true,
+        coverageDir: 'coverage',
+        dryRun: true,
+        force: true,
+        recursive: true
+      }
+    },
 
     mocha_istanbul: {
       coverage: {
@@ -213,7 +216,7 @@ module.exports = function (grunt) {
         options: {
           timeout: 10000,
           coverageFolder: 'coverage',
-          mochaOptions: ['--harmony', "--slow", "10"], // any extra options
+          mochaOptions: ['--harmony', '--slow', '10'] // any extra options
           // istanbulOptions: ['--harmony', '--handle-sigint']
           // mask: '*.spec.js'
         }
@@ -252,6 +255,7 @@ module.exports = function (grunt) {
         }
       }
     },
+    /*
     coveralls: {
       // Options relevant to all targets
       options: {
@@ -269,26 +273,7 @@ module.exports = function (grunt) {
         }
       },
     },
-
-    // karma runner
-    karma: {
-      unit: {
-        configFile: 'karma.conf.js'
-      },
-      client: {
-        mocha: {
-          // change Karma's debug.html to the mocha web reporter 
-          reporter: 'html'
-
-          // require specific files after Mocha is initialized 
-          // require: [require.resolve('bdd-lazy-var/bdd_lazy_var_global')],
-
-          // custom ui, defined in required file above 
-          // ui: 'bdd-lazy-var/global',
-        }
-      }
-    },
-
+    */
     // 生成文档
     jsdoc:
     {
@@ -301,23 +286,20 @@ module.exports = function (grunt) {
           destination: 'docs',
           // 模板位置
           // template: 'build/jsdoc/templates/default/',
-          template: "node_modules/ink-docstrap/template",
-          configure: "docs.conf.json",
+          template: 'node_modules/ink-docstrap/template',
+          configure: 'docs/docs.conf.json',
           // 是否在文档中输出私有成员
           private: false
         }
       }
-    },
-    clean: {
-      docs: ['docs/src/']
-    },
+    }
   });
 
   // Load grunt tasks from NPM packages
-  require("load-grunt-tasks")(grunt);
+  require('load-grunt-tasks')(grunt);
 
   // 加载自定义任务
-  grunt.loadTasks("build/grunt-typescript/tasks");
+  grunt.loadTasks('build/grunt-typescript/tasks');
 
   // 任务加载
   grunt.loadNpmTasks('grunt-contrib-concat');
@@ -326,15 +308,15 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-ts');
+  grunt.loadNpmTasks('grunt-umd');
   grunt.loadNpmTasks('grunt-jsdoc');
   // grunt.loadNpmTasks('grunt-file-beautify');
+  grunt.loadNpmTasks('dts-generator');
 
   // 测试任务
   grunt.loadNpmTasks('grunt-mocha-istanbul');
-  grunt.loadNpmTasks('grunt-coveralls');
   grunt.loadNpmTasks('grunt-karma');
-
-
+  grunt.loadNpmTasks('grunt-karma-coveralls');
   // 注意看，每一个任务列表格式是：“任务名：启用的任务配置”。通过这样的形式，我们可以指定MultiTasks运行时使用的配置，
   // 否则默认情况下，MultiTasks会依次使用每个配置去执行一遍任务。
   // grunt.registerTask('dist', ['concat:dist', 'uglify:dist']);
@@ -342,13 +324,18 @@ module.exports = function (grunt) {
   // 生产环境(默认)
   grunt.registerTask('production', [
     'ts:commonjs',
-    'ts:amd',
+    // 'ts:amd',
+    // 'webpack:prod',
+    'browserify',
     // 'cleanup',
     'uglify',
+    'copy:index',
     'copy:lib',
+    // 'copy:karma',
     'copy:test',
-    'mocha_istanbul:coverage',
-    'coveralls'
+    'karma'
+    // 'mocha_istanbul:coverage',
+    // 'coveralls'
   ]);
 
   // 开发环境
@@ -360,8 +347,10 @@ module.exports = function (grunt) {
     'uglify',
     'copy:index',
     'copy:lib',
+    // 'copy:karma',
     'copy:test',
-    'mocha_istanbul:coverage'
+    'karma'
+    // 'mocha_istanbul:coverage'
   ]);
 
   grunt.registerTask('default', ['development']);
@@ -374,8 +363,16 @@ module.exports = function (grunt) {
   grunt.registerTask('docs', [
     'ts:docs',
     'copy:docs',
-    'jsdoc',
+    'jsdoc:dist',
     'clean:docs'
+  ]);
+
+  // 生成文档
+  grunt.registerTask('dtsdoc', [
+    'ts:docs',
+    'copy:docs',
+    'jsdoc:dts'
+    // 'clean:docs'
   ]);
 
   // 测试

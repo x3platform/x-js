@@ -1,3 +1,7 @@
+
+
+// 
+
 describe('encoding', function () {
   describe('#x.encoding.html.encode(text)', function () {
     it('should return html code when the value is String', function () {

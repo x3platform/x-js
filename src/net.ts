@@ -3,6 +3,7 @@
 import * as x from "./base";
 import * as event from "./event";
 
+declare var ActiveXObject: (type: string) => void;
 declare var localStorage: any;
 
 declare var $: any;
