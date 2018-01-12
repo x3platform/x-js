@@ -6,7 +6,7 @@ describe('queue', function () {
   describe('#x.queue.create()', function () {
 
     // 初始化一个队列对象
-    var queue = x.queue.create();
+    var queue = new x.collections.Queue();
 
     it('should return queue', function () {
       assert.equal(false, x.isUndefined(queue));

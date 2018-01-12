@@ -186,12 +186,24 @@ function chain(name, bases, reversed) {
   };
 }
 
-/*#region 函数:declare(object)*/
+// #region 函数:declare(object)
 /**
-* 声明对象
-* @method declare
-* @memberof x
-* @returns {object} 声明的对象
+ * 声明对象
+ * @method declare
+ * @memberof x
+ * @param {String} [className] 类名称
+ * @param {Class} [superclass] 父类
+ * @param {Object} [props] 属性信息
+ * @returns {Object} 声明的对象
+ * @example
+ * // 定义一个类
+ * var A = x.declare(5, function(timer) {
+ *   console.log(new Date());
+ *   // 停止计时器
+ *   timer.stop();
+ * });
+ * // 初始化一个类
+ * var obj = new A();
 */
 var declare = function (className?, superclass?, props?) {
   // 处理参数
@@ -293,6 +305,6 @@ var declare = function (className?, superclass?, props?) {
 
   return ctor;
 }
-/*#endregion*/
+// #endregion
 
 export = declare;

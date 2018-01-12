@@ -11,7 +11,7 @@ describe('net', function () {
         x.net.xhr(apiHost + '/users', {
           type: 'get',
           callback: function (response) {
-            console.log(response);
+            // console.log(response);
           }
         });
       }
@@ -24,7 +24,7 @@ describe('net', function () {
         x.net.xhr(apiHost + '/users', { a: 1, b: 2, c: 3 }, {
           type: 'post',
           callback: function (response) {
-            console.log(response);
+            // console.log(response);
           }
         });
       }

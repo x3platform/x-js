@@ -1,15 +1,17 @@
+import * as declare from "../base/declare";
+
 /**
 * 栈
 * @namespace stack
 * @memberof x
 */
 let self = {
-  /*#region 类:newStack()*/
+  // #region 类:newStack()
   /**
    * 栈
    * @description 创建 Stack 对象
    * @memberof x.stack
-   * @returns {object} {@link x.stack.Stack|Stack} 对象
+   * @returns {Object} {@link x.stack.Stack|Stack} 对象
    * @example
    * // 初始化一个 Stack 对象
    * var stack = x.stack.create();
@@ -18,7 +20,7 @@ let self = {
     return self.constructor();
   },
 
-  /*#region 类:newStack()*/
+  // #region 类:newStack()
   /**
   * 栈
   * @description 创建 Stack 对象
@@ -32,13 +34,14 @@ let self = {
       // 内部数组对象
       innerArray: [],
 
-      /*
-      * 插入栈顶元素
-      */
-      push: function (targetObject) {
-        this.innerArray[this.innerArray.length] = targetObject;
+      /**
+       * 插入栈顶元素
+       *
+       */
+      push: function (element) {
+        this.innerArray[this.innerArray.length] = element;
       },
-      /*#endregion*/
+      // #endregion
 
       /*
       * 弹出栈顶元素(并删除栈顶元素)
@@ -48,14 +51,14 @@ let self = {
           return null;
         }
         else {
-          var targetObject = this.innerArray[this.innerArray.length - 1];
+          var element = this.innerArray[this.innerArray.length - 1];
 
           this.innerArray.length--;
 
-          return targetObject;
+          return element;
         }
       },
-      /*#endregion*/
+      // #endregion
 
       /*
       * 取出栈顶元素(并不删除栈顶元素)
@@ -67,7 +70,7 @@ let self = {
 
         return this.innerArray[this.innerArray.length - 1];
       },
-      /*#endregion*/
+      // #endregion
 
       /**
        * 清空堆栈
@@ -76,9 +79,9 @@ let self = {
         //将元素的个数清零即可
         this.innerArray.length = 0;
       },
-      /*#endregion*/
+      // #endregion
 
-      /*#region 函数:size()*/
+      // #region 函数:size()
       /**
       * 获得线性堆栈的当前大小
       * @method size
@@ -87,7 +90,7 @@ let self = {
       size: function () {
         return this.innerArray.length;
       },
-      /*#endregion*/
+      // #endregion
 
       /*
       * 判断一个线性堆栈是否为空
@@ -95,12 +98,12 @@ let self = {
       isEmpty: function () {
         return (this.innerArray.length === 0) ? true : false;
       }
-      /*#endregion*/
+      // #endregion
     };
 
     return stack;
   }
-  /*#endregion*/
+  // #endregion
 };
 
 export = self;

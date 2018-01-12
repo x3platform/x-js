@@ -9,6 +9,7 @@ describe('string', function () {
       assert.equal(x.string.stringify(false), 'false');
     });
     it('should return \'abc\' when the function() { return \'abc\'; }', function () {
+      // console.log(x.string.stringify(function () { return 'abc'; }));
       assert.equal(x.string.stringify(function () { return 'abc'; }), 'abc');
     });
     it('should return \'\' when the value is null or undefined', function () {
@@ -69,18 +70,18 @@ describe('string', function () {
     });
   });
 
-  describe('#x.string.left(text: string, length: number, hasEllipsis: boolean = true)', function () {
+  describe('#x.string.ellipsis(text: string, length: number, hasEllipsis: boolean = true)', function () {
     it('should return abcde... when text=abcdefghijklmn, length=5', function () {
-      var text = x.string.left('abcdefghijklmn', 5);
+      var text = x.string.ellipsis('abcdefghijklmn', 5);
       assert.equal(text, 'abcde...');
 
-      var text = x.string.left('abcdefghijklmn', 5, false);
+      var text = x.string.ellipsis('abcdefghijklmn', 5, false);
       assert.equal(text, 'abcde');
 
-      var text = x.string.left('abcd', 5);
+      var text = x.string.ellipsis('abcd', 5);
       assert.equal(text, 'abcd');
 
-      var text = x.string.left('', 5);
+      var text = x.string.ellipsis('', 5);
       assert.equal(text, '');
     });
   });

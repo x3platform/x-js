@@ -152,7 +152,7 @@ module.exports = function (grunt) {
       {
         expand: true,
         cwd: 'src/',
-        src: ['*.js', 'base/*.js', 'collections/*.js'],
+        src: ['**/*.js'],
         dest: 'lib/'
       },
       // 发布到 dist 目录
@@ -179,12 +179,12 @@ module.exports = function (grunt) {
           }
         }
       },
-      // 发布到 lib 目录
+      // 发布到 docs 目录
       docs:
       {
         expand: true,
         cwd: 'src/',
-        src: '*.js',
+        src: '**/*.js',
         dest: 'docs/src/'
       }
     },
@@ -279,7 +279,7 @@ module.exports = function (grunt) {
     {
       dist:
       {
-        src: ['README.md', 'docs/src/*.js'],
+        src: ['README.md', 'docs/src/**/*.js'],
         options:
         {
           // 输出文件夹位置
@@ -308,10 +308,10 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-ts');
-  grunt.loadNpmTasks('grunt-umd');
+  // grunt.loadNpmTasks('grunt-umd');
   grunt.loadNpmTasks('grunt-jsdoc');
   // grunt.loadNpmTasks('grunt-file-beautify');
-  grunt.loadNpmTasks('dts-generator');
+  // grunt.loadNpmTasks('dts-generator');
 
   // 测试任务
   grunt.loadNpmTasks('grunt-mocha-istanbul');
@@ -365,6 +365,14 @@ module.exports = function (grunt) {
     'copy:docs',
     'jsdoc:dist',
     'clean:docs'
+  ]);
+
+  // 生成文档
+  grunt.registerTask('dtsdoc', [
+    'ts:docs',
+    'copy:docs',
+    'jsdoc:dts'
+    // 'clean:docs'
   ]);
 
   // 生成文档

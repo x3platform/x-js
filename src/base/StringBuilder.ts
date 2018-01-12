@@ -17,27 +17,27 @@ export class StringBuilder {
     // this.innerArray = [];
   }
 
-  /*#region 函数:append(text)*/
+  // #region 函数:append(text)
   /**
   * 附加文本信息
   * @method append
   * @memberof x.StringBuilder#
-  * @param {string} text 文本信息
+  * @param {String} text 文本信息
   */
   append(text: string) {
     this.innerArray[this.innerArray.length] = text;
   }
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:toString()*/
+  // #region 函数:toString()
   /**
   * 转换为字符串
   * @method toString
   * @memberof x.StringBuilder#
-  * @returns {string}
+  * @returns {String}
   */
   toString() {
     return this.innerArray.join('');
   }
-  /*#endregion*/
+  // #endregion
 }

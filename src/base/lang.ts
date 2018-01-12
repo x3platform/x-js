@@ -4,11 +4,12 @@
  */
 var self = {
 
-  /*#region 函数:type(object)*/
+  // #region 函数:type(object)
   /**
    * 检查对象类型
    * @method type
    * @memberof x
+   * @param {any} object 对象
    */
   type: function (object) {
     try {
@@ -25,51 +26,51 @@ var self = {
       throw ex;
     }
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:isArray(object)*/
+  // #region 函数:isArray(object)
   /**
   * 判断对象是否是 Array 类型
   * @method isArray
   * @memberof x
   */
   isArray: function (object) { },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:isFunction(object)*/
+  // #region 函数:isFunction(object)
   /**
   * 判断对象是否是 Function 类型
   * @method isFunction
   * @memberof x
   */
   isFunction: function (object) { },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:isString(object)*/
+  // #region 函数:isString(object)
   /**
   * 判断对象是否是 String 类型
   * @method isString
   * @memberof x
   */
   isString: function (object) { },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:isNumber(object)*/
+  // #region 函数:isNumber(object)
   /**
   * 判断对象是否是 Number 类型
   * @method inspect
   * @memberof Object
   */
   isNumber: function (object) { },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:isUndefined(value, replacementValue)*/
+  // #region 函数:isUndefined(value, replacementValue)
   /**
   * 判断是否是 undefined 类型, 如果设置了替换的值, 则当第一个参数为 undefined, 则使用替换的值
   * @method isUndefined
   * @memberof x
-  * @param {object} value 值
-  * @param {string} [replacementValue] 替换的值
+  * @param {Object} value 值
+  * @param {String} [replacementValue] 替换的值
   * @example
   * // return true
   * x.isUndefined(undefinedValue);
@@ -78,9 +79,9 @@ var self = {
   * x.isUndefined(undefinedValue, '');
   */
   isUndefined: function (object) { },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:extend(destination, source)*/
+  // #region 函数:extend(destination, source)
   /**
   * 将来源对象的属性和方法扩展至目标对象
   * @method extend
@@ -101,19 +102,19 @@ var self = {
 
     return result;
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:clone(object)*/
+  // #region 函数:clone(object)
   /**
   * 克隆对象
   * @method clone
   * @memberof x
-  * @returns {object} 克隆的对象
+  * @returns {Object} 克隆的对象
   */
   clone: function (object) {
     return self.extend({}, object);
   },
-  /*#endregion*/
+  // #endregion
 
   /**
    * 定义事件目标

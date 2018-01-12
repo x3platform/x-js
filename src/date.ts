@@ -22,7 +22,7 @@ let self = {
   * 创建时间对象
   * @method create
   * @memberof x.date
-  * @param {object} timeValue 符合时间规则的日期, 数组, 字符串
+  * @param {Object} timeValue 符合时间规则的日期, 数组, 字符串
   */
   create: function (timeValue?) {
     return self.newDateTime(timeValue);
@@ -84,8 +84,8 @@ let self = {
   * 时间格式化
   * @method format
   * @memberof x.date
-  * @param {object} timeValue 符合时间规则的日期, 数组, 字符串
-  * @param {string} formatValue 时间格式
+  * @param {Object} timeValue 符合时间规则的日期, 数组, 字符串
+  * @param {String} formatValue 时间格式
   * @example
   * self.format('2000-01-01 00:00:00', 'yyyy/MM/dd hh:mm:ss');
   */
@@ -99,8 +99,8 @@ let self = {
   * 显示某个时间之前的格式
   * @method format
   * @memberof x.date
-  * @param {object} timeValue 符合时间规则的日期, 数组, 字符串
-  * @param {object} suffix 后缀配置
+  * @param {Object} timeValue 符合时间规则的日期, 数组, 字符串
+  * @param {Object} suffix 后缀配置
   * @example
   * self.ago('2000-01-01 00:00:00');
   * @example
@@ -165,6 +165,10 @@ let self = {
         // .NET 日期对象
         date = new Date(Math.floor(timeValue.replace(/\/Date\((-?\d+)\)\//, '$1')));
       }
+      else if (/(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3})Z/.test(timeValue)) {
+        // ISO 8601 日期格式
+        date = new Date(timeValue);
+      }
       else {
         // 处理规则 年 月 日 时 分 秒 顺序规则时间
         var keys = timeValue.replace(/[-|:|\/| |年|月|日]/g, ',').replace(/,,/g, ',').split(',');
@@ -193,7 +197,7 @@ let self = {
       * 比较与另一个时间对象的时间差
       * @method diff
       * @memberof x.date.DateTime#
-      * @param {string} interval 时间间隔
+      * @param {String} interval 时间间隔
       * @param {Time} time 时间对象
       */
       diff: function (interval, time) {
@@ -219,8 +223,8 @@ let self = {
       * 时间对象的属性相加
       * @method add
       * @memberof x.date.DateTime#
-      * @param {string} interval 时间间隔
-      * @param {number} number 数字
+      * @param {String} interval 时间间隔
+      * @param {Number} number 数字
       */
       add: function (interval: string, number: number) {
         var date = Number(this.toNativeDate());
@@ -433,13 +437,15 @@ let self = {
        * ss/s 秒
        * @method toString
        * @memberof x.date.DateTime#
-       * @param {string} format 时间格式
-       * @returns {string}
+       * @param {String} format 时间格式
+       * @returns {String}
        */
       toString: function (format = 'yyyy-MM-dd HH:mm:ss') {
 
         return format.replace(/yyyy|YYYY/g, this.year)
           .replace(/yy|YY/g, x.paddingZero((this.year2 % 100), 2))
+          .replace(/Y/g, this.year)
+
           .replace(/MM/g, x.paddingZero((this.month + 1), 2))
           .replace(/M/g, (this.month + 1))
 
@@ -469,7 +475,7 @@ let self = {
   * @class TimeSpan
   * @constructor TimeSpan
   * @memberof x.date
-  * @param {number} timespanValue 符合时间规则的值(允许Date对象|数组对象|字符串对象)
+  * @param {Number} timespanValue 符合时间规则的值(允许Date对象|数组对象|字符串对象)
   */
   timespan: function (timespanValue, format: string = 'second') {
     // 小时转化成秒

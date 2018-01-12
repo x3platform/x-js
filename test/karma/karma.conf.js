@@ -7,11 +7,9 @@ module.exports = function (config) {
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '../../',
 
-
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['mocha'],
-
 
     // list of files / patterns to load in the browser
     files: [
@@ -34,7 +32,7 @@ module.exports = function (config) {
 
     coverageReporter: {
       type: 'lcov',
-      dir: 'coverage/'
+      dir: 'test/coverage/'
     },
 
     // test results reporter to use

@@ -17,7 +17,7 @@ let self = {
     */
     hex: function (colorRgbCode) {
         if (/^(rgb|RGB)/.test(colorRgbCode)) {
-            var colorBuffer = colorRgbCode.replace(/(?:\(|\)|rgb|RGB)*/g, "").split(",");
+            var colorBuffer = colorRgbCode.replace(/(?:\(|\)|rgb|RGB)/g, "").split(",");
             var strHex = "#";
             for (var i = 0; i < colorBuffer.length; i++) {
                 var hex = Number(colorBuffer[i]).toString(16);

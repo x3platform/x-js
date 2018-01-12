@@ -25,12 +25,12 @@ let self = {
       '\'': '&#39;'
     },
 
-    /*#region 函数:encode(text)*/
+    // #region 函数:encode(text)
     /**
     * html 编码
     * @method encode
     * @memberof x.encoding.html
-    * @param {string} text 文本信息
+    * @param {String} text 文本信息
     * @example
     * // 输出格式 &#60;p&#62;hello&#60;/p&#62;
     * console.log(x.encoding.html.encode('<p>hello</p>'));
@@ -55,14 +55,14 @@ let self = {
 
       //            return outString;
     },
-    /*#endregion*/
+    // #endregion
 
-    /*#region 函数:decode(text)*/
+    // #region 函数:decode(text)
     /**
     * html 解码
     * @method decode
     * @memberof x.encoding.html
-    * @param {string} text 文本信息
+    * @param {String} text 文本信息
     */
     decode: function (text) {
       // 空值判断
@@ -82,7 +82,7 @@ let self = {
 
       return outString;
     }
-    /*#endregion*/
+    // #endregion
   },
 
   /**
@@ -95,12 +95,12 @@ let self = {
     // 注意
     // html 的 unicode 编码格式是&#888888;, javascript 的 unicode 编码格式\u000000
 
-    /*#region 函数:encode(text)*/
+    // #region 函数:encode(text)
     /**
     * unicode 编码
     * @method encode
     * @memberof x.encoding.unicode
-    * @param {string} text 文本信息
+    * @param {String} text 文本信息
     */
     encode: function (text, prefix) {
       if (text.length === 0) { return ''; }
@@ -129,14 +129,14 @@ let self = {
 
       return outString.toLowerCase();
     },
-    /*#endregion*/
+    // #endregion
 
-    /*#region 函数:decode(text)*/
+    // #region 函数:decode(text)
     /**
     * unicode 解码
     * @method decode
     * @memberof x.encoding.unicode
-    * @param {string} text 文本信息
+    * @param {String} text 文本信息
     */
     decode: function (text, prefix) {
       if (text.length === 0) { return ''; }
@@ -162,7 +162,7 @@ let self = {
 
       return outString;
     }
-    /*#endregion*/
+    // #endregion
   }
 };
 

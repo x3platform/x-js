@@ -9,6 +9,7 @@ import * as Stack from "./src/collections/Stack";
 // import * as stack from "./src/stack";
 
 import * as color from "./src/color";
+import * as cookies from "./src/cookies";
 import * as encoding from "./src/encoding";
 import * as regexp from "./src/regexp";
 import * as string from "./src/string";
@@ -26,6 +27,8 @@ var x = base.extend({}, base, {
   stack: Stack,
   // 颜色
   color: color,
+  // 颜色
+  cookies: cookies,
   // 编码
   encoding: encoding,
   // 正则表达式
@@ -40,12 +43,19 @@ var x = base.extend({}, base, {
   net: net
 });
 
-// 设置快速方法
+// 设置快捷方法
 base.extend(x, {
-  // 事件
+  /*
+   * @method on
+   * @memberof x
+   */
   on: event.add,
+
   off: event.remove,
-  // Ajax 请求
+  /*
+   * @method xhr
+   * @memberof x
+   */
   xhr: net.xhr
 });
 

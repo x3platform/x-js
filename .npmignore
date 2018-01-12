@@ -32,3 +32,7 @@ travis.yml
 # TypeScript
 tsconfig.json
 *.ts
+
+# ESLint
+.eslintignore
+.eslintrc.js

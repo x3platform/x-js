@@ -4,6 +4,7 @@ var event = require("./lib/event");
 var Queue = require("./lib/collections/Queue");
 var Stack = require("./lib/collections/Stack");
 var color = require("./lib/color");
+var cookies = require("./lib/cookies");
 var encoding = require("./lib/encoding");
 var regexp = require("./lib/regexp");
 var string = require("./lib/string");
@@ -14,6 +15,7 @@ var x = base.extend({}, base, {
     queue: Queue,
     stack: Stack,
     color: color,
+    cookies: cookies,
     encoding: encoding,
     regexp: regexp,
     string: string,

@@ -1,9 +1,6 @@
-// -*- ecoding=utf-8 -*-
-
-// import * as x from "./core";
 import * as declare from "../base/declare";
 
-/*#region 类:Dict()*/
+// #region 类:Dict()
 /**
 * 字典
 * @class Hashtable 字典
@@ -20,7 +17,7 @@ let self = declare({
   constructor: function () {
     this.innerArray = [];
   },
-  /*#region 函数:clear()*/
+  // #region 函数:clear()
   /**
   * 清空字典
   * @method clear
@@ -29,9 +26,9 @@ let self = declare({
   clear: function () {
     this.innerArray = [];
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:exist(key)*/
+  // #region 函数:exist(key)
   /**
   * 判断是否已存在相同键的对象
   * @method exist
@@ -47,9 +44,9 @@ let self = declare({
 
     return false;
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:index(key)*/
+  // #region 函数:index(key)
   /**
   * @method index
   * @memberof x.Dict#
@@ -62,9 +59,9 @@ let self = declare({
     }
     return -1;
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:add(key, value)*/
+  // #region 函数:add(key, value)
   /**
   * @method add
   * @memberof x.Dict#
@@ -86,9 +83,9 @@ let self = declare({
       }
     }
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:remove(key)*/
+  // #region 函数:remove(key)
   /**
   * @method remove
   * @memberof x.Dict#
@@ -103,7 +100,7 @@ let self = declare({
   // remove
   // ke
 
-  /*#region 函数:get(key)*/
+  // #region 函数:get(key)
   /**
    * 获取值
   * @method get
@@ -118,9 +115,9 @@ let self = declare({
 
     return null;
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:get(key)*/
+  // #region 函数:get(key)
   /**
    * 设置值
   * @method set
@@ -133,9 +130,9 @@ let self = declare({
       }
     }
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:size()*/
+  // #region 函数:size()
   /**
   * 获取字典的当前大小
   * @method size
@@ -144,7 +141,7 @@ let self = declare({
   size: function () {
     return this.innerArray.length;
   }
-  /*#endregion*/
+  // #endregion
 });
 
 export = self;

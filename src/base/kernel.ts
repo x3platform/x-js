@@ -53,14 +53,14 @@ var self = {
   // Is it a simple selector
   isSimple: /^.[^:#\[\.,]*$/,
 
-  /*#region 函数:noop()*/
+  // #region 函数:noop()
   /**
   * 空操作
   */
   noop: function () { },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:register(value)*/
+  // #region 函数:register(value)
   /**
   * 注册对象信息
   * @method register
@@ -82,9 +82,9 @@ var self = {
 
     return root;
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:invoke(object, fn)*/
+  // #region 函数:invoke(object, fn)
   /**
   * 执行对象方法
   * @method invoke
@@ -96,9 +96,9 @@ var self = {
 
     return fn.apply(object, args);
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:call(anything)*/
+  // #region 函数:call(anything)
   /*
   * 调用方法或者代码文本
   * @method call
@@ -122,7 +122,7 @@ var self = {
       }
     }
   },
-  /*#endregion*/
+  // #endregion
 
   // promise: function (fn) {
   //  return new Promise(fn);
@@ -134,12 +134,12 @@ var self = {
   * @memberof x
   */
   guid: {
-    /*#region 函数:create(format, isUpperCase)*/
+    // #region 函数:create(format, isUpperCase)
     /**
     * 创建 Guid 格式文本
     * @method create
     * @memberof x.guid
-    * @param {string} [format] 分隔符格式(如果填空白字符串则不显示)
+    * @param {String} [format] 分隔符格式(如果填空白字符串则不显示)
     * @param {bool} [isUpperCase] 是否是大写格式(true|false)
     * @example
     * // 输出格式 aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
@@ -171,7 +171,7 @@ var self = {
 
       return text;
     }
-    /*#endregion*/
+    // #endregion
   },
 
   /**
@@ -180,12 +180,12 @@ var self = {
   * @memberof x
   */
   randomText: {
-    /*#region 函数:create(length)*/
+    // #region 函数:create(length)
     /**
     * 创建随机文本信息
     * @method create
     * @memberof x.randomText
-    * @param {number} length 返回的文本长度
+    * @param {Number} length 返回的文本长度
     * @example
     * // 输出格式 00000000
     * console.log(x.randomText.create(8));
@@ -199,10 +199,10 @@ var self = {
 
       return result;
     }
-    /*#endregion*/
+    // #endregion
   },
 
-  /*#region 函数:nonce(length)*/
+  // #region 函数:nonce(length)
   /**
   * 创建随机数
   * @method nonce
@@ -212,14 +212,14 @@ var self = {
   nonce: function (length = 6) {
     return Number(self.randomText.create(1, '123456789') + self.randomText.create(length - 1, '0123456789'));
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:serialize(data)*/
+  // #region 函数:serialize(data)
   /**
   * 返回数据串行化后的字符串
   * @method serialize
   * @memberof x
-  * @param {object} data 表单输入元素的数组或键/值对的散列表
+  * @param {Object} data 表单输入元素的数组或键/值对的散列表
   */
   serialize: function (data) {
     var buffer = [], length = data.length;
@@ -238,9 +238,9 @@ var self = {
 
     return buffer.join('&');
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:each(data, callback)*/
+  // #region 函数:each(data, callback)
   /**
   * 遍历元素对象, 如果需要退出返回 false
   * @method each
@@ -251,8 +251,8 @@ var self = {
   each: function (data, callback) {
     var name, i = 0, length = data.length;
 
-    if (lang.isArray(data)) {
-      // 数组对象
+    if (lang.isArray(data) || lang.type(data) == 'nodelist') {
+      // 数组对象 NodeList
       for (var value = data[0]; i < length && callback.call(value, i, value) != false; value = data[++i]) { }
     }
     else {
@@ -264,14 +264,14 @@ var self = {
 
     return data;
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:toXML(text)*/
+  // #region 函数:toXML(text)
   /**
   * 将字符串转换为XML对象
   * @method toXML
   * @memberof x
-  * @param {string} text XML对象的文本格式
+  * @param {String} text XML对象的文本格式
   */
   toXML: function (text, hideError = false) {
     if (lang.type(text) === 'xmldocument') { return text; }
@@ -308,14 +308,14 @@ var self = {
 
     return doc;
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:toJSON(text)*/
+  // #region 函数:toJSON(text)
   /**
   * 将字符串转换为JSON对象
   * @method toJSON
   * @memberof x
-  * @param {string} text JSON对象的文本格式
+  * @param {String} text JSON对象的文本格式
   */
   toJSON: function (text) {
     if (lang.type(text) === 'object') { return text; }
@@ -339,14 +339,14 @@ var self = {
       }
     }
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:toSafeJSON(text)*/
+  // #region 函数:toSafeJSON(text)
   /**
   * 将普通文本信息转换为安全的符合JSON格式规范的文本信息
   * @method toSafeJSON
   * @memberof x
-  * @param {string} text 文本信息
+  * @param {String} text 文本信息
   */
   toSafeJSON: function (text) {
     var outString = '';
@@ -380,38 +380,38 @@ var self = {
 
     return outString;
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:toSafeLike(text)*/
+  // #region 函数:toSafeLike(text)
   /**
   * 将字符串中特殊字符([%_)转换为可识别的Like内容.
   * @method toSafeLike
   * @memberof x
-  * @param {string} text 文本信息
+  * @param {String} text 文本信息
   */
   toSafeLike: function (text) {
     return text.replace(/\[/g, '[[]').replace(/%/g, '[%]').replace(/_/g, '[_]');
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:cdata(text)*/
+  // #region 函数:cdata(text)
   /**
   * 将普通文本信息转为为Xml不解析的文本信息
   * @method cdata
   * @memberof x
-  * @param {string} text 文本信息
+  * @param {String} text 文本信息
   */
   cdata: function (text) {
     return '<![CDATA[' + text + ']]>';
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:camelCase(text)*/
+  // #region 函数:camelCase(text)
   /**
   * 将短划线文字(name1-name2-name3)转换至驼峰格式(name1Name2Name3)
   * @method camelCase
   * @memberof x
-  * @param {string} text 文本信息
+  * @param {String} text 文本信息
   */
   camelCase: function (text) {
     // jQuery: Microsoft forgot to hump their vendor prefix (#9572)
@@ -425,40 +425,40 @@ var self = {
       return letter.toUpperCase();
     });
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:paddingZero(number, length)*/
+  // #region 函数:paddingZero(number, length)
   /**
   * 数字补零
   * @method paddingZero
   * @memberof x
-  * @param {number} number 数字
-  * @param {number} length 需要补零的位数
+  * @param {Number} number 数字
+  * @param {Number} length 需要补零的位数
   */
   paddingZero: function (number, length) {
     return (Array(length).join('0') + number).slice(-length);
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:formatLocale(text)*/
+  // #region 函数:formatLocale(text)
   /**
   * 将字符串统一转换为本地标识标识
   * @method formatLocale
   * @memberof x
-  * @param {string} text 文本信息
+  * @param {String} text 文本信息
   */
   formatLocale: function (text) {
     var locale = locales[text.toLowerCase()];
     return locale ? locale : defaultLocaleName;
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:getFriendlyName(name)*/
+  // #region 函数:getFriendlyName(name)
   /**
   * 将不规范的标识名称转换为友好的名称.
   * @method getFriendlyName
   * @memberof x
-  * @param {string} name 名称
+  * @param {String} name 名称
   * @example
   * // 将路径中的[$./\:?=]符号替换为[_]符号
   * console.log(x.getFriendlyName(location.pathname));
@@ -466,7 +466,7 @@ var self = {
   getFriendlyName: function (name) {
     return self.camelCase(('x_' + name).replace(/[\#\$\.\/\\\:\?\=]/g, '_').replace(/[-]+/g, '_'));
   },
-  /*#endregion*/
+  // #endregion
 
   // 字符串构建器
   StringBuilder: StringBuilder,
@@ -476,13 +476,13 @@ var self = {
   // 缓存
   timers: {},
 
-  /*#region 类:Timer(interval, callback)*/
+  // #region 类:Timer(interval, callback)
   /**
   * 计时器
   * @class Timer 计时器
   * @constructor Timer
   * @memberof x
-  * @param {number} interval 时间间隔(单位:秒)
+  * @param {Number} interval 时间间隔(单位:秒)
   * @param {function} callback 回调函数
   * @example
   * // 初始化一个计时器
@@ -504,7 +504,7 @@ var self = {
       // 回调函数
       callback: callback,
 
-      /*#region 函数:run()*/
+      // #region 函数:run()
       /**
       * 执行回调函数
       * @private
@@ -514,10 +514,10 @@ var self = {
       run: function () {
         this.callback(this);
       },
-      /*#endregion*/
+      // #endregion
 
 
-      /*#region 函数:start()*/
+      // #region 函数:start()
       /**
       * 启动计时器
       * @method start
@@ -531,9 +531,9 @@ var self = {
         var that = self.timers[this.name] = this;
         this.timerId = setInterval(function () { self.timers[that.name].run() }, this.interval);
       },
-      /*#endregion*/
+      // #endregion
 
-      /*#region 函数:stop()*/
+      // #region 函数:stop()
       /**
       * 停止计时器
       * @method stop
@@ -542,13 +542,13 @@ var self = {
       stop: function () {
         clearInterval(this.timerId);
       }
-      /*#endregion*/
+      // #endregion
     };
 
     return timer;
   },
 
-  /*#endregion*/
+  // #endregion
   /**
   * @namespace debug
   * @memberof x
@@ -560,12 +560,12 @@ var self = {
     // http://getfirebug.com/wiki/index.php/Console_API
     // https://developers.google.com/chrome-developer-tools/docs/console?hl=zh-CN#using_the_console_api
 
-    /*#region 函数:log(object)*/
+    // #region 函数:log(object)
     /**
     * 记录普通的日志消息
     * @method log
     * @memberof x.debug
-    * @param {object} object 对象
+    * @param {Object} object 对象
     */
     log: function (object) {
       // firebug
@@ -573,14 +573,14 @@ var self = {
         console.log(object);
       }
     },
-    /*#endregion*/
+    // #endregion
 
-    /*#region 函数:warn(object)*/
+    // #region 函数:warn(object)
     /**
     * 记录警告的日志消息
     * @method warn
     * @memberof x.debug
-    * @param {object} object 对象
+    * @param {Object} object 对象
     */
     warn: function (object) {
       // console
@@ -588,14 +588,14 @@ var self = {
         console.warn(object);
       }
     },
-    /*#endregion*/
+    // #endregion
 
-    /*#region 函数:error(object)*/
+    // #region 函数:error(object)
     /**
     * 记录错误的日志消息
     * @method error
     * @memberof x.debug
-    * @param {object} object 对象
+    * @param {Object} object 对象
     */
     error: function (object) {
       // console
@@ -603,14 +603,14 @@ var self = {
         console.error(object);
       }
     },
-    /*#endregion*/
+    // #endregion
 
-    /*#region 函数:assert(expression)*/
+    // #region 函数:assert(expression)
     /**
     * 断言
     * @method assert
     * @memberof x.debug
-    * @param {string} expression 表达式
+    * @param {String} expression 表达式
     */
     assert: function (expression) {
       // console
@@ -618,14 +618,14 @@ var self = {
         console.assert(expression);
       }
     },
-    /*#endregion*/
+    // #endregion
 
-    /*#region 函数:time(name)*/
+    // #region 函数:time(name)
     /**
     * 计时器
     * @method time
     * @memberof x.debug
-    * @param {string} name 计时器名称
+    * @param {String} name 计时器名称
     */
     time: function (name) {
       // console
@@ -633,14 +633,14 @@ var self = {
         console.time(name);
       }
     },
-    /*#endregion*/
+    // #endregion
 
-    /*#region 函数:timeEnd(name)*/
+    // #region 函数:timeEnd(name)
     /**
     * 停止计时器
     * @method timeEnd
     * @memberof x.debug
-    * @param {string} name 计时器名称
+    * @param {String} name 计时器名称
     */
     timeEnd: function (name) {
       // console
@@ -648,9 +648,9 @@ var self = {
         console.timeEnd(name);
       }
     },
-    /*#endregion*/
+    // #endregion
 
-    /*#region 函数:timestamp()*/
+    // #region 函数:timestamp()
     /**
     * 获取当前时间信息
     * @method timestamp
@@ -670,7 +670,7 @@ var self = {
         .replace(/ss|SS/, timestamp.getSeconds() > 9 ? timestamp.getSeconds().toString() : '0' + timestamp.getSeconds())
         .replace(/fff/g, ((timestamp.getMilliseconds() > 99) ? timestamp.getMilliseconds().toString() : (timestamp.getMilliseconds() > 9) ? '0' + timestamp.getMilliseconds() : '00' + timestamp.getMilliseconds()));
     }
-    /*#endregion*/
+    // #endregion
   }
 };
 

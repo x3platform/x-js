@@ -64,7 +64,7 @@ let defaults = {
           // 消息框
           message: null,
 
-          /*#region 函数:create(text)*/
+          // #region 函数:create(text)
           create: function (text) {
             if (document.getElementById(this.name + '-text') == null) {
               $(document.body).append('<div id="' + this.name + '-container" class="x-ui-dialog-waiting-mini-window-container" ><div id="' + this.name + '-text" class="x-ui-dialog-waiting-mini-window-text" >' + text + '</div></div>');
@@ -77,9 +77,9 @@ let defaults = {
               this.container = document.getElementById(this.name + '-container');
             }
           },
-          /*#endregion*/
+          // #endregion
 
-          /*#region 函数:show(text)*/
+          // #region 函数:show(text)
           /*
           * 显示
           */
@@ -98,9 +98,9 @@ let defaults = {
               bottom: '4px'
             });
           },
-          /*#endregion*/
+          // #endregion
 
-          /*#region 函数:hide()*/
+          // #region 函数:hide()
           /*
           * 隐藏
           */
@@ -116,7 +116,7 @@ let defaults = {
               // });
             }
           }
-          /*#endregion*/
+          // #endregion
         };
       }
       else if (options.type == 'plus') {
@@ -129,13 +129,13 @@ let defaults = {
           // 容器
           container: null,
 
-          /*#region 函数:create(text)*/
+          // #region 函数:create(text)
           create: function (text) {
             this.options.text = text;
           },
-          /*#endregion*/
+          // #endregion
 
-          /*#region 函数:show(text)*/
+          // #region 函数:show(text)
           /*
           * 显示
           */
@@ -148,9 +148,9 @@ let defaults = {
 
             this.container = plus.nativeUI.showWaiting(this.options.text);
           },
-          /*#endregion*/
+          // #endregion
 
-          /*#region 函数:hide()*/
+          // #region 函数:hide()
           /*
           * 隐藏
           */
@@ -159,7 +159,7 @@ let defaults = {
               this.container.close();
             }
           }
-          /*#endregion*/
+          // #endregion
         };
       }
       else {
@@ -193,7 +193,7 @@ let defaults = {
 
           width: options.width ? options.width : 200,
 
-          /*#region 函数:setPosition()*/
+          // #region 函数:setPosition()
           setPosition: function () {
             // 弹出窗口的位置
             var range = x.page.getRange();
@@ -203,9 +203,9 @@ let defaults = {
 
             x.dom.fixed(this.container, pointX, pointY);
           },
-          /*#endregion*/
+          // #endregion
 
-          /*#region 函数:createMaskWrapper()*/
+          // #region 函数:createMaskWrapper()
           createMaskWrapper: function () {
             var wrapper = document.getElementById(this.name + '-maskWrapper');
 
@@ -229,9 +229,9 @@ let defaults = {
               });
             }
           },
-          /*#endregion*/
+          // #endregion
 
-          /*#region 函数:create(text)*/
+          // #region 函数:create(text)
           create: function (text) {
             if (document.getElementById(this.name + '-text') == null) {
               $(document.body).append('<div id="' + this.name + '-container" class="x-ui-dialog-waiting-window-container" ><div id="' + this.name + '-text" class="x-ui-dialog-waiting-window-text" >' + text + '</div></div>');
@@ -247,9 +247,9 @@ let defaults = {
               this.maskWrapper = document.getElementById(this.name + '-maskWrapper');
             }
           },
-          /*#endregion*/
+          // #endregion
 
-          /*#region 函数:show(text)*/
+          // #region 函数:show(text)
           /*
           * 显示
           */
@@ -292,9 +292,9 @@ let defaults = {
 
             //timer.start();
           },
-          /*#endregion*/
+          // #endregion
 
-          /*#region 函数:hide()*/
+          // #region 函数:hide()
           /*
           * 隐藏
           */
@@ -321,7 +321,7 @@ let defaults = {
               }
             }
           }
-          /*#endregion*/
+          // #endregion
         };
       }
     }
@@ -331,7 +331,7 @@ let defaults = {
 
     return window[name];
   },
-  /*#endregion*/
+  // #endregion
 
   /**
    * 捕获异常
@@ -354,7 +354,7 @@ let defaults = {
     }
   }
 }
-/*#endregion*/
+// #endregion
 
 // Nonce ClientId ClientSignature Timestamp Nonce
 let keys = ["access-token", "client-id", "client-signature", "timestamp", "nonce"];
@@ -377,13 +377,13 @@ let self = {
   getWaitingWindow: function (options) {
     return defaults.getWaitingWindow(options);
   },
-  /*#endregion*/
+  // #endregion
 
   /**
   * 发起网络请求
   * @method xhr
-  * @memberof self
-  * @param {object} [options] 选项<br />
+  * @memberof x.net
+  * @param {Object} [options] 选项<br />
   * 可选值范围:
   * <table class="param-options" >
   * <thead>
@@ -569,7 +569,7 @@ let self = {
       }
     });
   },
-  /*#endregion*/
+  // #endregion
 
   // 已加载的文件标识
   requireLoaded: {},
@@ -650,7 +650,7 @@ let self = {
 
     request.send();
   },
-  /*#endregion*/
+  // #endregion
 
   newHttpRequest: function (options) {
     var request = {
@@ -738,7 +738,7 @@ let self = {
     return request;
   },
 
-  /*#region 函数:newXmlHttpRequest()*/
+  // #region 函数:newXmlHttpRequest()
   /**
   * 创建 XMLHttpRequest 对象
   * @private
@@ -766,7 +766,7 @@ let self = {
 
     return xhr;
   },
-  /*#endregion*/
+  // #endregion
 
   /**
   * 请求信息
@@ -775,13 +775,13 @@ let self = {
   */
   request: {
 
-    /*#region 函数:find(key)*/
+    // #region 函数:find(key)
     /**
     * 获取请求地址中某个参数的值
     * @method find
     * @memberof self.request
-    * @param {string} 参数的键
-    * @returns {string} 参数的值
+    * @param {String} 参数的键
+    * @returns {String} 参数的值
     */
     find: function (key) {
       var resultValue = '';
@@ -796,15 +796,15 @@ let self = {
 
       return resultValue;
     },
-    /*#endregion*/
+    // #endregion
 
-    /*#region 函数:findAll()*/
+    // #region 函数:findAll()
     /**
     * 查找请求的全部信息, 返回的值是个JSON格式.
     * 获取请求地址中所有参数的值
     * @method findAll
     * @memberof self.request
-    * @returns {object} JSON格式的对象
+    * @returns {Object} JSON格式的对象
     */
     findAll: function () {
       var outString = '';
@@ -830,29 +830,29 @@ let self = {
 
       return x.evalJSON(outString);
     },
-    /*#endregion*/
+    // #endregion
 
-    /*#region 函数:getRawUrl()*/
+    // #region 函数:getRawUrl()
     /**
     * 获取附加了查询字符串的 URL 路径
     */
     getRawUrl: function () {
       return location.href.replace(location.origin, '');
     },
-    /*#endregion*/
+    // #endregion
 
-    /*#region 函数:hash(key)*/
+    // #region 函数:hash(key)
     /*
     * 判断锚点
     */
     hash: function (key) {
       return location.hash === ('#' + key) ? true : false;
     }
-    /*#endregion*/
+    // #endregion
   }
 };
 
-/*#region 私有函数:request_callback(response)*/
+// #region 私有函数:request_callback(response)
 /**
 * 网络请求的默认回调函数
 * @private
@@ -876,6 +876,6 @@ var request_callback = function (response) {
       break;
   }
 };
-/*#endregion*/
+// #endregion
 
 export = self;

@@ -11,7 +11,7 @@ import * as string from "./string";
 let self = {
   /**
   * 规则集合
-  * @member {object} rules
+  * @member {Object} rules
   * @memberof x.regexp
   * @example
   * // 返回邮箱地址的正则表达式
@@ -126,7 +126,7 @@ let self = {
     }
   },
 
-  /*#region 函数:match(options)*/
+  // #region 函数:match(options)
   /**
   * 匹配
   * @method match
@@ -157,14 +157,14 @@ let self = {
 
     return text.match(regexp);
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:exists(options)*/
+  // #region 函数:exists(options)
   /**
   * 利用正则表达式验证字符串规则
   * @method exists
   * @memberof x.regexp
-  * @param {object} options 选项信息
+  * @param {Object} options 选项信息
   * @example
   * // result = false;
   * var result = self.exists({
@@ -201,15 +201,15 @@ let self = {
 
     return text.match(regexp) !== null;
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:isFileExt(path, allowFileExt)*/
+  // #region 函数:isFileExt(path, allowFileExt)
   /**
   * 验证文件的扩展名.
   * @method isFileExt
   * @memberof x.regexp
-  * @param {string} path 文件路径
-  * @param {string} allowFileExt 允许的扩展名, 多个以半角逗号隔开
+  * @param {String} path 文件路径
+  * @param {String} allowFileExt 允许的扩展名, 多个以半角逗号隔开
   */
   isFileExt: function (path, allowFileExt) {
     var result = false;
@@ -238,77 +238,77 @@ let self = {
 
     return result;
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:isUrl(text)*/
+  // #region 函数:isUrl(text)
   /**
   * 验证URL地址格式
   * @method isUrl
   * @memberof x.regexp
-  * @param {string} text 文本信息
+  * @param {String} text 文本信息
   */
   isUrl: function (text) {
     return text.toLowerCase().exists(self.rules['url']);
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:isEmail(text)*/
+  // #region 函数:isEmail(text)
   /*
   * 验证Email地址格式
   * @method isEmail
   * @memberof x.regexp
-  * @param {string} text 文本信息
+  * @param {String} text 文本信息
   */
   isEmail: function (text) {
     return text.toLowerCase().exists(self.rules['email']);
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:isZipcode(text, nature))*/
+  // #region 函数:isZipcode(text, nature))
   /*
   * 验证邮编
   * @method isZipcode
   * @memberof x.regexp
-  * @param {string} text 文本信息
-  * @param {string} nature 区域信息
+  * @param {String} text 文本信息
+  * @param {String} nature 区域信息
   */
   isZipcode: function (text, nature) {
     nature = x.formatLocale(nature);
 
     return text.exists(self.rules[nature]['zipcode']);
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:isSafeText(text)*/
+  // #region 函数:isSafeText(text)
   /**
   * 验证输入的字符串是否为安全字符, 即只允许字母、数字、下滑线。
   * @method isSafeText
   * @memberof x.regexp
-  * @param {string} text 文本信息
+  * @param {String} text 文本信息
   */
   isSafeText: function (text) {
     return text.exists(self.rules['safeText']);
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:formatTelephone(text)*/
+  // #region 函数:formatTelephone(text)
   /**
   * 格式化输入的输入的文本为电话号码.
   * @method formatTelephone
   * @memberof x.regexp
-  * @param {string} text 文本信息
+  * @param {String} text 文本信息
   */
   formatTelephone: function (text) {
     return text.replace(self.rules['non-telephone'], '');
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:formatInteger(value, removePaddingZero)*/
+  // #region 函数:formatInteger(value, removePaddingZero)
   /**
   * 格式化输入的输入的文本为整数.
   * @method formatInteger
   * @memberof x.regexp
-  * @param {string} value 文本信息
+  * @param {String} value 文本信息
   * @param {bool} [removePaddingZero] 移除两侧多余的零
   * @example
   * var value = '12345a';
@@ -334,14 +334,14 @@ let self = {
 
     return value;
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:formatNumber(value, removePaddingZero)*/
+  // #region 函数:formatNumber(value, removePaddingZero)
   /**
   * 格式化输入的输入的文本为数字.
   * @method formatInteger
   * @memberof x.regexp
-  * @param {string} value 文本信息
+  * @param {String} value 文本信息
   * @param {bool} [removePaddingZero] 移除两侧多余的零
   * @example
   * var value = '12345.00a';
@@ -365,15 +365,15 @@ let self = {
 
     return value;
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:formatNumberRound2(value, removePaddingZero)*/
+  // #region 函数:formatNumberRound2(value, removePaddingZero)
   /**
   * 格式化输入的文本统一为保留小数点后面两位的数字。
   * 小数点右侧两位之后的数字采用四舍五入的规则取舍。
   * @method formatNumberRound2
   * @memberof x.regexp
-  * @param {string} value 文本信息
+  * @param {String} value 文本信息
   * @param {bool} [removePaddingZero] 移除两侧多余的零
   * @example
   * var value = '12345';
@@ -403,16 +403,16 @@ let self = {
 
     return value;
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:formatNumberRound2(value, removePaddingZero)*/
+  // #region 函数:formatNumberRound2(value, removePaddingZero)
   /**
   * 格式化输入的文本统一为保留小数点后面两位的数字。
   * 小数点右侧N位之后的数字采用四舍五入的规则取舍。
   * @method formatNumberRound2
   * @memberof x.regexp
-  * @param {string} value 文本信息
-  * @param {number} [length] 小数点右侧保留的位数
+  * @param {String} value 文本信息
+  * @param {Number} [length] 小数点右侧保留的位数
   * @param {bool} [removePaddingZero] 移除两侧多余的零
   * @example
   * var value = '12345';
@@ -450,14 +450,14 @@ let self = {
 
     return text;
   },
-  /*#endregion*/
+  // #endregion
 
-  /*#region 函数:formatSafeText(text)*/
+  // #region 函数:formatSafeText(text)
   /**
   * 格式化输入的文本为安全字符(常用于登录名和拼音字母的检测)
   * @method formatSafeText
   * @memberof x.regexp
-  * @param {string} text 文本信息
+  * @param {String} text 文本信息
   * @example
   * var text = 'abcd-$1234';
   * // return value = 'abcd1234'
@@ -466,7 +466,7 @@ let self = {
   formatSafeText: function (text) {
     return text.replace(self.rules['non-safeText'], '');
   }
-  /*#endregion*/
+  // #endregion
 };
 
 export = self;

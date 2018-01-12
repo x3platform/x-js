@@ -1,14 +1,15 @@
 {
   "name": "x-lib",
-  "version": "0.0.10",
+  "version": "0.0.13",
   "description": "x lib based on node.js",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
     "serve": "node serve",
-    "test": "mocha",
+    "dist": "grunt production",
+    "test": "cross-env CI_ENV=/dev/ karma start test/karma/karma.conf.js --single-run",
+    "test:mocha": "mocha",
     "test1": "npm run lint && cross-env CI_ENV=/dev/ karma start test/karma/karma.conf.js --single-run",
-    "test:unit": "karma start test/karma/karma.conf.js --single-run",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "repository": {
@@ -27,6 +28,14 @@
     "bootstrap": "^3.3.7",
     "chai": "^3.5.0",
     "coveralls": "~2.13.0",
+    "cross-env": "^5.1.1",
+    "eslint": "^4.11.0",
+    "eslint-config-standard": "10.2.1",
+    "eslint-friendly-formatter": "^2.0.7",
+    "eslint-plugin-html": "^4.0.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
     "express": "^4.15.0",
     "grunt": "~1.0.1",
     "grunt-browserify": "^5.0.0",
@@ -54,6 +63,7 @@
     "load-grunt-tasks": "3.5.2",
     "mocha": "^3.3.0",
     "should": "^11.2.1",
-    "typescript": "~2.4.0"
+    "typescript": "~2.4.0",
+    "typescript-eslint-parser": "^9.0.0"
   }
 }
