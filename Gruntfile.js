@@ -299,7 +299,7 @@ module.exports = function (grunt) {
   require('load-grunt-tasks')(grunt);
 
   // 加载自定义任务
-  grunt.loadTasks('build/grunt-typescript/tasks');
+  // grunt.loadTasks('build/grunt-typescript/tasks');
 
   // 任务加载
   grunt.loadNpmTasks('grunt-contrib-concat');
@@ -314,7 +314,7 @@ module.exports = function (grunt) {
   // grunt.loadNpmTasks('dts-generator');
 
   // 测试任务
-  grunt.loadNpmTasks('grunt-mocha-istanbul');
+  // grunt.loadNpmTasks('grunt-mocha-istanbul');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-karma-coveralls');
   // 注意看，每一个任务列表格式是：“任务名：启用的任务配置”。通过这样的形式，我们可以指定MultiTasks运行时使用的配置，
