@@ -4,10 +4,10 @@
 常用工具函数
 
 ## Install
-npm install x-lib -save
+npm install @x3platform/x-js -save
 
 ## Useage
-import x from 'x-lib'
+import x from '@x3platform/x-js'
 
 ## Build
 grunt publish
@@ -15,4 +15,5 @@ grunt publish
 ## Test
 
 online
-https://unpkg.com/x-lib@0.0.10/dist/x.min.js
+https://unpkg.com/@x3platform/x-js@0.0.14/dist/x.min.js
+

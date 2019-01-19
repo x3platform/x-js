@@ -1,7 +1,7 @@
 {
-  "name": "x-lib",
-  "version": "0.0.13",
-  "description": "x lib based on node.js",
+  "name": "@x3platform/x-js",
+  "version": "0.0.14",
+  "description": "Common utility functions",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
