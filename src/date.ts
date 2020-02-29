@@ -107,7 +107,7 @@ let self = {
   * self.ago('2000-01-01 00:00:00',{y});
   */
   ago: function (timeValue, suffix) {
-    suffix = x.ext({
+    suffix = x.extend({
       minute: '分钟前',
       hour: '小时前',
       day: '天前'
@@ -129,7 +129,7 @@ let self = {
       return time.diff('d', now) + suffix.day;
     }
     else {
-      return time.toString();
+      return time.toString('yyyy-MM-dd');
     }
   },
 
