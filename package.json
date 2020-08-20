@@ -1,6 +1,6 @@
 {
   "name": "@x3platform/x-js",
-  "version": "0.0.15",
+  "version": "0.0.18",
   "description": "Common utility functions",
   "main": "index.js",
   "types": "index.d.ts",

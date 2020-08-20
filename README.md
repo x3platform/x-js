@@ -15,5 +15,5 @@ grunt publish
 ## Test
 
 online
-https://unpkg.com/@x3platform/x-js@0.0.14/dist/x.min.js
+https://unpkg.com/@x3platform/x-js@0.0.18/dist/x.min.js
 

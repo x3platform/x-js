@@ -108,6 +108,7 @@ let self = {
   */
   ago: function (timeValue, suffix) {
     suffix = x.extend({
+      amoment: "刚刚",
       minute: '分钟前',
       hour: '小时前',
       day: '天前'
@@ -117,7 +118,7 @@ let self = {
     var now = self.create();
 
     if (time.diff('m', now) < 1) {
-      return '1' + suffix.minute;
+      return suffix.amoment;
     }
     else if (time.diff('m', now) < 60) {
       return time.diff('m', now) + suffix.minute;
@@ -165,8 +166,10 @@ let self = {
         // .NET 日期对象
         date = new Date(Math.floor(timeValue.replace(/\/Date\((-?\d+)\)\//, '$1')));
       }
-      else if (/(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3})Z/.test(timeValue)) {
-        // ISO 8601 日期格式
+      else if (/(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3})Z/.test(timeValue)
+      || /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/.test(timeValue)) {
+        // 支持常用的 ISO 8601 日期格式
+        // yyyy-mm-ddTHH:mm:ss
         date = new Date(timeValue);
       }
       else {
